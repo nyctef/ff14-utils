@@ -1,4 +1,7 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
 
 use color_eyre::eyre::Result;
 use model::{ItemId, Recipe, RecipeId, RecipeItem};
@@ -7,11 +10,12 @@ use tokio_stream::StreamExt;
 
 mod model;
 
-async fn read_recipes(file_in: &str) -> Result<Vec<Recipe>> {
+async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
     // Function reads CSV file that has column named "region" at second position (index = 1).
     // It writes to new file only rows with region equal to passed argument
     // and removes region column.
-    let mut reader = csv_async::AsyncReader::from_reader(File::open(file_in).await?);
+    let mut reader =
+        csv_async::AsyncReader::from_reader(File::open(csv_base_path.join("Recipe.csv")).await?);
     let mut records = reader.records();
     // the first row is always of the form key,0,1,2,...
     // The csv parser assumes that row is a header row and discards it.
@@ -61,10 +65,10 @@ async fn read_recipes(file_in: &str) -> Result<Vec<Recipe>> {
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let result = read_recipes("../ffxiv-datamining/csv/Recipe.csv").await?;
-    let result = result.iter().take(10);
+    let csv_base = PathBuf::from("../ffxiv-datamining/csv");
+    let recipes = read_recipes(&csv_base).await?;
 
-    dbg!(result.collect::<Vec<_>>());
+    dbg!(recipes.iter().take(10).collect::<Vec<_>>());
 
     Ok(())
 }
