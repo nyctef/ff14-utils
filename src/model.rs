@@ -1,7 +1,19 @@
+use color_eyre::{eyre::Context, Result};
 use derive_more::{Constructor, From};
 
-#[derive(Debug, PartialEq, Eq, From)]
-pub struct ItemId(u32);
+#[derive(Debug, PartialEq, Eq)]
+pub struct ItemId(i32);
+
+impl TryFrom<&str> for ItemId {
+    type Error = color_eyre::Report;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let v: i32 = value
+            .parse()
+            .wrap_err_with(|| format!("Failed to parse {} as ItemId", value))?;
+        Ok(ItemId(v))
+    }
+}
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Item {
@@ -10,7 +22,19 @@ pub struct Item {
 }
 
 #[derive(Debug, PartialEq, Eq, From)]
-pub struct RecipeId(u32);
+pub struct RecipeId(i32);
+
+// TODO: macro for this impl?
+impl TryFrom<&str> for RecipeId {
+    type Error = color_eyre::Report;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let v: i32 = value
+            .parse()
+            .wrap_err_with(|| format!("Failed to parse {} as RecipeId", value))?;
+        Ok(RecipeId(v))
+    }
+}
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct Recipe {

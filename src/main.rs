@@ -40,25 +40,23 @@ async fn read_recipes(file_in: &str) -> Result<impl Stream<Item = Recipe>> {
         //         .get(*field_name_lookup.get("Item{Result}").unwrap())
         //         .unwrap(),
         // ));
-        let recipe_id: u32 = record
-            .get(*field_name_lookup.get("#").unwrap())
-            .unwrap()
-            .parse()?;
+        let recipe_id = record.get(*field_name_lookup.get("#").unwrap()).unwrap();
         let mut items = vec![];
         for i in 0..10 {
             let ingredient_field_name: &str = &format!("Item{{Ingredient}}[{i}]");
-            let ingredient_id: u32 = record
+            let ingredient_id = record
                 .get(*field_name_lookup.get(ingredient_field_name).unwrap())
-                .unwrap()
-                .parse()?;
+                .unwrap();
             let amount_field_name: &str = &format!("Amount{{Ingredient}}[{i}]");
             let amount: u8 = record
                 .get(*field_name_lookup.get(amount_field_name).unwrap())
                 .unwrap()
                 .parse()?;
-            items.push(RecipeItem::new(ItemId::from(ingredient_id), amount))
+            if amount > 0 {
+                items.push(RecipeItem::new(ItemId::try_from(ingredient_id)?, amount))
+            }
         }
-        result.push(Recipe::new(RecipeId::from(recipe_id), items));
+        result.push(Recipe::new(RecipeId::try_from(recipe_id)?, items));
     }
     Ok(stream::iter(result))
 }
