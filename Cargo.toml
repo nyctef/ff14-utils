@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 color-eyre = "0.6.2"
 csv-async = { version = "1.2.6", features = ["tokio"] }
+derive_more = "0.99.17"
 tokio = { version = "1.26.0", features = ["fs", "macros", "rt-multi-thread"] }
 tokio-stream = "0.1.12"
