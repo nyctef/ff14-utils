@@ -86,7 +86,7 @@ async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
         .iter()
         .map(|record| {
             let item_id = record.get("#").unwrap();
-            let item_name = record.get("Singular").unwrap();
+            let item_name = record.get("Name").unwrap();
 
             Ok(Item::new(ItemId::try_from(item_id)?, item_name.to_owned()))
         })
