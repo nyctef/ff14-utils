@@ -39,8 +39,8 @@ impl TryFrom<&String> for RecipeId {
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct Recipe {
     pub id: RecipeId,
-    pub items: Vec<RecipeItem>,
-    pub result: ItemId,
+    pub ingredients: Vec<RecipeItem>,
+    pub result: RecipeItem,
 }
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
