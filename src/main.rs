@@ -4,7 +4,7 @@ use std::{
 };
 
 use color_eyre::eyre::{eyre, Result};
-use model::{ItemId, Recipe, RecipeId, RecipeItem};
+use model::{Item, ItemId, Recipe, RecipeId, RecipeItem};
 use tokio::fs::File;
 use tokio_stream::StreamExt;
 
@@ -74,14 +74,29 @@ async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
         .collect()
 }
 
+async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
+    read_csv(&csv_base_path.join("Item.csv"))
+        .await?
+        .iter()
+        .map(|record| {
+            let item_id = record.get("#").unwrap();
+            let item_name = record.get("Singular").unwrap();
+
+            Ok(Item::new(ItemId::try_from(item_id)?, item_name.to_owned()))
+        })
+        .collect()
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
     let csv_base = PathBuf::from("../ffxiv-datamining/csv");
     let recipes = read_recipes(&csv_base).await?;
+    let items = read_items(&csv_base).await?;
 
     dbg!(recipes.iter().take(10).collect::<Vec<_>>());
+    dbg!(items.iter().take(10).collect::<Vec<_>>());
 
     Ok(())
 }

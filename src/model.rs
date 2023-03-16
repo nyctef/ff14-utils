@@ -15,7 +15,7 @@ impl TryFrom<&String> for ItemId {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct Item {
     id: ItemId,
     name: String,
