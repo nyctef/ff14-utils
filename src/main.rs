@@ -59,6 +59,8 @@ async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
         .iter()
         .map(|record| {
             let recipe_id = record.get("#").unwrap();
+            let result_id: ItemId = record.get("Item{Result}").unwrap().try_into().unwrap();
+            let result_amount: u8 = record.get("Amount{Result}").unwrap().parse().unwrap();
             let mut items = vec![];
             for i in 0..10 {
                 let ingredient_field_name = &format!("Item{{Ingredient}}[{i}]");
@@ -69,7 +71,11 @@ async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
                     items.push(RecipeItem::new(ItemId::try_from(ingredient_id)?, amount))
                 }
             }
-            Ok(Recipe::new(RecipeId::try_from(recipe_id)?, items))
+            Ok(Recipe::new(
+                RecipeId::try_from(recipe_id)?,
+                items,
+                result_id,
+            ))
         })
         .collect()
 }
@@ -95,8 +101,12 @@ async fn main() -> Result<()> {
     let recipes = read_recipes(&csv_base).await?;
     let items = read_items(&csv_base).await?;
 
-    dbg!(recipes.iter().take(10).collect::<Vec<_>>());
-    dbg!(items.iter().take(10).collect::<Vec<_>>());
+    let items_by_id = items.iter().map(|i| (i.id, i)).collect::<HashMap<_, _>>();
+
+    for r in recipes.iter().take(10) {
+        let result_name = items_by_id.get(&r.result).unwrap();
+        println!("Recipe {:?} makes {}", r.id, result_name.name)
+    }
 
     Ok(())
 }

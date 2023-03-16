@@ -1,7 +1,7 @@
 use color_eyre::{eyre::Context, Result};
-use derive_more::{Constructor, From};
+use derive_more::Constructor;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct ItemId(i32);
 
 impl TryFrom<&String> for ItemId {
@@ -17,11 +17,11 @@ impl TryFrom<&String> for ItemId {
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct Item {
-    id: ItemId,
-    name: String,
+    pub id: ItemId,
+    pub name: String,
 }
 
-#[derive(Debug, PartialEq, Eq, From)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct RecipeId(i32);
 
 // TODO: macro for this impl? (both &str and &String would probably be useful)
@@ -38,12 +38,13 @@ impl TryFrom<&String> for RecipeId {
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct Recipe {
-    id: RecipeId,
-    items: Vec<RecipeItem>,
+    pub id: RecipeId,
+    pub items: Vec<RecipeItem>,
+    pub result: ItemId,
 }
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct RecipeItem {
-    item_id: ItemId,
-    amount: u8,
+    pub item_id: ItemId,
+    pub amount: u8,
 }
