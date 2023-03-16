@@ -40,9 +40,11 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<HashMap<String, String>>> {
             field_name_lookup
                 .iter()
                 .map(|(field_name, field_offset)| {
-                    let value = record.get(*field_offset).ok_or(eyre!(
-                        "Failed to get field {field_name} (offset {field_offset}) from csv row"
-                    ))?;
+                    let value = record.get(*field_offset).ok_or_else(|| {
+                        eyre!(
+                            "Failed to get field {field_name} (offset {field_offset}) from csv row"
+                        )
+                    })?;
                     Ok((field_name.to_string(), value.to_string()))
                 })
                 .collect()
