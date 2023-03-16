@@ -1,16 +1,14 @@
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 use color_eyre::eyre::{eyre, Result};
 use model::{Item, ItemId, Recipe, RecipeId, RecipeItem};
+use rustc_hash::FxHashMap;
 use tokio::fs::File;
 use tokio_stream::StreamExt;
 
 mod model;
 
-async fn read_csv(csv_path: &Path) -> Result<Vec<HashMap<String, String>>> {
+async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
     // Function reads CSV file that has column named "region" at second position (index = 1).
     // It writes to new file only rows with region equal to passed argument
     // and removes region column.
@@ -26,14 +24,14 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<HashMap<String, String>>> {
         .iter()
         .enumerate()
         .map(|(i, x)| (x, i))
-        .collect::<HashMap<_, _>>();
+        .collect::<FxHashMap<_, _>>();
     // the third row contains a type for each field eg int32,int32,CraftType,byte,Item,...
     let types_row = records.next().await.expect("types row")?;
     // map from a field index to the type of that field
     // TODO: is this actually going to get used?
-    let _types_lookup = types_row.iter().enumerate().collect::<HashMap<_, _>>();
+    let _types_lookup = types_row.iter().enumerate().collect::<FxHashMap<_, _>>();
 
-    let result: Result<Vec<HashMap<String, String>>> = records
+    let result: Result<Vec<FxHashMap<String, String>>> = records
         .map(|record| {
             let record = record?;
 
@@ -103,7 +101,7 @@ async fn main() -> Result<()> {
     let recipes = read_recipes(&csv_base).await?;
     let items = read_items(&csv_base).await?;
 
-    let items_by_id = items.iter().map(|i| (i.id, i)).collect::<HashMap<_, _>>();
+    let items_by_id = items.iter().map(|i| (i.id, i)).collect::<FxHashMap<_, _>>();
 
     for r in recipes.iter().take(10) {
         let result_name = items_by_id.get(&r.result).unwrap();
