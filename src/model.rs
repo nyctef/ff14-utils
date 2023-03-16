@@ -4,10 +4,10 @@ use derive_more::{Constructor, From};
 #[derive(Debug, PartialEq, Eq)]
 pub struct ItemId(i32);
 
-impl TryFrom<&str> for ItemId {
+impl TryFrom<&String> for ItemId {
     type Error = color_eyre::Report;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    fn try_from(value: &String) -> Result<Self, Self::Error> {
         let v: i32 = value
             .parse()
             .wrap_err_with(|| format!("Failed to parse {} as ItemId", value))?;
@@ -24,11 +24,11 @@ pub struct Item {
 #[derive(Debug, PartialEq, Eq, From)]
 pub struct RecipeId(i32);
 
-// TODO: macro for this impl?
-impl TryFrom<&str> for RecipeId {
+// TODO: macro for this impl? (both &str and &String would probably be useful)
+impl TryFrom<&String> for RecipeId {
     type Error = color_eyre::Report;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    fn try_from(value: &String) -> Result<Self, Self::Error> {
         let v: i32 = value
             .parse()
             .wrap_err_with(|| format!("Failed to parse {} as RecipeId", value))?;
