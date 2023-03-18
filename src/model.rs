@@ -36,6 +36,7 @@ pub struct Item {
     pub name: String,
     pub name_singular: String,
     pub name_plural: String,
+    pub ilvl: u32,
 }
 
 id!(RecipeId);

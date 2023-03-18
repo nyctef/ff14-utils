@@ -88,12 +88,14 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
             let item_name = record.get("Name").unwrap();
             let name_singular = record.get("Singular").unwrap();
             let name_plural = record.get("Plural").unwrap();
+            let ilvl: u32 = record.get("Level{Item}").unwrap().parse().unwrap();
 
             Ok(Item::new(
                 ItemId::try_from(item_id)?,
                 item_name.to_owned(),
                 name_singular.to_owned(),
                 name_plural.to_owned(),
+                ilvl.to_owned(),
             ))
         })
         .collect()

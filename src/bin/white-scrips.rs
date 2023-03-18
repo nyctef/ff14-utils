@@ -15,17 +15,24 @@ async fn main() -> Result<()> {
     let items = csv::read_items(&csv_base).await?;
     let recipes = csv::read_recipes(&csv_base).await?;
 
-    let pancakes = items
+    let l89_collectables = items
         .iter()
-        .find(|i| i.name == "Rarefied Giant Popoto Pancakes")
-        .unwrap();
-    let recipe = recipes
-        .iter()
-        .find(|r| r.result.item_id == pancakes.id)
-        .unwrap();
+        .filter(|i| i.ilvl == 548 && i.name.starts_with("Rarefied"))
+        .collect_vec();
 
-    let all_ids = iter::once(recipe.result.item_id)
-        .chain(recipe.ingredients.iter().map(|i| i.item_id))
+    let recipes = l89_collectables
+        .iter()
+        .map(|i| recipes.iter().find(|r| r.result.item_id == i.id).unwrap())
+        .map(|r| r * 10)
+        .collect_vec();
+
+    let all_ids = recipes
+        .iter()
+        .flat_map(|r| {
+            iter::once(r.result.item_id)
+                .chain(r.ingredients.iter().map(|i| i.item_id))
+                .collect_vec()
+        })
         .collect_vec();
     let get_market_data = get_market_data(&*all_ids).await?;
     let market_data = get_market_data
@@ -33,31 +40,35 @@ async fn main() -> Result<()> {
         .map(|x| (x.item_id, x))
         .collect::<HashMap<_, _>>();
 
-    let count = 10;
-    let recipe = recipe * count;
+    for recipe in &recipes {
+        let resulting_item = items
+            .iter()
+            .find(|i| i.id == recipe.result.item_id)
+            .unwrap();
+        let results: Result<Vec<_>> = recipe
+            .ingredients
+            .iter()
+            .map(|ri| {
+                let i = items.iter().find(|i| i.id == ri.item_id).unwrap();
+                let md = market_data.get(&i.id).unwrap();
+                let price =
+                    price_up_to(&md.listings, ri.amount.into(), false).map_err(|e| eyre!(e))?;
 
-    let results: Result<Vec<_>> = recipe
-        .ingredients
-        .iter()
-        .map(|ri| {
-            let i = items.iter().find(|i| i.id == ri.item_id).unwrap();
-            let md = market_data.get(&i.id).unwrap();
-            let price = price_up_to(&md.listings, ri.amount.into(), false).map_err(|e| eyre!(e))?;
+                Ok((ri, i, price))
+            })
+            .collect();
+        let results = results?;
 
-            Ok((ri, i, price))
-        })
-        .collect();
-    let results = results?;
+        let total_price: u32 = results.iter().map(|r| r.2).sum();
 
-    let total_price: u32 = results.iter().map(|r| r.2).sum();
-
-    println!(
-        "{}:\t{}",
-        format_recipe_item(&recipe.result, pancakes),
-        total_price
-    );
-    for (ri, i, price) in results {
-        println!("\t{:>8} {}", price, format_recipe_item(ri, i));
+        println!(
+            "{}:\t{}",
+            format_recipe_item(&recipe.result, resulting_item),
+            total_price
+        );
+        for (ri, i, price) in results {
+            println!("\t{:>8} {}", price, format_recipe_item(ri, i));
+        }
     }
 
     Ok(())
