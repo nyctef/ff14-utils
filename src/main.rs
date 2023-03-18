@@ -1,4 +1,5 @@
 use color_eyre::eyre::Result;
+use itertools::Itertools;
 use rustc_hash::FxHashMap;
 use std::path::PathBuf;
 
@@ -21,13 +22,15 @@ async fn main() -> Result<()> {
         .flat_map(|m| m.materia_levels.iter())
         .filter(|ml| ml.level >= 9)
         .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name))
-        .collect::<Vec<_>>();
+        .collect_vec();
     for m in &all_materia {
         println!("{:>8}: {}", m.0, m.1);
     }
 
     let _data =
         universalis::get_market_data(&*all_materia.iter().map(|m| m.0).collect::<Vec<_>>()).await?;
+
+    dbg!(_data);
 
     Ok(())
 }

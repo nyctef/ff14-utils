@@ -3,7 +3,9 @@ use derive_more::{Constructor, Display};
 
 macro_rules! id {
     ($a:ident) => {
-        #[derive(Debug, Display, PartialEq, Eq, Hash, Clone, Copy, PartialOrd, Ord)]
+        #[derive(
+            Debug, Display, PartialEq, Eq, Hash, Clone, Copy, PartialOrd, Ord, Constructor,
+        )]
         pub struct $a(i32);
 
         impl TryFrom<&String> for $a {

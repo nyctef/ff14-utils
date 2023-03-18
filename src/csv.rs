@@ -1,5 +1,6 @@
 use crate::model::*;
 use color_eyre::eyre::{eyre, Result};
+use itertools::Itertools;
 use rustc_hash::FxHashMap;
 use std::path::Path;
 use tokio::fs::File;
@@ -109,7 +110,7 @@ pub async fn read_materia(csv_base_path: &Path) -> Result<Vec<Materia>> {
                     MateriaLevel::new(item_id, i + 1, value)
                 })
                 .filter(|ml| ml.item_id != ItemId::ZERO)
-                .collect::<Vec<_>>();
+                .collect_vec();
 
             Ok(Materia::new(MateriaId::try_from(item_id)?, levels))
         })
