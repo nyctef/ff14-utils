@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 mod csv;
 mod model;
+mod universalis;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -19,10 +20,14 @@ async fn main() -> Result<()> {
         .iter()
         .flat_map(|m| m.materia_levels.iter())
         .filter(|ml| ml.level >= 9)
-        .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name));
-    for m in all_materia {
+        .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name))
+        .collect::<Vec<_>>();
+    for m in &all_materia {
         println!("{:>8}: {}", m.0, m.1);
     }
+
+    let _data =
+        universalis::get_market_data(&*all_materia.iter().map(|m| m.0).collect::<Vec<_>>()).await?;
 
     Ok(())
 }
