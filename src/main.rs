@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use color_eyre::eyre::{eyre, Result};
-use model::{Item, ItemId, Recipe, RecipeId, RecipeItem};
+use model::*;
 use rustc_hash::FxHashMap;
 use tokio::fs::File;
 use tokio_stream::StreamExt;
@@ -93,6 +93,32 @@ async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
         .collect()
 }
 
+async fn read_materia(csv_base_path: &Path) -> Result<Vec<Materia>> {
+    read_csv(&csv_base_path.join("Materia.csv"))
+        .await?
+        .iter()
+        .map(|record| {
+            let item_id = record.get("#").unwrap();
+            let levels = (0..10)
+                .map(|i| {
+                    let item_id =
+                        ItemId::try_from(record.get(&format!("Item[{i}]")).unwrap()).unwrap();
+                    let value = record
+                        .get(&format!("Value[{i}]"))
+                        .unwrap()
+                        .parse::<i16>()
+                        .unwrap();
+
+                    MateriaLevel::new(item_id, value)
+                })
+                .filter(|ml| ml.item_id != ItemId::ZERO)
+                .collect::<Vec<_>>();
+
+            Ok(Materia::new(MateriaId::try_from(item_id)?, levels))
+        })
+        .collect()
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
@@ -100,15 +126,16 @@ async fn main() -> Result<()> {
     let csv_base = PathBuf::from("../ffxiv-datamining/csv");
     let recipes = read_recipes(&csv_base).await?;
     let items = read_items(&csv_base).await?;
+    let materia = read_materia(&csv_base).await?;
 
     let items_by_id = items.iter().map(|i| (i.id, i)).collect::<FxHashMap<_, _>>();
 
-    for r in recipes.iter().take(10) {
-        let result_name = items_by_id.get(&r.result.item_id).unwrap();
-        println!(
-            "Recipe {:?} makes {} {}",
-            r.id, r.result.amount, result_name.name
-        )
+    let all_materia = materia
+        .iter()
+        .flat_map(|m| m.materia_levels.iter())
+        .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name));
+    for m in all_materia {
+        println!("{:>8}: {}", m.0, m.1);
     }
 
     Ok(())
