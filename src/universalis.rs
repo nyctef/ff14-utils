@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::model::*;
 use chrono::{DateTime, TimeZone, Utc};
 use color_eyre::eyre::Result;
@@ -7,6 +5,7 @@ use derive_more::Constructor;
 use itertools::Itertools;
 use reqwest::Client;
 use serde::Deserialize;
+use std::collections::HashMap;
 
 #[derive(Debug, Constructor)]
 pub struct ItemMarketData {
