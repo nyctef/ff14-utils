@@ -51,6 +51,7 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
     result
 }
 
+#[allow(dead_code)]
 pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
     read_csv(&csv_base_path.join("Recipe.csv"))
         .await?

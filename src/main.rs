@@ -1,3 +1,4 @@
+use chrono::Utc;
 use color_eyre::eyre::Result;
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
@@ -23,14 +24,24 @@ async fn main() -> Result<()> {
         .filter(|ml| ml.level >= 9)
         .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name))
         .collect_vec();
-    for m in &all_materia {
-        println!("{:>8}: {}", m.0, m.1);
+
+    let response =
+        universalis::get_market_data(&*all_materia.iter().map(|m| m.0).collect_vec()).await?;
+    let data = response
+        .iter()
+        .map(|d| (&items_by_id.get(&d.item_id).unwrap().name, d))
+        .sorted_by_key(|d| d.0)
+        .collect_vec();
+
+    for (name, market_data) in data {
+        let ago = Utc::now() - market_data.last_upload_time;
+        println!(
+            "{:<40} cheapest {:>7}, last updated {}",
+            format!("{name}:"),
+            market_data.listings.iter().next().unwrap().price_per_item,
+            format!("{}h{}m ago", ago.num_hours(), ago.num_minutes() % 60)
+        );
     }
-
-    let _data =
-        universalis::get_market_data(&*all_materia.iter().map(|m| m.0).collect::<Vec<_>>()).await?;
-
-    dbg!(_data);
 
     Ok(())
 }
