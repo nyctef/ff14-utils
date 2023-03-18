@@ -32,6 +32,8 @@ id!(ItemId);
 pub struct Item {
     pub id: ItemId,
     pub name: String,
+    pub name_singular: String,
+    pub name_plural: String,
 }
 
 id!(RecipeId);
