@@ -1,5 +1,7 @@
 use color_eyre::{eyre::Context, Result};
 use derive_more::{Constructor, Display};
+use itertools::Itertools;
+use std::ops::Mul;
 
 macro_rules! id {
     ($a:ident) => {
@@ -45,10 +47,30 @@ pub struct Recipe {
     pub result: RecipeItem,
 }
 
+impl Mul<u32> for &Recipe {
+    type Output = Recipe;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        Recipe::new(
+            self.id,
+            self.ingredients.iter().map(|i| i * rhs).collect_vec(),
+            &self.result * rhs,
+        )
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct RecipeItem {
     pub item_id: ItemId,
-    pub amount: u8,
+    pub amount: u32,
+}
+
+impl Mul<u32> for &RecipeItem {
+    type Output = RecipeItem;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        RecipeItem::new(self.item_id, self.amount * rhs)
+    }
 }
 
 id!(MateriaId);

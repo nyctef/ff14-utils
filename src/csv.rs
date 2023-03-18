@@ -60,7 +60,7 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
             let recipe_id = RecipeId::try_from(record.get("#").unwrap())?;
 
             let result_id: ItemId = record.get("Item{Result}").unwrap().try_into().unwrap();
-            let result_amount: u8 = record.get("Amount{Result}").unwrap().parse().unwrap();
+            let result_amount: u32 = record.get("Amount{Result}").unwrap().parse().unwrap();
             let result = RecipeItem::new(result_id, result_amount);
 
             let mut ingredients = vec![];
@@ -68,7 +68,7 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
                 let ingredient_field_name = &format!("Item{{Ingredient}}[{i}]");
                 let ingredient_id = record.get(ingredient_field_name).unwrap();
                 let amount_field_name = &format!("Amount{{Ingredient}}[{i}]");
-                let amount: u8 = record.get(amount_field_name).unwrap().parse()?;
+                let amount: u32 = record.get(amount_field_name).unwrap().parse()?;
                 if amount > 0 {
                     ingredients.push(RecipeItem::new(ItemId::try_from(ingredient_id)?, amount))
                 }

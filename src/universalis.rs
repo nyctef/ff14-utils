@@ -1,6 +1,6 @@
 use crate::model::*;
 use chrono::{DateTime, TimeZone, Utc};
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::Result;
 use derive_more::Constructor;
 use itertools::Itertools;
 use reqwest::Client;
@@ -111,7 +111,7 @@ pub async fn get_market_data(ids: impl Into<&[ItemId]>) -> Result<Vec<ItemMarket
 /// it assumes that we'll happily buy stacks of up to 99 items even if we wanted less and
 /// can easily resell the remainder. It also assumes that the incoming listings are sorted
 /// by price (which seems to always be the case from what the universalis api gives us?)
-fn price_up_to(
+pub fn price_up_to(
     listings: &[ItemMarketListing],
     amount_wanted: u32,
     hq_only: bool,
