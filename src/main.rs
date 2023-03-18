@@ -109,7 +109,7 @@ async fn read_materia(csv_base_path: &Path) -> Result<Vec<Materia>> {
                         .parse::<i16>()
                         .unwrap();
 
-                    MateriaLevel::new(item_id, value)
+                    MateriaLevel::new(item_id, i + 1, value)
                 })
                 .filter(|ml| ml.item_id != ItemId::ZERO)
                 .collect::<Vec<_>>();
@@ -133,6 +133,7 @@ async fn main() -> Result<()> {
     let all_materia = materia
         .iter()
         .flat_map(|m| m.materia_levels.iter())
+        .filter(|ml| ml.level >= 9)
         .map(|ml| (ml.item_id, &items_by_id.get(&ml.item_id).unwrap().name));
     for m in all_materia {
         println!("{:>8}: {}", m.0, m.1);

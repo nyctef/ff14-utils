@@ -59,5 +59,6 @@ pub struct Materia {
 #[derive(Debug, PartialEq, Eq, Constructor)]
 pub struct MateriaLevel {
     pub item_id: ItemId,
+    pub level: u8,
     pub bonus_value: i16,
 }
