@@ -1,6 +1,7 @@
 use color_eyre::eyre::{eyre, Result};
 use ff14_utils::{
     csv,
+    lookup::{ItemLookup, RecipeLookup},
     model::*,
     universalis::{get_market_data, price_up_to},
 };
@@ -12,17 +13,16 @@ async fn main() -> Result<()> {
     color_eyre::install()?;
 
     let csv_base = PathBuf::from("../ffxiv-datamining/csv");
-    let items = csv::read_items(&csv_base).await?;
-    let recipes = csv::read_recipes(&csv_base).await?;
+    let items = ItemLookup::new(csv::read_items(&csv_base).await?);
+    let recipes = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
 
     let l89_collectables = items
-        .iter()
-        .filter(|i| i.ilvl == 548 && i.name.starts_with("Rarefied"))
+        .matching(|i| i.ilvl == 548 && i.name.starts_with("Rarefied"))
         .collect_vec();
 
     let recipes = l89_collectables
         .iter()
-        .map(|i| recipes.iter().find(|r| r.result.item_id == i.id).unwrap())
+        .map(|i| recipes.recipe_for_item(i.id).unwrap())
         .map(|r| r * 10)
         .collect_vec();
 
@@ -41,15 +41,12 @@ async fn main() -> Result<()> {
         .collect::<HashMap<_, _>>();
 
     for recipe in &recipes {
-        let resulting_item = items
-            .iter()
-            .find(|i| i.id == recipe.result.item_id)
-            .unwrap();
+        let resulting_item = items.item_by_id(recipe.result.item_id);
         let results: Result<Vec<_>> = recipe
             .ingredients
             .iter()
             .map(|ri| {
-                let i = items.iter().find(|i| i.id == ri.item_id).unwrap();
+                let i = items.item_by_id(ri.item_id);
                 let md = market_data.get(&i.id).unwrap();
                 let price =
                     price_up_to(&md.listings, ri.amount.into(), false).map_err(|e| eyre!(e))?;
