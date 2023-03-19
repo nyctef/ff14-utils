@@ -24,7 +24,11 @@ impl ItemLookup {
     }
 
     pub fn item_by_name(&self, name: &str) -> &Item {
-        self.items.iter().find(|i| i.name == name).unwrap()
+        self.item_by_name_opt(name).unwrap()
+    }
+
+    pub fn item_by_name_opt(&self, name: &str) -> Option<&Item> {
+        self.items.iter().find(|i| i.name == name)
     }
 }
 
