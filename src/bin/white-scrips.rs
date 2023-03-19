@@ -28,11 +28,7 @@ async fn main() -> Result<()> {
 
     let all_ids = recipes
         .iter()
-        .flat_map(|r| {
-            iter::once(r.result.item_id)
-                .chain(r.ingredients.iter().map(|i| i.item_id))
-                .collect_vec()
-        })
+        .flat_map(|r| r.relevant_item_ids().collect_vec())
         .collect_vec();
     let get_market_data = get_market_data(&*all_ids).await?;
     let market_data = get_market_data

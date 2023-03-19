@@ -1,7 +1,7 @@
 use color_eyre::{eyre::Context, Result};
 use derive_more::{Constructor, Display};
 use itertools::Itertools;
-use std::ops::Mul;
+use std::{iter, ops::Mul};
 
 macro_rules! id {
     ($a:ident) => {
@@ -57,6 +57,13 @@ impl Mul<u32> for &Recipe {
             self.ingredients.iter().map(|i| i * rhs).collect_vec(),
             &self.result * rhs,
         )
+    }
+}
+
+impl Recipe {
+    // TODO: understand what '_ (the "placeholder lifetime" ?) does here
+    pub fn relevant_item_ids(&self) -> impl Iterator<Item = ItemId> + '_ {
+        iter::once(self.result.item_id).chain(self.ingredients.iter().map(|ri| ri.item_id))
     }
 }
 
