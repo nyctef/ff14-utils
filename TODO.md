@@ -1,8 +1,3 @@
-- Building the items hash tables on startup is slow - can we do it at build time instead?
-  - investigate something like https://github.com/rust-phf/rust-phf
-  - https://doc.rust-lang.org/cargo/reference/build-scripts.html
-  - https://doc.rust-lang.org/cargo/reference/build-scripts.html#change-detection
-  - https://crates.io/crates/lazy_static
 - bring in csv files as git subtree?
 - start pricing out recipes
   - calculate market tax

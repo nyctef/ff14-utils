@@ -7,6 +7,13 @@ pub struct ItemLookup {
     items: Vec<Item>,
 }
 
+// TODO: this is pretty inefficient (especially since we're reading static csv files +
+// potentially building large hash tables on every run)
+//   - investigate something like https://github.com/rust-phf/rust-phf
+//   - https://doc.rust-lang.org/cargo/reference/build-scripts.html
+//   - https://doc.rust-lang.org/cargo/reference/build-scripts.html#change-detection
+//   - https://crates.io/crates/lazy_static
+
 impl ItemLookup {
     pub fn matching(&self, predicate: impl Fn(&&Item) -> bool) -> impl Iterator<Item = &Item> {
         self.items.iter().filter(predicate)
