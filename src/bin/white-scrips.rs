@@ -22,7 +22,8 @@ async fn main() -> Result<()> {
 
     let recipes = l89_collectables
         .iter()
-        .map(|i| recipes.recipe_for_item(i.id).unwrap())
+        // only include items that have a recipe (ie skip gathering collectables)
+        .filter_map(|i| recipes.recipe_for_item(i.id))
         .map(|r| r * 10)
         .collect_vec();
 
