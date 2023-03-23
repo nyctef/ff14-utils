@@ -4,6 +4,7 @@ use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
     model::*,
+    time_utils::hm_ago_from_now,
     universalis::{get_market_data_lookup, price_up_to, ItemMarketData},
 };
 use itertools::Itertools;
@@ -35,11 +36,10 @@ fn process_recipe_item(
     market_data: &HashMap<ItemId, ItemMarketData>,
     recipes: &RecipeLookup,
 ) -> u32 {
-    // TODO: add age of universalis data
     // TODO: try to reverse order to be natural?
     let md = market_data.get(&ri.item_id).unwrap();
     let i = items.item_by_id(ri.item_id);
-    let market_price = price_up_to(&md.listings, ri.amount, i.can_be_hq).unwrap();
+    let market_price = price_up_to(&md.listings, ri.amount, i.can_be_hq);
     let crafting_price = recipes.recipe_for_item(i.id).map(|sub_recipe| {
         sub_recipe
             .ingredients
@@ -48,18 +48,31 @@ fn process_recipe_item(
             .sum()
     });
 
-    let lower_price = min(market_price, crafting_price.unwrap_or(u32::MAX));
+    let lower_price = min(
+        market_price.clone().unwrap_or(u32::MAX),
+        crafting_price.clone().unwrap_or(u32::MAX),
+    );
 
-    let price_display = if let Some(cp) = crafting_price {
-        format!(
-            "M:{} C:{} ({})",
-            market_price.separate_with_commas(),
-            cp.separate_with_commas(),
-            format_num_diff(market_price, cp)
-        )
+    let market_price_str = market_price
+        .as_ref()
+        .map(|p| {
+            format!(
+                "M:{} {}",
+                p.separate_with_commas(),
+                hm_ago_from_now(md.last_upload_time).dimmed()
+            )
+        })
+        .unwrap_or_default();
+    let crafting_price_str = crafting_price
+        .map(|p| format!("C:{}", p.separate_with_commas(),))
+        .unwrap_or_default();
+    let diff_str = if let (Ok(mp), Some(cp)) = (market_price, crafting_price) {
+        format_num_diff(mp, cp).to_string()
     } else {
-        format!("M:{}", market_price.separate_with_commas())
+        "".to_string()
     };
+
+    let price_display = vec![market_price_str, crafting_price_str, diff_str].join(" ");
 
     println!(
         "{}{}{} {}",
