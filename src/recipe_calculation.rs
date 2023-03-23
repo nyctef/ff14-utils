@@ -33,7 +33,6 @@ pub fn process_recipe_item(
     );
 
     let market_price_str = market_price
-        .as_ref()
         .map(|p| {
             format!(
                 "M:{} {}",
