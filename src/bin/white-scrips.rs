@@ -35,6 +35,7 @@ async fn main() -> Result<()> {
 
     for recipe in &recipes {
         process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);
+        println!();
     }
 
     Ok(())
