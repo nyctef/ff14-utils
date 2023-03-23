@@ -1,6 +1,6 @@
 use chrono::Utc;
 use color_eyre::eyre::Result;
-use ff14_utils::{csv, universalis};
+use ff14_utils::{csv, time_utils::hm_ago, universalis};
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
 use std::path::PathBuf;
@@ -36,7 +36,7 @@ async fn main() -> Result<()> {
             "{:<40} cheapest {:>7}, last updated {}",
             format!("{name}:"),
             market_data.listings.iter().next().unwrap().price_per_item,
-            format!("{}h{}m ago", ago.num_hours(), ago.num_minutes() % 60)
+            hm_ago(&ago)
         );
     }
 
