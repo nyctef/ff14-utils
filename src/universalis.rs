@@ -62,7 +62,7 @@ pub async fn get_market_data(ids: impl Into<&[ItemId]>) -> Result<Vec<ItemMarket
     assert!(ids.len() > 1, "Universalis gives us results in a different format if we only query a single item, and we don't currently cope with that");
     let base = "https://universalis.app/api/v2";
     let world = "Moogle";
-    let ids = ids.iter().map(|x| format!("{}", x)).collect_vec().join(",");
+    let ids = ids.iter().map(|x| format!("{x}")).collect_vec().join(",");
     let client = Client::new();
     let response = client
         .get(format!("{base}/{world}/{ids}"))

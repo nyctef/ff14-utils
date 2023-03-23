@@ -48,7 +48,7 @@ pub fn process_recipe_item(
     let diff_str = if let (Some(mp), Some(cp)) = (market_price, crafting_price) {
         format_num_diff(mp, cp).to_string()
     } else {
-        "".to_string()
+        String::new()
     };
 
     let price_display = vec![market_price_str, crafting_price_str, diff_str].join(" ");

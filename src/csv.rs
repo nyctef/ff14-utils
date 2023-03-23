@@ -41,7 +41,7 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
                             "Failed to get field {field_name} (offset {field_offset}) from csv row"
                         )
                     })?;
-                    Ok((field_name.to_string(), value.to_string()))
+                    Ok(((*field_name).to_string(), value.to_string()))
                 })
                 .collect()
         })
@@ -51,7 +51,6 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
     result
 }
 
-#[allow(dead_code)]
 pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
     read_csv(&csv_base_path.join("Recipe.csv"))
         .await?
@@ -70,7 +69,7 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
                 let amount_field_name = &format!("Amount{{Ingredient}}[{i}]");
                 let amount: u32 = record.get(amount_field_name).unwrap().parse()?;
                 if amount > 0 {
-                    ingredients.push(RecipeItem::new(ItemId::try_from(ingredient_id)?, amount))
+                    ingredients.push(RecipeItem::new(ItemId::try_from(ingredient_id)?, amount));
                 }
             }
 
@@ -93,9 +92,9 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
 
             Ok(Item::new(
                 ItemId::try_from(item_id)?,
-                item_name.to_owned(),
-                name_singular.to_owned(),
-                name_plural.to_owned(),
+                item_name.clone(),
+                name_singular.clone(),
+                name_plural.clone(),
                 ilvl.to_owned(),
                 can_be_hq,
             ))
