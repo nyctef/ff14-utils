@@ -1,4 +1,5 @@
 use color_eyre::eyre::{eyre, Context, Result};
+use colored::Colorize;
 use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
@@ -6,7 +7,8 @@ use ff14_utils::{
     universalis::{get_market_data_lookup, price_up_to, ItemMarketData},
 };
 use itertools::Itertools;
-use std::{cmp::min, collections::HashMap, env, path::PathBuf};
+use std::{cmp::min, collections::HashMap, env, fmt::Display, path::PathBuf};
+use thousands::Separable;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -50,14 +52,13 @@ fn process_recipe_item(
 
     let price_display = if let Some(cp) = crafting_price {
         format!(
-            "M:{} C:{} ({}{})",
-            market_price,
-            cp,
-            if cp < market_price { "+" } else { "" },
-            market_price as i32 - cp as i32
+            "M:{} C:{} ({})",
+            market_price.separate_with_commas(),
+            cp.separate_with_commas(),
+            format_num_diff(market_price, cp)
         )
     } else {
-        format!("M:{}", market_price)
+        format!("M:{}", market_price.separate_with_commas())
     };
 
     println!(
@@ -68,6 +69,18 @@ fn process_recipe_item(
         price_display
     );
     lower_price
+}
+
+fn format_num_diff(baseline: u32, value: u32) -> impl Display {
+    if value < baseline {
+        format!("+{}", baseline - value)
+            .separate_with_commas()
+            .green()
+    } else {
+        format!("-{}", value - baseline)
+            .separate_with_commas()
+            .red()
+    }
 }
 
 fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result<Recipe> {
