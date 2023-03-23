@@ -1,3 +1,5 @@
+#![allow(clippy::wildcard_imports)]
+
 pub mod csv;
 pub mod lookup;
 pub mod model;

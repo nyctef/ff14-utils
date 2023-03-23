@@ -28,8 +28,8 @@ pub fn process_recipe_item(
     });
 
     let lower_price = min(
-        market_price.clone().unwrap_or(u32::MAX),
-        crafting_price.clone().unwrap_or(u32::MAX),
+        market_price.unwrap_or(u32::MAX),
+        crafting_price.unwrap_or(u32::MAX),
     );
 
     let market_price_str = market_price

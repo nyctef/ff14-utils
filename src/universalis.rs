@@ -144,7 +144,7 @@ pub fn price_up_to(
         }
     }
     match amount_remaining {
-        x if x > 0 => Err(format!("Couldn't find enough listings to satisfy demand")),
+        x if x > 0 => Err("Couldn't find enough listings to satisfy demand".to_string()),
         _ => Ok(cumulative_price),
     }
 }
