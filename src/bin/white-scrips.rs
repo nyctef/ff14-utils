@@ -29,9 +29,9 @@ async fn main() -> Result<()> {
 
     let all_ids = recipes
         .iter()
-        .flat_map(|r| r.relevant_item_ids(&recipes_lookup).collect_vec())
+        .flat_map(|r| r.relevant_item_ids(&recipes_lookup))
         .collect_vec();
-    let market_data = get_market_data_lookup(&*all_ids).await?;
+    let market_data = get_market_data_lookup(&all_ids).await?;
 
     for recipe in &recipes {
         process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);

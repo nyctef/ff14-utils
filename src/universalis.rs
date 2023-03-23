@@ -57,9 +57,9 @@ struct UniversalisMarketHistoryJson {
     on_mannequin: bool,
 }
 
-pub async fn get_market_data(ids: impl Into<&[ItemId]>) -> Result<Vec<ItemMarketData>> {
-    let ids = ids.into();
+pub async fn get_market_data(ids: &[ItemId]) -> Result<Vec<ItemMarketData>> {
     assert!(ids.len() > 1, "Universalis gives us results in a different format if we only query a single item, and we don't currently cope with that");
+
     let base = "https://universalis.app/api/v2";
     let world = "Moogle";
     let ids = ids.iter().map(|x| format!("{x}")).collect_vec().join(",");
@@ -107,9 +107,7 @@ pub async fn get_market_data(ids: impl Into<&[ItemId]>) -> Result<Vec<ItemMarket
         .collect_vec())
 }
 
-pub async fn get_market_data_lookup<'a>(
-    ids: impl Into<&'a [ItemId]>,
-) -> Result<HashMap<ItemId, ItemMarketData>> {
+pub async fn get_market_data_lookup<'a>(ids: &[ItemId]) -> Result<HashMap<ItemId, ItemMarketData>> {
     Ok(get_market_data(ids)
         .await?
         .into_iter()

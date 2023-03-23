@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
         .collect_vec();
 
     let response =
-        universalis::get_market_data(&*all_materia.iter().map(|m| m.0).collect_vec()).await?;
+        universalis::get_market_data(&all_materia.iter().map(|m| m.0).collect_vec()).await?;
     let data = response
         .iter()
         .map(|d| (&items_by_id.get(&d.item_id).unwrap().name, d))

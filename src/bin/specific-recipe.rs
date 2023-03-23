@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
     let recipe = choose_recipe_from_args(&items, &recipes)?;
 
     let all_ids = recipe.relevant_item_ids(&recipes).collect_vec();
-    let market_data = get_market_data_lookup(&*all_ids).await?;
+    let market_data = get_market_data_lookup(&all_ids).await?;
 
     process_recipe_item(0, &recipe.result, &items, &market_data, &recipes);
 
