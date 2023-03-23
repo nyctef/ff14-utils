@@ -14,7 +14,7 @@ async fn main() -> Result<()> {
 
     let csv_base = PathBuf::from("../ffxiv-datamining/csv");
     let items = ItemLookup::new(csv::read_items(&csv_base).await?);
-    let recipes = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
+    let recipes_lookup = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
 
     let l89_collectables = items
         .matching(|i| i.ilvl == 548 && i.name.starts_with("Rarefied"))
@@ -23,13 +23,13 @@ async fn main() -> Result<()> {
     let recipes = l89_collectables
         .iter()
         // only include items that have a recipe (ie skip gathering collectables)
-        .filter_map(|i| recipes.recipe_for_item(i.id))
+        .filter_map(|i| recipes_lookup.recipe_for_item(i.id))
         .map(|r| r * 10)
         .collect_vec();
 
     let all_ids = recipes
         .iter()
-        .flat_map(|r| r.relevant_item_ids().collect_vec())
+        .flat_map(|r| r.relevant_item_ids(&recipes_lookup).collect_vec())
         .collect_vec();
     let market_data = get_market_data_lookup(&*all_ids).await?;
 

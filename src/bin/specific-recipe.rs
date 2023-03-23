@@ -3,10 +3,10 @@ use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
     model::*,
-    universalis::{get_market_data_lookup, price_up_to},
+    universalis::{get_market_data_lookup, price_up_to, ItemMarketData},
 };
 use itertools::Itertools;
-use std::{env, path::PathBuf};
+use std::{cmp::min, collections::HashMap, env, path::PathBuf};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -16,8 +16,62 @@ async fn main() -> Result<()> {
     let items = ItemLookup::new(csv::read_items(&csv_base).await?);
     let recipes = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
 
-    let args = env::args().collect_vec();
+    let recipe = choose_recipe_from_args(&items, &recipes)?;
 
+    let all_ids = recipe.relevant_item_ids(&recipes).collect_vec();
+    let market_data = get_market_data_lookup(&*all_ids).await?;
+
+    process_recipe_item(0, &recipe.result, &items, &market_data, &recipes);
+
+    Ok(())
+}
+
+fn process_recipe_item(
+    indent: usize,
+    ri: &RecipeItem,
+    items: &ItemLookup,
+    market_data: &HashMap<ItemId, ItemMarketData>,
+    recipes: &RecipeLookup,
+) -> u32 {
+    // TODO: add age of universalis data
+    // TODO: try to reverse order to be natural?
+    let md = market_data.get(&ri.item_id).unwrap();
+    let i = items.item_by_id(ri.item_id);
+    let market_price = price_up_to(&md.listings, ri.amount, i.can_be_hq).unwrap();
+    let crafting_price = recipes.recipe_for_item(i.id).map(|sub_recipe| {
+        sub_recipe
+            .ingredients
+            .iter()
+            .map(|sub_ri| process_recipe_item(indent + 2, sub_ri, items, market_data, recipes))
+            .sum()
+    });
+
+    let lower_price = min(market_price, crafting_price.unwrap_or(u32::MAX));
+
+    let price_display = if let Some(cp) = crafting_price {
+        format!(
+            "M:{} C:{} ({}{})",
+            market_price,
+            cp,
+            if cp < market_price { "+" } else { "" },
+            market_price as i32 - cp as i32
+        )
+    } else {
+        format!("M:{}", market_price)
+    };
+
+    println!(
+        "{}{}{} {}",
+        " ".repeat(indent),
+        format_recipe_item(ri, i),
+        if i.can_be_hq { " (HQ)" } else { "" },
+        price_display
+    );
+    lower_price
+}
+
+fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result<Recipe> {
+    let args = env::args().collect_vec();
     let result_recipe;
     let result_count;
 
@@ -42,36 +96,7 @@ async fn main() -> Result<()> {
 
     let recipe_count = div_ceil(result_count, result_recipe.result.amount);
     let recipe = result_recipe * recipe_count;
-
-    let all_ids = recipe.relevant_item_ids().collect_vec();
-    let market_data = get_market_data_lookup(&*all_ids).await?;
-
-    let resulting_item = items.item_by_id(recipe.result.item_id);
-    let results: Result<Vec<_>> = recipe
-        .ingredients
-        .iter()
-        .map(|ri| {
-            let i = items.item_by_id(ri.item_id);
-            let md = market_data.get(&i.id).unwrap();
-            let price = price_up_to(&md.listings, ri.amount.into(), false).map_err(|e| eyre!(e))?;
-
-            Ok((ri, i, price))
-        })
-        .collect();
-    let results = results?;
-
-    let total_price: u32 = results.iter().map(|r| r.2).sum();
-
-    println!(
-        "{}:\t{}",
-        format_recipe_item(&recipe.result, resulting_item),
-        total_price
-    );
-    for (ri, i, price) in results {
-        println!("\t{:>8} {}", price, format_recipe_item(ri, i));
-    }
-
-    Ok(())
+    Ok(recipe)
 }
 
 fn div_ceil(a: u32, b: u32) -> u32 {

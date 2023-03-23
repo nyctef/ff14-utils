@@ -3,6 +3,8 @@ use derive_more::{Constructor, Display};
 use itertools::Itertools;
 use std::{iter, ops::Mul};
 
+use crate::lookup::RecipeLookup;
+
 macro_rules! id {
     ($a:ident) => {
         #[derive(
@@ -62,9 +64,16 @@ impl Mul<u32> for &Recipe {
 }
 
 impl Recipe {
-    // TODO: understand what '_ (the "placeholder lifetime" ?) does here
-    pub fn relevant_item_ids(&self) -> impl Iterator<Item = ItemId> + '_ {
-        iter::once(self.result.item_id).chain(self.ingredients.iter().map(|ri| ri.item_id))
+    // TODO: is there a nice way to make the lifetimes work if we don't collect_vec() here?
+    pub fn relevant_item_ids(&self, recipes: &RecipeLookup) -> impl Iterator<Item = ItemId> {
+        iter::once(self.result.item_id)
+            .chain(
+                self.ingredients
+                    .iter()
+                    .flat_map(|ri| ri.relevant_item_ids(recipes)),
+            )
+            .collect_vec()
+            .into_iter()
     }
 }
 
@@ -79,6 +88,19 @@ impl Mul<u32> for &RecipeItem {
 
     fn mul(self, rhs: u32) -> Self::Output {
         RecipeItem::new(self.item_id, self.amount * rhs)
+    }
+}
+
+impl RecipeItem {
+    // TODO: is there a nice way to make the lifetimes work if we don't collect_vec() here?
+    pub fn relevant_item_ids(&self, recipes: &RecipeLookup) -> impl Iterator<Item = ItemId> + '_ {
+        iter::once(self.item_id).chain(
+            recipes
+                .recipe_for_item(self.item_id)
+                .iter()
+                .flat_map(|r| r.relevant_item_ids(recipes))
+                .collect_vec(),
+        )
     }
 }
 
