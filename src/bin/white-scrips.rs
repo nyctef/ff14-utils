@@ -6,7 +6,7 @@ use ff14_utils::{
     universalis::{get_market_data, price_up_to},
 };
 use itertools::Itertools;
-use std::{collections::HashMap, iter, path::PathBuf};
+use std::{collections::HashMap, path::PathBuf};
 
 #[tokio::main]
 async fn main() -> Result<()> {
