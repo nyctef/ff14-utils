@@ -3,10 +3,10 @@ use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
     model::*,
-    universalis::{get_market_data, price_up_to},
+    universalis::{get_market_data_lookup, price_up_to},
 };
 use itertools::Itertools;
-use std::{collections::HashMap, env, path::PathBuf};
+use std::{env, path::PathBuf};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -44,11 +44,7 @@ async fn main() -> Result<()> {
     let recipe = result_recipe * recipe_count;
 
     let all_ids = recipe.relevant_item_ids().collect_vec();
-    let get_market_data = get_market_data(&*all_ids).await?;
-    let market_data = get_market_data
-        .iter()
-        .map(|x| (x.item_id, x))
-        .collect::<HashMap<_, _>>();
+    let market_data = get_market_data_lookup(&*all_ids).await?;
 
     let resulting_item = items.item_by_id(recipe.result.item_id);
     let results: Result<Vec<_>> = recipe

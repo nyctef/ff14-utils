@@ -107,6 +107,16 @@ pub async fn get_market_data(ids: impl Into<&[ItemId]>) -> Result<Vec<ItemMarket
         .collect_vec())
 }
 
+pub async fn get_market_data_lookup<'a>(
+    ids: impl Into<&'a [ItemId]>,
+) -> Result<HashMap<ItemId, ItemMarketData>> {
+    Ok(get_market_data(ids)
+        .await?
+        .into_iter()
+        .map(|x| (x.item_id, x))
+        .collect())
+}
+
 /// Note this is relatively naive: it assumes the latest universalis data is still valid +
 /// it assumes that we'll happily buy stacks of up to 99 items even if we wanted less and
 /// can easily resell the remainder. It also assumes that the incoming listings are sorted
