@@ -1,9 +1,9 @@
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::Result;
 use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
-    model::*,
-    universalis::{get_market_data_lookup, price_up_to},
+    recipe_calculation::process_recipe_item,
+    universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
 use std::path::PathBuf;
@@ -34,44 +34,8 @@ async fn main() -> Result<()> {
     let market_data = get_market_data_lookup(&*all_ids).await?;
 
     for recipe in &recipes {
-        let resulting_item = items.item_by_id(recipe.result.item_id);
-        let results: Result<Vec<_>> = recipe
-            .ingredients
-            .iter()
-            .map(|ri| {
-                let i = items.item_by_id(ri.item_id);
-                let md = market_data.get(&i.id).unwrap();
-                let price =
-                    price_up_to(&md.listings, ri.amount.into(), false).map_err(|e| eyre!(e))?;
-
-                Ok((ri, i, price))
-            })
-            .collect();
-        let results = results?;
-
-        let total_price: u32 = results.iter().map(|r| r.2).sum();
-
-        println!(
-            "{}:\t{}",
-            format_recipe_item(&recipe.result, resulting_item),
-            total_price
-        );
-        for (ri, i, price) in results {
-            println!("\t{:>8} {}", price, format_recipe_item(ri, i));
-        }
+        process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);
     }
 
     Ok(())
-}
-
-fn format_recipe_item(ri: &RecipeItem, i: &Item) -> String {
-    format!(
-        "{} {}",
-        ri.amount,
-        if ri.amount > 1 {
-            &i.name_plural
-        } else {
-            &i.name_singular
-        }
-    )
 }

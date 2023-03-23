@@ -16,9 +16,9 @@ pub fn process_recipe_item(
     recipes: &RecipeLookup,
 ) -> u32 {
     // TODO: try to reverse order to be natural?
-    let md = market_data.get(&ri.item_id).unwrap();
+    let md = market_data.get(&ri.item_id);
     let i = items.item_by_id(ri.item_id);
-    let market_price = price_up_to(&md.listings, ri.amount, i.can_be_hq);
+    let market_price = md.and_then(|md| price_up_to(&md.listings, ri.amount, i.can_be_hq).ok());
     let crafting_price = recipes.recipe_for_item(i.id).map(|sub_recipe| {
         sub_recipe
             .ingredients
@@ -38,14 +38,15 @@ pub fn process_recipe_item(
             format!(
                 "M:{} {}",
                 p.separate_with_commas(),
-                hm_ago_from_now(md.last_upload_time).dimmed()
+                md.map(|md| { hm_ago_from_now(md.last_upload_time).dimmed() })
+                    .unwrap_or_default()
             )
         })
         .unwrap_or_default();
     let crafting_price_str = crafting_price
         .map(|p| format!("C:{}", p.separate_with_commas(),))
         .unwrap_or_default();
-    let diff_str = if let (Ok(mp), Some(cp)) = (market_price, crafting_price) {
+    let diff_str = if let (Some(mp), Some(cp)) = (market_price, crafting_price) {
         format_num_diff(mp, cp).to_string()
     } else {
         "".to_string()
