@@ -31,10 +31,10 @@ async fn main() -> Result<()> {
         .iter()
         .flat_map(|r| r.relevant_item_ids().collect_vec())
         .collect_vec();
-    let get_market_data = get_market_data(&*all_ids).await?;
-    let market_data = get_market_data
-        .iter()
-        .map(|x| (x.item_id, x))
+    let market_data = get_market_data(&*all_ids)
+        .await?
+        .into_iter()
+        .map(|md| (md.item_id, md))
         .collect::<HashMap<_, _>>();
 
     for recipe in &recipes {
