@@ -19,8 +19,8 @@ pub fn process_recipe_item(
     let md = market_data.get(&ri.item_id);
     let i = items.item_by_id(ri.item_id);
     let market_price = md.and_then(|md| price_up_to(&md.listings, ri.amount, i.can_be_hq).ok());
-    let crafting_price = recipes.recipe_for_item(i.id).map(|sub_recipe| {
-        sub_recipe
+    let crafting_price = recipes.recipe_for_item(ri.item_id).map(|sub_recipe| {
+        (sub_recipe * ri.amount)
             .ingredients
             .iter()
             .map(|sub_ri| process_recipe_item(indent + 2, sub_ri, items, market_data, recipes))
