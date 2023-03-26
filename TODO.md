@@ -1,4 +1,3 @@
-- start deduping between white-scrips and specific-recipe
 - option to ignore crystals in price?
 - bring in csv files as git subtree?
 - start pricing out recipes
