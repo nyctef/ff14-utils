@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, routing::get, Router, Server};
+use axum::{extract::State, http::StatusCode, routing::get, Router, Server, Json};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
@@ -35,14 +35,13 @@ async fn main() -> Result<()> {
 }
 
 #[axum_macros::debug_handler]
-async fn root_get(State(state): State<ServerState>) -> Result<String, (StatusCode, String)> {
+async fn root_get(State(state): State<ServerState>) -> Result<Json<Vec<String>>, (StatusCode, String)> {
     let lines = get_matching_lines(&state.folder_path)
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("{:#}", e)))?;
     // todo: a nicer way to take_last(10)?
-    let lines = lines.iter().rev().take(10).rev().collect_vec();
+    let lines = lines.into_iter().rev().take(10).rev().collect_vec();
 
-    dbg!(lines);
-    Ok("hello!".to_string())
+    Ok(Json(lines))
 }
 
 fn get_folder_to_watch_from_args() -> Result<String> {
