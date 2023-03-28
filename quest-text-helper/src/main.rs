@@ -1,4 +1,4 @@
-use axum::{routing::get, Router, Server};
+use axum::{extract::State, http::StatusCode, routing::get, Router, Server};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
@@ -8,32 +8,41 @@ use grep::{
 use itertools::Itertools;
 use std::{env, fs, path::PathBuf, time::SystemTime};
 
+#[derive(Clone)]
+struct ServerState {
+    folder_path: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let router = Router::new().route("/", get(root_get));
+    let server_state = ServerState {
+        folder_path: get_folder_to_watch_from_args()?,
+    };
+    let router = Router::new()
+        .route("/", get(root_get))
+        .with_state(server_state);
 
     // todo: listen on arbitrary port, then open that page (using open crate)
     let server = Server::bind(&"0.0.0.0:51603".parse().unwrap()).serve(router.into_make_service());
     let addr = server.local_addr();
     println!("Listening on {addr}");
 
-    let folder = get_folder_to_watch_from_args()?;
-
-    let lines = get_matching_lines(&folder)?;
-    // todo: a nicer way to take_last(10)?
-    let lines = lines.iter().rev().take(10).rev().collect_vec();
-
-    dbg!(lines);
-
     server.await.wrap_err(eyre!("running server"))?;
 
     Ok(())
 }
 
-async fn root_get() -> String {
-    "hello!".to_string()
+#[axum_macros::debug_handler]
+async fn root_get(State(state): State<ServerState>) -> Result<String, (StatusCode, String)> {
+    let lines = get_matching_lines(&state.folder_path)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("{:#}", e)))?;
+    // todo: a nicer way to take_last(10)?
+    let lines = lines.iter().rev().take(10).rev().collect_vec();
+
+    dbg!(lines);
+    Ok("hello!".to_string())
 }
 
 fn get_folder_to_watch_from_args() -> Result<String> {
