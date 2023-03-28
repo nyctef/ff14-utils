@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>FF14 quest text watcher</title>
+</head>
+<body>
+</body>
+<script type="module">
+    import { h, Component, render } from 'https://unpkg.com/preact?module';
+
+
+    setInterval(async () => {
+	try {
+	    let response = await fetch('/api/recent_lines');
+	    let data = await response.json();
+	    const app = h('pre', null, JSON.stringify(data, null, 2));
+
+	    render(app, document.body);
+	} catch (e) {
+	    document.body.textContent = e;
+	}
+    }, 1000)
+</script>
+</html>
+

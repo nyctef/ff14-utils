@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, routing::get, Json, Router, Server};
+use axum::{extract::State, http::StatusCode, routing::get, Json, Router, Server, response::Html};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
@@ -23,6 +23,7 @@ async fn main() -> Result<()> {
     };
     let router = Router::new()
         .route("/", get(root_get))
+        .route("/api/recent_lines", get(api_recent_lines_get))
         .with_state(server_state);
 
     // todo: listen on arbitrary port, then open that page (using open crate)
@@ -35,8 +36,12 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+async fn root_get() -> Html<String> {
+    Html(include_str!("./index.html").to_string())
+}
+
 #[axum_macros::debug_handler]
-async fn root_get(
+async fn api_recent_lines_get(
     State(state): State<ServerState>,
 ) -> Result<Json<Vec<ChatlogLine>>, (StatusCode, String)> {
     let lines = get_matching_lines(&state.folder_path)
