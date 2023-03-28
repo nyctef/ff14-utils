@@ -6,12 +6,13 @@ use grep::{
 };
 use std::{
     env,
-    fs::{self},
+    fs,
     path::PathBuf,
     time::SystemTime,
 };
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     color_eyre::install()?;
 
     let cli_args = env::args().skip(1).collect::<Vec<_>>();
