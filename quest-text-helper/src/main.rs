@@ -4,10 +4,9 @@ use grep::{
     regex::RegexMatcher,
     searcher::{sinks::UTF8, SearcherBuilder},
 };
-use itertools::Itertools;
 use std::{
     env,
-    fs::{self, DirEntry, Metadata},
+    fs::{self},
     path::PathBuf,
     time::SystemTime,
 };
@@ -15,14 +14,13 @@ use std::{
 fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let cli_args = env::args().into_iter().skip(1).collect::<Vec<_>>();
+    let cli_args = env::args().skip(1).collect::<Vec<_>>();
     let folder = match &cli_args[..] {
         [f] => f,
         _ => return Err(eyre!("Usage: quest-text-helper [path to ACT logs folder]")),
     };
 
     let folder_files: Result<Vec<_>> = fs::read_dir(folder)?
-        .into_iter()
         .map(|f| -> Result<(PathBuf, SystemTime)> {
             let f = f?;
             Ok((f.path(), f.metadata()?.modified()?))
