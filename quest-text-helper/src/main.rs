@@ -21,6 +21,14 @@ async fn main() -> Result<()> {
         _ => return Err(eyre!("Usage: quest-text-helper [path to ACT logs folder]")),
     };
 
+    let lines = get_matching_lines(folder)?;
+
+    dbg!(lines);
+
+    Ok(())
+}
+
+fn get_matching_lines(folder: &String) -> Result<Vec<String>, color_eyre::Report> {
     let folder_files: Result<Vec<_>> = fs::read_dir(folder)
         .wrap_err_with(|| format!("Failed to read files from folder: {folder}"))?
         .map(|f| -> Result<(PathBuf, SystemTime)> {
@@ -28,7 +36,6 @@ async fn main() -> Result<()> {
             Ok((f.path(), f.metadata()?.modified()?))
         })
         .collect();
-
     let mut folder_files = folder_files?;
     folder_files.sort_by_key(|f| f.1);
     let newest_file = folder_files
@@ -36,11 +43,9 @@ async fn main() -> Result<()> {
         .ok_or_else(|| eyre!("Folder {folder} appears to be empty"))?
         .0;
     dbg!(&newest_file);
-
     let pattern = "\\|003D\\|";
     let matcher = RegexMatcher::new_line_matcher(pattern)?;
     let mut searcher = SearcherBuilder::new().build();
-
     let mut lines = Vec::new();
     searcher.search_path(
         matcher,
@@ -51,8 +56,5 @@ async fn main() -> Result<()> {
             Ok(true)
         }),
     )?;
-
-    dbg!(lines);
-
-    Ok(())
+    Ok(lines)
 }
