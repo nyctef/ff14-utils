@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, routing::get, Router, Server, Json};
+use axum::{extract::State, http::StatusCode, routing::get, Json, Router, Server};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
@@ -6,6 +6,7 @@ use grep::{
     searcher::{sinks::UTF8, SearcherBuilder},
 };
 use itertools::Itertools;
+use serde::Serialize;
 use std::{env, fs, path::PathBuf, time::SystemTime};
 
 #[derive(Clone)]
@@ -35,7 +36,9 @@ async fn main() -> Result<()> {
 }
 
 #[axum_macros::debug_handler]
-async fn root_get(State(state): State<ServerState>) -> Result<Json<Vec<String>>, (StatusCode, String)> {
+async fn root_get(
+    State(state): State<ServerState>,
+) -> Result<Json<Vec<ChatlogLine>>, (StatusCode, String)> {
     let lines = get_matching_lines(&state.folder_path)
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("{:#}", e)))?;
     // todo: a nicer way to take_last(10)?
@@ -55,7 +58,14 @@ fn get_folder_to_watch_from_args() -> Result<String> {
     };
 }
 
-fn get_matching_lines(folder: &str) -> Result<Vec<String>, color_eyre::Report> {
+#[derive(Serialize)]
+struct ChatlogLine {
+    timestamp: String,
+    speaker: String,
+    text: String,
+}
+
+fn get_matching_lines(folder: &str) -> Result<Vec<ChatlogLine>, color_eyre::Report> {
     let folder_files: Result<Vec<_>> = fs::read_dir(folder)
         .wrap_err_with(|| format!("Failed to read files from folder: {folder}"))?
         .map(|f| -> Result<(PathBuf, SystemTime)> {
@@ -78,7 +88,13 @@ fn get_matching_lines(folder: &str) -> Result<Vec<String>, color_eyre::Report> {
         matcher,
         newest_file,
         UTF8(|_lnum, line| {
-            lines.push(line.to_string());
+            // TODO: can we do this as part of the regex? Would feel cleaner
+            let parts = line.split('|').collect_vec();
+            lines.push(ChatlogLine {
+                timestamp: parts[1].to_string(),
+                speaker: parts[3].to_string(),
+                text: parts[4].to_string(),
+            });
             // Ok means we accepted the line successfully + true means keep searching
             Ok(true)
         }),

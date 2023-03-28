@@ -648,6 +648,7 @@ dependencies = [
  "color-eyre",
  "grep",
  "itertools",
+ "serde",
  "tokio",
 ]
 

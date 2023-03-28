@@ -11,4 +11,5 @@ axum-macros = "0.3.7"
 color-eyre = "0.6.2"
 grep = "0.2.11"
 itertools = "0.10.5"
+serde = { version = "1.0.159", features = ["serde_derive"] }
 tokio = { version = "1.27.0", features = [ "rt-multi-thread", "macros" ] }
