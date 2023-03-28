@@ -1,9 +1,11 @@
+use axum::{Router, routing::get, Server};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
     regex::RegexMatcher,
     searcher::{sinks::UTF8, SearcherBuilder},
 };
+use itertools::Itertools;
 use std::{
     env,
     fs,
@@ -14,6 +16,13 @@ use std::{
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
+    
+    let router = Router::new().route("/", get(root_get));
+
+    // todo: listen on arbitrary port, then open that page (using open crate)
+    let server = Server::bind(&"0.0.0.0:51603".parse().unwrap()).serve(router.into_make_service());
+    let addr = server.local_addr();
+    println!("Listening on {addr}");
 
     let cli_args = env::args().skip(1).collect::<Vec<_>>();
     let folder = match &cli_args[..] {
@@ -22,10 +31,18 @@ async fn main() -> Result<()> {
     };
 
     let lines = get_matching_lines(folder)?;
+    // todo: a nicer way to take_last(10)?
+    let lines = lines.iter().rev().take(10).rev().collect_vec();
 
     dbg!(lines);
 
+    server.await.wrap_err(eyre!("running server"))?;
+
     Ok(())
+}
+
+async fn root_get() -> String {
+    "hello!".to_string()
 }
 
 fn get_matching_lines(folder: &String) -> Result<Vec<String>, color_eyre::Report> {
