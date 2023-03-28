@@ -1,4 +1,4 @@
-use axum::{Router, routing::get, Server};
+use axum::{routing::get, Router, Server};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
@@ -6,17 +6,12 @@ use grep::{
     searcher::{sinks::UTF8, SearcherBuilder},
 };
 use itertools::Itertools;
-use std::{
-    env,
-    fs,
-    path::PathBuf,
-    time::SystemTime,
-};
+use std::{env, fs, path::PathBuf, time::SystemTime};
 
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
-    
+
     let router = Router::new().route("/", get(root_get));
 
     // todo: listen on arbitrary port, then open that page (using open crate)
@@ -24,13 +19,9 @@ async fn main() -> Result<()> {
     let addr = server.local_addr();
     println!("Listening on {addr}");
 
-    let cli_args = env::args().skip(1).collect::<Vec<_>>();
-    let folder = match &cli_args[..] {
-        [f] => f,
-        _ => return Err(eyre!("Usage: quest-text-helper [path to ACT logs folder]")),
-    };
+    let folder = get_folder_to_watch_from_args()?;
 
-    let lines = get_matching_lines(folder)?;
+    let lines = get_matching_lines(&folder)?;
     // todo: a nicer way to take_last(10)?
     let lines = lines.iter().rev().take(10).rev().collect_vec();
 
@@ -45,7 +36,18 @@ async fn root_get() -> String {
     "hello!".to_string()
 }
 
-fn get_matching_lines(folder: &String) -> Result<Vec<String>, color_eyre::Report> {
+fn get_folder_to_watch_from_args() -> Result<String> {
+    let mut cli_args = env::args().skip(1).collect::<Vec<_>>();
+    let err = Err(eyre!("Usage: quest-text-helper [path to ACT logs folder]"));
+
+    return if cli_args.len() != 1 {
+        err
+    } else {
+        Ok(cli_args.pop().unwrap())
+    };
+}
+
+fn get_matching_lines(folder: &str) -> Result<Vec<String>, color_eyre::Report> {
     let folder_files: Result<Vec<_>> = fs::read_dir(folder)
         .wrap_err_with(|| format!("Failed to read files from folder: {folder}"))?
         .map(|f| -> Result<(PathBuf, SystemTime)> {
