@@ -46,8 +46,8 @@ async fn api_recent_lines_get(
 ) -> Result<Json<Vec<ChatlogLine>>, (StatusCode, String)> {
     let lines = get_matching_lines(&state.folder_path)
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("{:#}", e)))?;
-    // todo: a nicer way to take_last(10)?
-    let lines = lines.into_iter().rev().take(10).rev().collect_vec();
+    // todo: a nicer way to take_last(20)?
+    let lines = lines.into_iter().rev().take(20).rev().collect_vec();
 
     Ok(Json(lines))
 }
