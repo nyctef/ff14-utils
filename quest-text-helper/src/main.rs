@@ -6,8 +6,10 @@ use grep::{
     searcher::{sinks::UTF8, SearcherBuilder},
 };
 use itertools::Itertools;
+use netstat::{AddressFamilyFlags, ProtocolFlags};
 use serde::Serialize;
 use std::{env, fs, path::PathBuf, time::SystemTime};
+use sysinfo::{PidExt, ProcessExt, SystemExt};
 
 #[derive(Clone)]
 struct ServerState {
@@ -18,14 +20,32 @@ struct ServerState {
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let folder_to_watch = get_folder_to_watch_from_args()?;
-    run_server(folder_to_watch).await?;
+    // let folder_to_watch = get_folder_to_watch_from_args()?;
+    // run_server(folder_to_watch).await?;
+    //
+    let mut system = sysinfo::System::new();
+    system.refresh_all();
+    let ff14_pid = system
+        .processes_by_name("ffxiv")
+        .next()
+        .ok_or_else(|| eyre!("Couldn't find an ff14 process. Is it running?"))?
+        .pid()
+        .as_u32();
+
+    dbg!(&ff14_pid);
+
+    let ff14_sockets =
+        netstat::iterate_sockets_info(AddressFamilyFlags::all(), ProtocolFlags::all())?
+            .filter_map(|s| s.ok())
+            .filter(|s| s.associated_pids.contains(&ff14_pid))
+            .collect_vec();
+
+    dbg!(&ff14_sockets);
 
     Ok(())
 }
 
 async fn run_server(folder_to_watch: String) -> Result<()> {
-
     let server_state = ServerState {
         folder_path: folder_to_watch,
     };
