@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, routing::get, Json, Router, Server, response::Html};
+use axum::{extract::State, http::StatusCode, response::Html, routing::get, Json, Router, Server};
 use color_eyre::eyre::{eyre, Context, Result};
 use grep::{
     self,
