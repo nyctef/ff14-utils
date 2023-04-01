@@ -18,8 +18,16 @@ struct ServerState {
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
+    let folder_to_watch = get_folder_to_watch_from_args()?;
+    run_server(folder_to_watch).await?;
+
+    Ok(())
+}
+
+async fn run_server(folder_to_watch: String) -> Result<()> {
+
     let server_state = ServerState {
-        folder_path: get_folder_to_watch_from_args()?,
+        folder_path: folder_to_watch,
     };
     let router = Router::new()
         .route("/", get(root_get))
@@ -32,7 +40,6 @@ async fn main() -> Result<()> {
     println!("Listening on {addr}");
 
     server.await.wrap_err(eyre!("running server"))?;
-
     Ok(())
 }
 
