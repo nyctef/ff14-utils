@@ -105,6 +105,7 @@ fn parse_textdata(
                 order,
             }
         })
+        .filter(|v| v.text != "（★未使用／削除予定★）" && v.text != "（★未使用★）")
         .collect_vec();
     Some(TextData { dialog: dialogue })
 }
