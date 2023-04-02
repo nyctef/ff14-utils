@@ -34,7 +34,7 @@ async fn run() -> Result<()> {
             println!("  name_ja: {}", replace_ff14_icons(name_ja));
 
             let parsed_en = parse_textdata(result["TextData_en"].as_object(), 1);
-            let parsed_ja = parse_textdata(result["TextData_ja"].as_object(), 1);
+            let parsed_ja = parse_textdata(result["TextData_ja"].as_object(), 2);
 
             if parsed_en.is_none() && parsed_ja.is_none() {
                 continue;
