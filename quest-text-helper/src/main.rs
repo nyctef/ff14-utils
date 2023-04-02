@@ -25,7 +25,6 @@ async fn main() -> Result<()> {
 }
 
 async fn run_server(folder_to_watch: String) -> Result<()> {
-
     let server_state = ServerState {
         folder_path: folder_to_watch,
     };
@@ -92,7 +91,7 @@ fn get_matching_lines(folder: &str) -> Result<Vec<ChatlogLine>, color_eyre::Repo
         .ok_or_else(|| eyre!("Folder {folder} appears to be empty"))?
         .0;
     // dbg!(&newest_file);
-    let pattern = "\\|003D|0BB9|0039\\|";
+    let pattern = "\\|(003D|0BB9|0039)\\|";
     let matcher = RegexMatcher::new_line_matcher(pattern)?;
     let mut searcher = SearcherBuilder::new().build();
     let mut lines = Vec::new();
