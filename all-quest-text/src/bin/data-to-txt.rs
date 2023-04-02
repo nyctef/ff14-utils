@@ -1,4 +1,5 @@
 use color_eyre::eyre::Result;
+use itertools::Itertools;
 use std::ffi::OsStr;
 use tokio::fs;
 
@@ -28,15 +29,41 @@ async fn run() -> Result<()> {
             println!("  name_en: {}", replace_ff14_icons(name_en));
             println!("  name_ja: {}", replace_ff14_icons(name_ja));
 
-            //             let text_data_en = result["TextData_en"].as_str().unwrap();
-            //             let text_data_ja = result["TextData_ja"].as_str().unwrap();
-            //             let url = result["Url"].as_str().unwrap();
-            //             let file_name = format!("data/{}.txt", url);
+            let tden = result["TextData_en"].as_object();
+            if !tden.is_some() {
+                // some empty quests have no text data
+                continue;
+            }
+            let tden = tden.unwrap();
+            assert!(
+                tden.keys().all(|k| k == "Dialogue"
+                    || k == "Journal"
+                    || k == "System"
+                    || k == "ToDo"
+                    || k == "Todo" // yes, really
+                    || k == "QA_Question"
+                    || k == "QA_Answer"
+                    || k == "Pop"
+                    || k == "Access"
+                    || k == "Instance"
+                    || k == "BattleTalk"),
+                "unexpected text data key: {:?}",
+                tden.keys().collect_vec()
+            );
         }
     }
 
     Ok(())
 }
+
+struct TextData {
+    dialog: Vec<TextDataItem>,
+    journal: Vec<TextDataItem>,
+    system: Vec<TextDataItem>,
+    todo: Vec<TextDataItem>,
+}
+
+struct TextDataItem {}
 
 fn replace_ff14_icons(text: &str) -> String {
     // ff14 uses various unicode code points in the private use area for icons
@@ -52,4 +79,3 @@ fn replace_ff14_icons(text: &str) -> String {
     // care about here)
     text.replace(quest_sync_icon, unicode_down_arrow_in_circle)
 }
-
