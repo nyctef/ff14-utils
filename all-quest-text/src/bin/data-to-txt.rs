@@ -1,5 +1,6 @@
 use color_eyre::eyre::Result;
 use itertools::Itertools;
+use regex::Regex;
 use serde_json::{
     map::Entry::Occupied,
     Value::{Array as JArray, Null as JNull, String as JString},
@@ -30,8 +31,8 @@ async fn run() -> Result<()> {
             let name_en = result["Name_en"].as_str().unwrap();
             let name_ja = result["Name_ja"].as_str().unwrap();
             println!("quest {}", url);
-            println!("  name_en: {}", replace_ff14_icons(name_en));
-            println!("  name_ja: {}", replace_ff14_icons(name_ja));
+            println!("  name_en: {}", process_ff14_text(name_en));
+            println!("  name_ja: {}", process_ff14_text(name_ja));
 
             let parsed_en = parse_textdata(result["TextData_en"].as_object(), 1);
             let parsed_ja = parse_textdata(result["TextData_ja"].as_object(), 2);
@@ -45,10 +46,10 @@ async fn run() -> Result<()> {
             // fails: assert!(parsed_en.dialog.len() == parsed_ja.dialog.len());
             // TODO: is there some reasonable way we can pair up individual dialog lines?
             for ja_line in &parsed_ja.dialog {
-                println!("    {}: {}", ja_line.npc, replace_ff14_icons(&ja_line.text));
+                println!("    {}: {}", ja_line.npc, process_ff14_text(&ja_line.text));
             }
             for en_line in &parsed_en.dialog {
-                println!("    {}: {}", en_line.npc, replace_ff14_icons(&en_line.text));
+                println!("    {}: {}", en_line.npc, process_ff14_text(&en_line.text));
             }
         }
     }
@@ -125,7 +126,10 @@ struct TextDataItem {
     order: u32,
 }
 
-fn replace_ff14_icons(text: &str) -> String {
+fn process_ff14_text(text: &str) -> String {
+    lazy_static::lazy_static! {
+        static ref WHITESPACE_RE: Regex = Regex::new(r"[ \r\n]+").unwrap();
+    }
     // ff14 uses various unicode code points in the private use area for icons
     //
     // https://thewakingsands.github.io/ffxiv-axis-font-icons/ seems to have the
@@ -137,5 +141,17 @@ fn replace_ff14_icons(text: &str) -> String {
     // calling .replace() multiple times is likely to be suboptimal
     // (although it's probably not too bad on the short strings we
     // care about here)
-    text.replace(quest_sync_icon, unicode_down_arrow_in_circle)
+    let mut text = text.replace(quest_sync_icon, unicode_down_arrow_in_circle);
+    text = text.replace("<Split(<Highlight>ObjectParameter(1)</Highlight>, ,1)/>", "[Firstname]");
+    text = text.replace("<Split(<Highlight>ObjectParameter(1)</Highlight>, ,2)/>", "[Lastname]");
+    text = text.replace("<Highlight>ObjectParameter(1)</Highlight>", "[Fullname]");
+    text = text.replace("<Highlight>ObjectParameter(55)</Highlight>", "[Chocoboname]");
+    text = text.replace("<If(LessThan(PlayerParameter(11),12))><If(LessThan(PlayerParameter(11),4))>evening<Else/>morning</If><Else/><If(LessThan(PlayerParameter(11),17))>afternoon<Else/>evening</If></If>", "[morning|afternoon|evening]");
+    text = text.replace("<If(PlayerParameter(4))>woman<Else/>man</If>", "[woman|man]");
+
+    // TODO:
+    // <Emphasis>Very</Emphasis>
+    // other <If> expressions
+    text = WHITESPACE_RE.replace_all(&text, " ").to_string();
+    text
 }
