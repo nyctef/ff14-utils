@@ -91,10 +91,7 @@ fn parse_textdata(
         .map(|v| {
             let key = v["Key"].as_str().unwrap().to_string();
             let npc = match v["Npc"] {
-                JArray(ref a) => a[npc_index]
-                    .as_str()
-                    .unwrap_or("<null>")
-                    .to_string(),
+                JArray(ref a) => a[npc_index].as_str().unwrap_or("<null>").to_string(),
                 JString(ref s) => s.to_string(),
                 JNull => "<null>".to_string(),
                 _ => panic!("unexpected Npc value: {:?}", v["Npc"]),
