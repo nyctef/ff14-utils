@@ -20,7 +20,7 @@ pub fn process_recipe_item(
     let i = items.item_by_id(ri.item_id);
     let market_price = md.and_then(|md| price_up_to(&md.listings, ri.amount, i.can_be_hq).ok());
     let crafting_price = recipes.recipe_for_item(ri.item_id).map(|sub_recipe| {
-        (sub_recipe * ri.amount)
+        (match_recipe_to_output_count(ri.amount, sub_recipe))
             .ingredients
             .iter()
             .map(|sub_ri| process_recipe_item(indent + 2, sub_ri, items, market_data, recipes))
@@ -61,6 +61,16 @@ pub fn process_recipe_item(
         price_display
     );
     lower_price
+}
+
+pub fn match_recipe_to_output_count(output_count: u32, original_recipe: &Recipe) -> Recipe {
+    let recipe_count = div_ceil(output_count, original_recipe.result.amount);
+    original_recipe * recipe_count
+}
+
+fn div_ceil(a: u32, b: u32) -> u32 {
+    // https://stackoverflow.com/a/72442854
+    (a + b - 1) / b
 }
 
 fn format_num_diff(baseline: u32, value: u32) -> impl Display {

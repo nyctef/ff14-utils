@@ -3,7 +3,7 @@ use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
     model::*,
-    recipe_calculation::process_recipe_item,
+    recipe_calculation::{match_recipe_to_output_count, process_recipe_item},
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
@@ -51,12 +51,6 @@ fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result
         _ => return Err(eyre!("Usage: specific-recipe [name] [amount]")),
     }
 
-    let recipe_count = div_ceil(result_count, result_recipe.result.amount);
-    let recipe = result_recipe * recipe_count;
+    let recipe = match_recipe_to_output_count(result_count, result_recipe);
     Ok(recipe)
-}
-
-fn div_ceil(a: u32, b: u32) -> u32 {
-    // https://stackoverflow.com/a/72442854
-    (a + b - 1) / b
 }
