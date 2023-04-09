@@ -83,6 +83,7 @@ pub async fn get_market_data(ids: &[ItemId]) -> Result<Vec<ItemMarketData>> {
         )])
         .send()
         .await?
+        .error_for_status()?
         .json::<UniversalisMarketDataJson>()
         .await?;
 
@@ -108,11 +109,13 @@ pub async fn get_market_data(ids: &[ItemId]) -> Result<Vec<ItemMarketData>> {
 }
 
 pub async fn get_market_data_lookup<'a>(ids: &[ItemId]) -> Result<HashMap<ItemId, ItemMarketData>> {
-    Ok(get_market_data(ids)
-        .await?
-        .into_iter()
-        .map(|x| (x.item_id, x))
-        .collect())
+    let mut result = HashMap::new();
+    for id_batch in ids.chunks(100) {
+        for item in get_market_data(id_batch).await? {
+            result.insert(item.item_id, item);
+        }
+    }
+    Ok(result)
 }
 
 /// Note this is relatively naive: it assumes the latest universalis data is still valid +

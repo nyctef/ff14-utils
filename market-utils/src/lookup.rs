@@ -30,6 +30,12 @@ impl ItemLookup {
     pub fn item_by_name_opt(&self, name: &str) -> Option<&Item> {
         self.items.iter().find(|i| i.name == name)
     }
+
+    pub fn name_containing(&self, name: &str) -> impl Iterator<Item = &Item> {
+        // TODO: is there a more correct way to do this without copying name?
+        let name = name.to_owned();
+        self.matching(move |i| i.name.contains(&name))
+    }
 }
 
 #[derive(Debug, Constructor)]
