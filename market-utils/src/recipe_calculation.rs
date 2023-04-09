@@ -11,10 +11,11 @@ use thousands::Separable;
 
 pub struct LineItem {
     indent: usize,
-    name_and_amount: String,
-    market_price: Option<u32>,
-    market_price_age: Option<DateTime<Utc>>,
-    crafting_price: Option<u32>,
+    pub name_and_amount: String,
+    pub market_price: Option<u32>,
+    pub market_price_age: Option<DateTime<Utc>>,
+    pub crafting_price: Option<u32>,
+    pub crafting_profit: Option<i64>,
 }
 
 pub fn process_recipe_item(
@@ -43,12 +44,16 @@ pub fn process_recipe_item(
     let (crafting_price, crafting_lines) = crafting_results.unzip();
 
     let mut crafting_lines = crafting_lines.unwrap_or(vec![]);
+    let crafting_profit = market_price
+        .zip(crafting_price)
+        .map(|(mp, cp)| mp as i64 - cp as i64);
     crafting_lines.push(LineItem {
         indent,
         name_and_amount: format_recipe_item(ri, i),
         market_price,
         market_price_age: md.map(|md| md.last_upload_time),
         crafting_price,
+        crafting_profit,
     });
 
     let lower_price = min(
@@ -82,11 +87,10 @@ pub fn print_line_item(line: &LineItem) {
         .crafting_price
         .map(|p| format!("C:{}", p.separate_with_commas(),))
         .unwrap_or_default();
-    let diff_str = if let (Some(mp), Some(cp)) = (line.market_price, line.crafting_price) {
-        format_num_diff(mp, cp).to_string()
-    } else {
-        String::new()
-    };
+    let diff_str = line
+        .crafting_profit
+        .map(|p| format_num_diff(p).to_string())
+        .unwrap_or(String::new());
 
     let price_display = vec![market_price_str, crafting_price_str, diff_str].join(" ");
 
@@ -108,15 +112,11 @@ fn div_ceil(a: u32, b: u32) -> u32 {
     (a + b - 1) / b
 }
 
-fn format_num_diff(baseline: u32, value: u32) -> impl Display {
-    if value < baseline {
-        format!("+{}", baseline - value)
-            .separate_with_commas()
-            .green()
+fn format_num_diff(value: i64) -> impl Display {
+    if value > 0 {
+        format!("+{}", value).separate_with_commas().green()
     } else {
-        format!("-{}", value - baseline)
-            .separate_with_commas()
-            .red()
+        format!("-{}", value).separate_with_commas().red()
     }
 }
 
