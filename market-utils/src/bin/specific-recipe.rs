@@ -3,7 +3,7 @@ use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
     model::*,
-    recipe_calculation::{match_recipe_to_output_count, process_recipe_item},
+    recipe_calculation::{match_recipe_to_output_count, process_recipe_item, print_recipe_calculation},
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
@@ -13,7 +13,7 @@ use std::{env, path::PathBuf};
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let csv_base = PathBuf::from("../ffxiv-datamining/csv");
+    let csv_base = PathBuf::from("../../ffxiv-datamining/csv");
     let items = ItemLookup::new(csv::read_items(&csv_base).await?);
     let recipes = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
 
@@ -22,7 +22,8 @@ async fn main() -> Result<()> {
     let all_ids = recipe.relevant_item_ids(&recipes).collect_vec();
     let market_data = get_market_data_lookup(&all_ids).await?;
 
-    process_recipe_item(0, &recipe.result, &items, &market_data, &recipes);
+    let (_, results) = process_recipe_item(0, &recipe.result, &items, &market_data, &recipes);
+    print_recipe_calculation(results);
 
     Ok(())
 }

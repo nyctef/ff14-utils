@@ -4,9 +4,18 @@ use crate::{
     time_utils::hm_ago_from_now,
     universalis::{price_up_to, ItemMarketData},
 };
+use chrono::{DateTime, Utc};
 use colored::Colorize;
 use std::{cmp::min, collections::HashMap, fmt::Display};
 use thousands::Separable;
+
+pub struct LineItem {
+    indent: usize,
+    name_and_amount: String,
+    market_price: Option<u32>,
+    market_price_age: Option<DateTime<Utc>>,
+    crafting_price: Option<u32>,
+}
 
 pub fn process_recipe_item(
     indent: usize,
@@ -14,17 +23,32 @@ pub fn process_recipe_item(
     items: &ItemLookup,
     market_data: &HashMap<ItemId, ItemMarketData>,
     recipes: &RecipeLookup,
-) -> u32 {
-    // TODO: try to reverse order to be natural?
+) -> (u32, Vec<LineItem>) {
     let md = market_data.get(&ri.item_id);
     let i = items.item_by_id(ri.item_id);
     let market_price = md.and_then(|md| price_up_to(&md.listings, ri.amount, i.can_be_hq).ok());
-    let crafting_price = recipes.recipe_for_item(ri.item_id).map(|sub_recipe| {
+    let crafting_results = recipes.recipe_for_item(ri.item_id).map(|sub_recipe| {
         (match_recipe_to_output_count(ri.amount, sub_recipe))
             .ingredients
             .iter()
             .map(|sub_ri| process_recipe_item(indent + 2, sub_ri, items, market_data, recipes))
-            .sum()
+            .fold(
+                (0, vec![]),
+                |(prev_price, mut prev_lines), (sub_price, lines)| {
+                    prev_lines.extend(lines);
+                    (prev_price + sub_price, prev_lines)
+                },
+            )
+    });
+    let (crafting_price, crafting_lines) = crafting_results.unzip();
+
+    let mut crafting_lines = crafting_lines.unwrap_or(vec![]);
+    crafting_lines.push(LineItem {
+        indent,
+        name_and_amount: format_recipe_item(ri, i),
+        market_price,
+        market_price_age: md.map(|md| md.last_upload_time),
+        crafting_price,
     });
 
     let lower_price = min(
@@ -32,20 +56,33 @@ pub fn process_recipe_item(
         crafting_price.unwrap_or(u32::MAX),
     );
 
-    let market_price_str = market_price
+    (lower_price, crafting_lines)
+}
+
+pub fn print_recipe_calculation(lines: Vec<LineItem>) {
+    for line in lines {
+        print_line_item(&line);
+    }
+}
+
+pub fn print_line_item(line: &LineItem) {
+    let market_price_str = line
+        .market_price
         .map(|p| {
             format!(
                 "M:{} {}",
                 p.separate_with_commas(),
-                md.map(|md| { hm_ago_from_now(md.last_upload_time).dimmed() })
+                line.market_price_age
+                    .map(|md| { hm_ago_from_now(md).dimmed() })
                     .unwrap_or_default()
             )
         })
         .unwrap_or_default();
-    let crafting_price_str = crafting_price
+    let crafting_price_str = line
+        .crafting_price
         .map(|p| format!("C:{}", p.separate_with_commas(),))
         .unwrap_or_default();
-    let diff_str = if let (Some(mp), Some(cp)) = (market_price, crafting_price) {
+    let diff_str = if let (Some(mp), Some(cp)) = (line.market_price, line.crafting_price) {
         format_num_diff(mp, cp).to_string()
     } else {
         String::new()
@@ -54,13 +91,11 @@ pub fn process_recipe_item(
     let price_display = vec![market_price_str, crafting_price_str, diff_str].join(" ");
 
     println!(
-        "{}{}{} {}",
-        " ".repeat(indent),
-        format_recipe_item(ri, i),
-        if i.can_be_hq { " (HQ)" } else { "" },
+        "{}{} {}",
+        " ".repeat(line.indent),
+        line.name_and_amount,
         price_display
     );
-    lower_price
 }
 
 pub fn match_recipe_to_output_count(output_count: u32, original_recipe: &Recipe) -> Recipe {
@@ -87,12 +122,13 @@ fn format_num_diff(baseline: u32, value: u32) -> impl Display {
 
 fn format_recipe_item(ri: &RecipeItem, i: &Item) -> String {
     format!(
-        "{} {}",
+        "{} {}{}",
         ri.amount,
         if ri.amount > 1 {
             &i.name_plural
         } else {
             &i.name_singular
-        }
+        },
+        if i.can_be_hq { " (HQ)" } else { "" }
     )
 }
