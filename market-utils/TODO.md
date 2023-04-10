@@ -1,4 +1,4 @@
 - option to ignore crystals in price?
 - bring in csv files as git subtree?
-- start pricing out recipes
-  - calculate market tax
+  - consider using xivapi/SaintCoinach directly and just saving the data we need
+- calculate market tax
