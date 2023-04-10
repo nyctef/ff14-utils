@@ -8,7 +8,7 @@ use std::path::PathBuf;
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let csv_base = PathBuf::from("../ffxiv-datamining/csv");
+    let csv_base = PathBuf::from("../../ffxiv-datamining/csv");
     let items = csv::read_items(&csv_base).await?;
     let materia = csv::read_materia(&csv_base).await?;
 
