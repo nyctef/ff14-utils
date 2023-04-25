@@ -26,16 +26,25 @@ function Quest({ quest }: { quest: any }) {
       </ul>
       <ul>
         {quest.JournalEn.map((qt: any) => (
-          <li>{qt}</li>
+          <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
         ))}
       </ul>
-      <ul>
+      <div
+        style={{
+          display: "grid",
+          gridAutoFlow: "column",
+          gridTemplateColumns: "200px auto",
+          gridTemplateRows: `repeat(${quest.DialogueEn.length}, auto)`,
+          gap: "10px",
+        }}
+      >
         {quest.DialogueEn.map((qt: any) => (
-          <li>
-            {qt.Speaker}: {qt.Text}
-          </li>
+          <div style={{ textAlign: "right" }}>{qt.Speaker}</div>
         ))}
-      </ul>
+        {quest.DialogueEn.map((qt: any) => (
+          <div style={{ whiteSpace: "pre-wrap" }}>{qt.Text}</div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -48,7 +57,7 @@ function getStaticPaths() {
   };
 }
 
-function getStaticProps({ params} : { params: any }) {
+function getStaticProps({ params }: { params: any }) {
   const data = require("../../public/all-quest-texts.data.json");
   return {
     props: {
