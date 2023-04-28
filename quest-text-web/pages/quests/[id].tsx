@@ -1,18 +1,18 @@
 import React from "react";
 
 interface Quest {
-  Key: number,
-  InternalId: string,
-  PreviousQuests: number[],
-  NextQuests: number[],
-  NameEn: string,
-  NameJa: string,
-  TodosEn: string[],
-  TodosJa: string[],
-  JournalEn: string[],
-  JournalJa: string[],
-  DialogueEn: { Speaker: string; Text: string }[],
-  DialogueJa: { Speaker: string; Text: string }[],
+  Key: number;
+  InternalId: string;
+  PreviousQuests: number[];
+  NextQuests: number[];
+  NameEn: string;
+  NameJa: string;
+  TodosEn: string[];
+  TodosJa: string[];
+  JournalEn: string[];
+  JournalJa: string[];
+  DialogueEn: { Speaker: string; Text: string }[];
+  DialogueJa: { Speaker: string; Text: string }[];
 }
 
 function Quest({ quest }: { quest: Quest }) {
@@ -34,19 +34,38 @@ function Quest({ quest }: { quest: Quest }) {
           <a href={`/quests/${q}`}>{q}</a>
         ))}
       </p>
-      <ul>
-        {quest.TodosEn.map((qt: any) => (
-          <li>{qt}</li>
-        ))}
-      </ul>
-      <ul>
-        {quest.JournalEn.map((qt: any) => (
-          <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
-        ))}
-      </ul>
+
       <TwoTabs tab1Name="日本語" tab2Name="English">
-        <DialogLines lines={quest.DialogueJa} />
-        <DialogLines lines={quest.DialogueEn} />
+        <TwoColumnsBiasFirst>
+          <DialogLines lines={quest.DialogueJa} />
+          <div>
+            <ul>
+              {quest.TodosJa.map((qt: any) => (
+                <li>{qt}</li>
+              ))}
+            </ul>
+            <ul>
+              {quest.JournalJa.map((qt: any) => (
+                <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
+              ))}
+            </ul>
+          </div>
+        </TwoColumnsBiasFirst>
+        <TwoColumnsBiasFirst>
+          <DialogLines lines={quest.DialogueEn} />
+          <div>
+            <ul>
+              {quest.TodosEn.map((qt: any) => (
+                <li>{qt}</li>
+              ))}
+            </ul>
+            <ul>
+              {quest.JournalEn.map((qt: any) => (
+                <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
+              ))}
+            </ul>
+          </div>
+        </TwoColumnsBiasFirst>
       </TwoTabs>
     </div>
   );
@@ -160,8 +179,7 @@ function TwoTabs(props: {
 
 const dataFolder = "c:\\temp\\all-quest-texts\\";
 
-function DialogLines(props: {lines: { Speaker: string; Text: string }[] }) {
-  console.log({props});
+function DialogLines(props: { lines: { Speaker: string; Text: string }[] }) {
   return (
     <div
       style={{
@@ -178,6 +196,21 @@ function DialogLines(props: {lines: { Speaker: string; Text: string }[] }) {
       {props.lines.map((qt: any) => (
         <div style={{ whiteSpace: "pre-wrap" }}>{qt.Text}</div>
       ))}
+    </div>
+  );
+}
+
+function TwoColumnsBiasFirst(props: { children: React.ReactNode[] }) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridAutoFlow: "column",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "10px",
+      }}
+    >
+      {props.children}
     </div>
   );
 }
