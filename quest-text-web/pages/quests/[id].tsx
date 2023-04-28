@@ -1,6 +1,21 @@
 import React from "react";
 
-function Quest({ quest }: { quest: any }) {
+interface Quest {
+  Key: number,
+  InternalId: string,
+  PreviousQuests: number[],
+  NextQuests: number[],
+  NameEn: string,
+  NameJa: string,
+  TodosEn: string[],
+  TodosJa: string[],
+  JournalEn: string[],
+  JournalJa: string[],
+  DialogueEn: { Speaker: string; Text: string }[],
+  DialogueJa: { Speaker: string; Text: string }[],
+}
+
+function Quest({ quest }: { quest: Quest }) {
   return (
     <div>
       <h2>
@@ -29,17 +44,32 @@ function Quest({ quest }: { quest: any }) {
           <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
         ))}
       </ul>
+      <TwoTabs tab1Name="日本語" tab2Name="English">
+        <DialogLines lines={quest.DialogueJa} />
+        <DialogLines lines={quest.DialogueEn} />
+      </TwoTabs>
+    </div>
+  );
+}
+
+function TwoTabs(props: {
+  children: React.ReactNode[];
+  tab1Name: string;
+  tab2Name: string;
+}) {
+  return (
+    <>
       <style jsx>
         {`
           /* based on https://codepen.io/MPDoctor/pen/mpJdYe
 
-          the underlying mechanism is a set of hidden radio inputs.
+    the underlying mechanism is a set of hidden radio inputs.
 
-          Since the radio inputs all have the same name attribute, only one of them
-          can be checked at a time.
+    Since the radio inputs all have the same name attribute, only one of them
+    can be checked at a time.
 
-          The clever trick is to find a CSS rule which matches the Nth tab when the Nth radio button is checked.
-          */
+    The clever trick is to find a CSS rule which matches the Nth tab when the Nth radio button is checked.
+    */
           .tabbed {
             overflow-x: hidden; /* so we could easily hide the radio inputs */
             margin: 32px 0;
@@ -105,45 +135,47 @@ function Quest({ quest }: { quest: any }) {
         `}
       </style>
       <div className="tabbed">
-        <input type="radio" id="d-ja" name="css-tabs" checked />
-        <input type="radio" id="d-en" name="css-tabs" checked />
+        <input type="radio" id="d-ja" name="css-tabs" defaultChecked />
+        <input type="radio" id="d-en" name="css-tabs" />
 
         <ul className="tabs">
           <li className="tab">
             <label style={{ display: "block" }} htmlFor="d-ja">
-              日本語
+              {props.tab1Name}
             </label>
           </li>
           <li className="tab">
             <label style={{ display: "block" }} htmlFor="d-en">
-              English
+              {props.tab2Name}
             </label>
           </li>
         </ul>
-        <div className="tab-content">{DialogLines(quest.DialogueJa)}</div>
-        <div className="tab-content">{DialogLines(quest.DialogueEn)}</div>
+        {props.children.map((c) => (
+          <div className="tab-content">{c}</div>
+        ))}
       </div>
-    </div>
+    </>
   );
 }
 
 const dataFolder = "c:\\temp\\all-quest-texts\\";
 
-function DialogLines(lines: { Speaker: string; Text: string }[]) {
+function DialogLines(props: {lines: { Speaker: string; Text: string }[] }) {
+  console.log({props});
   return (
     <div
       style={{
         display: "grid",
         gridAutoFlow: "column",
         gridTemplateColumns: "auto auto",
-        gridTemplateRows: `repeat(${lines.length}, auto)`,
+        gridTemplateRows: `repeat(${props.lines.length}, auto)`,
         gap: "10px",
       }}
     >
-      {lines.map((qt: any) => (
+      {props.lines.map((qt: any) => (
         <div style={{ textAlign: "right" }}>{qt.Speaker}</div>
       ))}
-      {lines.map((qt: any) => (
+      {props.lines.map((qt: any) => (
         <div style={{ whiteSpace: "pre-wrap" }}>{qt.Text}</div>
       ))}
     </div>
