@@ -47,31 +47,19 @@ function Quest({ quest }: { quest: Quest }) {
         <TwoColumnsBiasFirst>
           <DialogLines lines={quest.DialogueJa} />
           <div>
-            <ul>
-              {quest.TodosJa.map((qt: any) => (
-                <li>{qt}</li>
-              ))}
-            </ul>
-            <ul>
-              {quest.JournalJa.map((qt: any) => (
-                <li style={{ ...wrappingBehavior }}>{qt}</li>
-              ))}
-            </ul>
+            TODO
+            <OtherLines lines={quest.TodosJa} />
+            JOURNAL
+            <OtherLines lines={quest.JournalJa} />
           </div>
         </TwoColumnsBiasFirst>
         <TwoColumnsBiasFirst>
           <DialogLines lines={quest.DialogueEn} />
           <div>
-            <ul>
-              {quest.TodosEn.map((qt: any) => (
-                <li>{qt}</li>
-              ))}
-            </ul>
-            <ul>
-              {quest.JournalEn.map((qt: any) => (
-                <li style={{ ...wrappingBehavior }}>{qt}</li>
-              ))}
-            </ul>
+            TODO
+            <OtherLines lines={quest.TodosEn} />
+            JOURNAL
+            <OtherLines lines={quest.JournalEn} />
           </div>
         </TwoColumnsBiasFirst>
       </TwoTabs>
@@ -205,6 +193,16 @@ function DialogLines(props: { lines: { Speaker: string; Text: string }[] }) {
         <div style={{ ...wrappingBehavior }}>{qt.Text}</div>
       ))}
     </div>
+  );
+}
+
+function OtherLines(props: { lines: string[] }) {
+  return (
+    <ul>
+      {props.lines.map((l) => (
+        <li style={{ ...wrappingBehavior }}>{l}</li>
+      ))}
+    </ul>
   );
 }
 
