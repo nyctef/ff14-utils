@@ -33,13 +33,13 @@ function Quest({ quest }: { quest: Quest }) {
       <p>
         Next quests:{" "}
         {quest.NextQuests?.map((q: any) => (
-          <a href={`/quests/${q}`}>{q}</a>
+          <a key={q} href={`/quests/${q}`}>{q}</a>
         ))}
       </p>
       <p>
         Previous quests:{" "}
         {quest.PreviousQuests.map((q: any) => (
-          <a href={`/quests/${q}`}>{q}</a>
+          <a key={q} href={`/quests/${q}`}>{q}</a>
         ))}
       </p>
 
@@ -162,8 +162,8 @@ function TwoTabs(props: {
             <label htmlFor="d-en">{props.tab2Name}</label>
           </li>
         </ul>
-        {props.children.map((c) => (
-          <div className="tab-content">{c}</div>
+        {props.children.map((c, i) => (
+          <div key={i} className="tab-content">{c}</div>
         ))}
       </div>
     </>
@@ -183,11 +183,11 @@ function DialogLines(props: { lines: { Speaker: string; Text: string }[] }) {
         gap: "10px",
       }}
     >
-      {props.lines.map((qt: any) => (
-        <div style={{ textAlign: "right" }}>{qt.Speaker}</div>
+      {props.lines.map((qt, i) => (
+        <div key={`s_${i}`} style={{ textAlign: "right" }}>{qt.Speaker}</div>
       ))}
-      {props.lines.map((qt: any) => (
-        <div style={{ ...wrappingBehavior }}>{qt.Text}</div>
+      {props.lines.map((qt, i) => (
+        <div key={`t_${i}`} style={{ ...wrappingBehavior }}>{qt.Text}</div>
       ))}
     </div>
   );
@@ -196,8 +196,8 @@ function DialogLines(props: { lines: { Speaker: string; Text: string }[] }) {
 function OtherLines(props: { lines: string[] }) {
   return (
     <ul>
-      {props.lines.map((l) => (
-        <li style={{ ...wrappingBehavior }}>{l}</li>
+      {props.lines.map((l, i) => (
+        <li key={i} style={{ ...wrappingBehavior }}>{l}</li>
       ))}
     </ul>
   );
