@@ -49,19 +49,25 @@ function Quest({ quest }: { quest: any }) {
   );
 }
 
+const dataFolder = "c:\\temp\\all-quest-texts\\";
+
 function getStaticPaths() {
-  const data = require("../../public/all-quest-texts.data.json");
+  const fs = require('fs');
+  const path = require('path');
+  const filenamesInDataFolder = fs.readdirSync(dataFolder);
+  const filenamesWithoutExtensions = filenamesInDataFolder.map((f:string) => path.parse(f).name);
   return {
-    paths: Object.keys(data).map((id) => ({ params: { id } })),
+    paths: filenamesWithoutExtensions.map((f:string) => ({ params: { id: f } })),
     fallback: false,
   };
 }
 
 function getStaticProps({ params }: { params: any }) {
-  const data = require("../../public/all-quest-texts.data.json");
+  const fs = require('fs');
+  const data = JSON.parse(fs.readFileSync(`${dataFolder}${params.id}.json`));
   return {
     props: {
-      quest: data[params.id],
+      quest: data,
     },
   };
 }
