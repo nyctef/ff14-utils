@@ -15,6 +15,14 @@ interface Quest {
   DialogueJa: { Speaker: string; Text: string }[];
 }
 
+// pre-wrap: preserve newlines and other whitespace from the original HTML source
+// (normally whitespace is collapsed in HTML)
+// wordBreak: allow breaks even in the middle of some words
+const wrappingBehavior = {
+  whiteSpace: "pre-wrap",
+  wordBreak: "break-word",
+} as const;
+
 function Quest({ quest }: { quest: Quest }) {
   return (
     <div>
@@ -46,7 +54,7 @@ function Quest({ quest }: { quest: Quest }) {
             </ul>
             <ul>
               {quest.JournalJa.map((qt: any) => (
-                <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
+                <li style={{ ...wrappingBehavior }}>{qt}</li>
               ))}
             </ul>
           </div>
@@ -61,7 +69,7 @@ function Quest({ quest }: { quest: Quest }) {
             </ul>
             <ul>
               {quest.JournalEn.map((qt: any) => (
-                <li style={{ whiteSpace: "pre-wrap" }}>{qt}</li>
+                <li style={{ ...wrappingBehavior }}>{qt}</li>
               ))}
             </ul>
           </div>
@@ -194,7 +202,7 @@ function DialogLines(props: { lines: { Speaker: string; Text: string }[] }) {
         <div style={{ textAlign: "right" }}>{qt.Speaker}</div>
       ))}
       {props.lines.map((qt: any) => (
-        <div style={{ whiteSpace: "pre-wrap" }}>{qt.Text}</div>
+        <div style={{ ...wrappingBehavior }}>{qt.Text}</div>
       ))}
     </div>
   );
