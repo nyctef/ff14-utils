@@ -108,13 +108,16 @@ function TwoTabs(props: {
           .tab > label {
             display: block;
             margin-bottom: -1px;
+            height: 16px;
             padding: 12px 15px;
+
             border: 1px solid #ccc;
+
             font-size: 12px;
             font-weight: 600;
+
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
           }
 
           /* As we cannot replace the numbers with variables or calls to element properties, if we need more tabs then we have to add more css selectors here */
@@ -128,9 +131,7 @@ function TwoTabs(props: {
             ~ .tabs
             .tab:nth-of-type(2)
             label {
-            border-bottom-color: #fff;
-            background: #eee;
-            color: #555;
+            border-bottom-color: #555;
           }
 
           /* Tabs are hidden by default */
@@ -155,14 +156,10 @@ function TwoTabs(props: {
 
         <ul className="tabs">
           <li className="tab">
-            <label style={{ display: "block" }} htmlFor="d-ja">
-              {props.tab1Name}
-            </label>
+            <label htmlFor="d-ja">{props.tab1Name}</label>
           </li>
           <li className="tab">
-            <label style={{ display: "block" }} htmlFor="d-en">
-              {props.tab2Name}
-            </label>
+            <label htmlFor="d-en">{props.tab2Name}</label>
           </li>
         </ul>
         {props.children.map((c) => (
