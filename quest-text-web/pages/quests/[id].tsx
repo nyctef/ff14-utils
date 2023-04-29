@@ -90,7 +90,6 @@ function TwoTabs(props: {
     The clever trick is to find a CSS rule which matches the Nth tab when the Nth radio button is checked.
     */
           .tabbed {
-            overflow-x: hidden; /* so we could easily hide the radio inputs */
             margin: 32px 0;
             padding-bottom: 16px;
             border-bottom: 1px solid #ccc;
@@ -104,10 +103,17 @@ function TwoTabs(props: {
           .tabs {
             display: flex;
             align-items: stretch;
+
             list-style: none;
+
+            position: sticky;
+            top: 0;
+
             padding: 0;
             border-bottom: 1px solid #ccc;
             gap: 10px;
+
+            background-color: #555;
           }
           .tab > label {
             display: block;
@@ -136,6 +142,7 @@ function TwoTabs(props: {
             .tab:nth-of-type(2)
             label {
             border-bottom-color: #555;
+            border-bottom-width: 3px;
           }
 
           /* Tabs are hidden by default */
