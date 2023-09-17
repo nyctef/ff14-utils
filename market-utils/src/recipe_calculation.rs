@@ -64,7 +64,15 @@ pub fn process_recipe_item(
     (lower_price, crafting_lines)
 }
 
-pub fn print_recipe_calculation(lines: Vec<LineItem>) {
+pub fn print_recipe_calculation(mut lines: Vec<LineItem>) {
+    // Reverse the crafting lines so that the final result is at the top
+    // and sub-recipes are nested below
+    //
+    // we'd like to do this in process_recipe_item to avoid the coupling,
+    // but we can't because we have to only reverse once at the end of the
+    // process rather than once at each recursion step.
+    lines.reverse();
+
     for line in lines {
         print_line_item(&line);
     }
