@@ -71,4 +71,6 @@ pub static RLVL640: RecipeLevel = RecipeLevel {
     quality_modifier: 100,
 };
 
-pub type CraftingStep = fn(&CraftingState, &PlayerStats, &Recipe) -> CraftingState;
+pub trait CraftingStep {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
+}
