@@ -42,6 +42,11 @@ pub static PRUDENT_SYNTHESIS: BasicSynthesis = BasicSynthesis {
     cp_cost: 18,
     durability_cost: 5,
 };
+pub static GROUNDWORK: BasicSynthesis = BasicSynthesis {
+    potency: 360,
+    cp_cost: 18,
+    durability_cost: 20,
+};
 
 #[cfg(test)]
 mod tests {

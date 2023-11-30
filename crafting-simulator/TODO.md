@@ -9,9 +9,9 @@ things to try:
     - at each stage make sure we keep the best sequence that doesn't fail the craft, but also keep some other sequences that do well but fail, since they might get mutated into successful sequences
 - convert a sequence of steps to a macro
 
-things that we aren't considering (yet)
+things that we aren't considering (yet?)
 
-- chance-based actions
+- actions that require procs (eg Intensive Synthesis) chance-based actions (eg Rapid Synthesis)
 - food and medicine (we'll just assume they're baked into the basic stats for now)
 - lower level recipes (having a higher crafter level gives a bonus to recipe progression / quality increases)
 - minimum required stats for a craft
