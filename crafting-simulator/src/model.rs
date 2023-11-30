@@ -73,4 +73,13 @@ pub static RLVL640: RecipeLevel = RecipeLevel {
 
 pub trait CraftingStep {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
+
+    /**
+     * most of the time, a crafting step will increment the step count by one as expected. Some exceptions:
+     * - if we do combo steps, then those count as more than one
+     * - Final Appraisal doesn't consume a step, so it counts as zero
+     */
+    fn num_steps(&self) -> u8 {
+        1
+    }
 }
