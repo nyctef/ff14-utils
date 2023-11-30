@@ -1,5 +1,3 @@
-use color_eyre::eyre::Result;
-
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct PlayerStats {
     /* Not the player's visible level, but the internal level that gets checked against the recipe's rlvl */
@@ -73,4 +71,4 @@ pub static RLVL640: RecipeLevel = RecipeLevel {
     quality_modifier: 100,
 };
 
-pub type CraftingStep = fn(&CraftingState, &PlayerStats, &Recipe) -> Result<CraftingState>;
+pub type CraftingStep = fn(&CraftingState, &PlayerStats, &Recipe) -> CraftingState;

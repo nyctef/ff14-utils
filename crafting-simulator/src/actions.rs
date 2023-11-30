@@ -1,11 +1,10 @@
 use crate::model::{CraftingState, PlayerStats, Recipe};
-use color_eyre::eyre::Result;
 
 pub fn basic_synthesis(
     state: &CraftingState,
     stats: &PlayerStats,
     recipe: &Recipe,
-) -> Result<CraftingState> {
+) -> CraftingState {
     // based on some of the calculations in https://github.com/ffxiv-teamcraft/simulator/tree/dec02537f2ac0ec8c1bd61d85bc45f7b4b34e301/src/model/actions
     // ignoring recipe level difference for now
     let base_progression = (stats.craftsmanship * 10) / recipe.rlvl.progress_divider as u16 + 2;
@@ -23,11 +22,11 @@ pub fn basic_synthesis(
 
     let durability_cost = 10;
 
-    Ok(CraftingState {
+    CraftingState {
         progress: state.progress + total_increase,
         durability: state.durability - durability_cost,
         ..*state
-    })
+    }
 }
 
 #[cfg(test)]
@@ -48,7 +47,7 @@ mod tests {
         };
         let initial_state = CraftingState::initial(&stats, &recipe);
         let step: CraftingStep = basic_synthesis;
-        let new_state = step(&initial_state, &stats, &recipe).unwrap();
+        let new_state = step(&initial_state, &stats, &recipe);
         assert_eq!(297, new_state.progress);
         assert_eq!(60, new_state.durability)
     }
