@@ -1,4 +1,5 @@
 use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use std::collections::HashMap;
 
 pub struct BasicSynthesis {
     potency: u16,
@@ -84,6 +85,16 @@ impl Actions {
     }
 }
 
+pub fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
+    let mut m: HashMap<&str, Box<dyn CraftingStep>> = HashMap::new();
+    m.insert("Basic Synthesis", Box::new(Actions::basic_synthesis()));
+    m.insert("Careful Synthesis", Box::new(Actions::careful_synthesis()));
+    m.insert("Prudent Synthesis", Box::new(Actions::prudent_synthesis()));
+    m.insert("Groundwork", Box::new(Actions::groundwork()));
+    m.insert("Veneration", Box::new(Actions::veneration()));
+    m
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,12 +141,12 @@ mod tests {
     #[test]
     fn veneration_increases_next_synthesis_step_by_50_percent() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let steps = [
-            Box::new(Actions::veneration()) as Box<dyn CraftingStep>,
-            Box::new(Actions::careful_synthesis()) as Box<dyn CraftingStep>,
-        ];
+        let actions = make_action_lookup();
+        let steps = ["Veneration", "Basic Synthesis"]
+            .iter()
+            .map(|name| actions.get(name).unwrap());
 
-        let final_state = steps.iter().fold(initial_state, |state, step| {
+        let final_state = steps.fold(initial_state, |state, step| {
             step.apply(&state, &L90_PLAYER, &RLVL640_GEAR)
         });
 
