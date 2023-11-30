@@ -1,5 +1,9 @@
 use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
-pub struct BasicSynthesis;
+pub struct BasicSynthesis {
+    potency: u16,
+    cp_cost: u8,
+    durability_cost: u8,
+}
 
 impl CraftingStep for BasicSynthesis {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
@@ -10,25 +14,34 @@ impl CraftingStep for BasicSynthesis {
         let progression_modified_by_level =
             (base_progression as f32 * recipe.rlvl.progress_modifier as f32 * 0.01f32) as u16;
 
-        let potency = 120;
-
         // todo: muscle memory, veneration
 
-        dbg!(base_progression, progression_modified_by_level, potency);
-
-        let total_increase = (progression_modified_by_level * potency) / 100;
-
-        let durability_cost = 10;
+        let total_increase = (progression_modified_by_level * self.potency) / 100;
 
         CraftingState {
             progress: state.progress + total_increase,
-            durability: state.durability - durability_cost,
+            durability: state.durability - self.durability_cost as u16,
+            cp: state.cp - self.cp_cost as u16,
             ..*state
         }
     }
 }
 
-pub static BASIC_SYNTHESIS: BasicSynthesis = BasicSynthesis;
+pub static BASIC_SYNTHESIS: BasicSynthesis = BasicSynthesis {
+    potency: 120,
+    cp_cost: 0,
+    durability_cost: 10,
+};
+pub static CAREFUL_SYNTHESIS: BasicSynthesis = BasicSynthesis {
+    potency: 180,
+    cp_cost: 7,
+    durability_cost: 10,
+};
+pub static PRUDENT_SYNTHESIS: BasicSynthesis = BasicSynthesis {
+    potency: 180,
+    cp_cost: 18,
+    durability_cost: 5,
+};
 
 #[cfg(test)]
 mod tests {
@@ -37,19 +50,39 @@ mod tests {
 
     // basically just setting up scenarios on teamcraft and checking that these numbers match theirs
 
+    static RLVL640_GEAR: Recipe = Recipe {
+        rlvl: RLVL640,
+        difficulty: 6600,
+        durability: 70,
+        quality_target: 14040,
+    };
+    static L90_PLAYER: PlayerStats = PlayerStats {
+        player_lvl: 560,
+        craftsmanship: 4014,
+        control: 3574,
+        cp: 500,
+    };
+
     #[test]
     fn basic_synthesis_1() {
-        let stats = PlayerStats::level_90(4014, 3574, 500);
-        let recipe = Recipe {
-            rlvl: RLVL640,
-            difficulty: 6600,
-            durability: 70,
-            quality_target: 14040,
-        };
-        let initial_state = CraftingState::initial(&stats, &recipe);
+        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
         let step = &BASIC_SYNTHESIS;
-        let new_state = step.apply(&initial_state, &stats, &recipe);
+
+        let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
+
         assert_eq!(297, new_state.progress);
-        assert_eq!(60, new_state.durability)
+        assert_eq!(60, new_state.durability);
+    }
+
+    #[test]
+    fn careful_synthesis_1() {
+        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let step = &CAREFUL_SYNTHESIS;
+
+        let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
+
+        assert_eq!(446, new_state.progress);
+        assert_eq!(60, new_state.durability);
+        assert_eq!(500 - 7, new_state.cp);
     }
 }
