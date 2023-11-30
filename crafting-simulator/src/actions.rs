@@ -1,4 +1,5 @@
 use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+
 pub struct BasicSynthesis {
     potency: u16,
     cp_cost: u8,
@@ -27,26 +28,61 @@ impl CraftingStep for BasicSynthesis {
     }
 }
 
-pub static BASIC_SYNTHESIS: BasicSynthesis = BasicSynthesis {
-    potency: 120,
-    cp_cost: 0,
-    durability_cost: 10,
-};
-pub static CAREFUL_SYNTHESIS: BasicSynthesis = BasicSynthesis {
-    potency: 180,
-    cp_cost: 7,
-    durability_cost: 10,
-};
-pub static PRUDENT_SYNTHESIS: BasicSynthesis = BasicSynthesis {
-    potency: 180,
-    cp_cost: 18,
-    durability_cost: 5,
-};
-pub static GROUNDWORK: BasicSynthesis = BasicSynthesis {
-    potency: 360,
-    cp_cost: 18,
-    durability_cost: 20,
-};
+pub struct Veneration {}
+
+impl CraftingStep for Veneration {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            cp: state.cp - 18,
+            veneration_stacks: 4,
+            ..*state
+        }
+    }
+}
+
+pub struct Actions {}
+impl Actions {
+    pub fn basic_synthesis() -> impl CraftingStep {
+        BasicSynthesis {
+            potency: 120,
+            cp_cost: 0,
+            durability_cost: 10,
+        }
+    }
+
+    pub fn careful_synthesis() -> impl CraftingStep {
+        BasicSynthesis {
+            potency: 180,
+            cp_cost: 7,
+            durability_cost: 10,
+        }
+    }
+
+    pub fn prudent_synthesis() -> impl CraftingStep {
+        BasicSynthesis {
+            potency: 180,
+            cp_cost: 18,
+            durability_cost: 5,
+        }
+    }
+
+    pub fn groundwork() -> impl CraftingStep {
+        BasicSynthesis {
+            potency: 360,
+            cp_cost: 18,
+            durability_cost: 20,
+        }
+    }
+
+    pub fn veneration() -> impl CraftingStep {
+        Veneration {}
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -71,7 +107,7 @@ mod tests {
     #[test]
     fn basic_synthesis_1() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let step = &BASIC_SYNTHESIS;
+        let step = Actions::basic_synthesis();
 
         let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
 
@@ -82,12 +118,28 @@ mod tests {
     #[test]
     fn careful_synthesis_1() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let step = &CAREFUL_SYNTHESIS;
+        let step = Actions::careful_synthesis();
 
         let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
 
         assert_eq!(446, new_state.progress);
         assert_eq!(60, new_state.durability);
         assert_eq!(500 - 7, new_state.cp);
+    }
+
+    #[test]
+    fn veneration_increases_next_synthesis_step_by_50_percent() {
+        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let steps = [
+            Box::new(Actions::veneration()) as Box<dyn CraftingStep>,
+            Box::new(Actions::careful_synthesis()) as Box<dyn CraftingStep>,
+        ];
+
+        let final_state = steps.iter().fold(initial_state, |state, step| {
+            step.apply(&state, &L90_PLAYER, &RLVL640_GEAR)
+        });
+
+        assert_eq!(446, final_state.progress);
+        assert_eq!(500 - 18, final_state.cp);
     }
 }
