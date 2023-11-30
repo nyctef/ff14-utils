@@ -45,7 +45,10 @@ impl CraftingStep for Veneration {
     ) -> CraftingState {
         CraftingState {
             cp: state.cp - 18,
-            veneration_stacks: 4,
+            // note that we set the stack count here to 5 instead of 4,
+            // since the generic logic will decrement it by 1 every time a step happens.
+            // Is there a nicer way to make this read how it should?
+            veneration_stacks: 5,
             ..*state
         }
     }
@@ -103,7 +106,7 @@ pub fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{CraftingStep, Recipe, RLVL640};
+    use crate::model::{Recipe, RLVL640};
 
     // basically just setting up scenarios on teamcraft and checking that these numbers match theirs
 
@@ -120,12 +123,33 @@ mod tests {
         cp: 500,
     };
 
+    fn run_steps(
+        initial_state: CraftingState,
+        player: PlayerStats,
+        recipe: Recipe,
+        steps: &[&str],
+    ) -> CraftingState {
+        let actions = make_action_lookup();
+        let steps = steps.iter().map(|name| actions.get(name).unwrap());
+
+        steps.fold(initial_state, |state, step| {
+            let mut next_state = state;
+            next_state.veneration_stacks = state.veneration_stacks.saturating_sub(1);
+            next_state = step.apply(&next_state, &player, &recipe);
+            next_state
+        })
+    }
+
     #[test]
     fn basic_synthesis_1() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let step = Actions::basic_synthesis();
 
-        let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
+        let new_state = run_steps(
+            initial_state,
+            L90_PLAYER,
+            RLVL640_GEAR,
+            &["Basic Synthesis"],
+        );
 
         assert_eq!(297, new_state.progress);
         assert_eq!(60, new_state.durability);
@@ -134,9 +158,13 @@ mod tests {
     #[test]
     fn careful_synthesis_1() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let step = Actions::careful_synthesis();
 
-        let new_state = step.apply(&initial_state, &L90_PLAYER, &RLVL640_GEAR);
+        let new_state = run_steps(
+            initial_state,
+            L90_PLAYER,
+            RLVL640_GEAR,
+            &["Careful Synthesis"],
+        );
 
         assert_eq!(446, new_state.progress);
         assert_eq!(60, new_state.durability);
@@ -146,16 +174,37 @@ mod tests {
     #[test]
     fn veneration_increases_next_synthesis_step_by_50_percent() {
         let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
-        let actions = make_action_lookup();
-        let steps = ["Veneration", "Basic Synthesis"]
-            .iter()
-            .map(|name| actions.get(name).unwrap());
+        let new_state = run_steps(
+            initial_state,
+            L90_PLAYER,
+            RLVL640_GEAR,
+            &["Veneration", "Basic Synthesis"],
+        );
 
-        let final_state = steps.fold(initial_state, |state, step| {
-            step.apply(&state, &L90_PLAYER, &RLVL640_GEAR)
-        });
+        assert_eq!(446, new_state.progress);
+        assert_eq!(500 - 18, new_state.cp);
+    }
 
-        assert_eq!(446, final_state.progress);
-        assert_eq!(500 - 18, final_state.cp);
+    #[test]
+    fn veneration_runs_out_after_four_steps() {
+        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+
+        let new_state = run_steps(
+            initial_state,
+            L90_PLAYER,
+            RLVL640_GEAR,
+            &[
+                "Veneration",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                // this fifth synthesis should not be affected by veneration any more
+                "Basic Synthesis",
+            ],
+        );
+
+        assert_eq!((446 * 4) + 297, new_state.progress);
+        assert_eq!(500 - 18, new_state.cp);
     }
 }
