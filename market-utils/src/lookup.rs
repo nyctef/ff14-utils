@@ -15,6 +15,10 @@ pub struct ItemLookup {
 //   - https://crates.io/crates/lazy_static
 
 impl ItemLookup {
+    pub fn all(&self) -> impl Iterator<Item = &Item> {
+        self.items.iter()
+    }
+
     pub fn matching(&self, predicate: impl Fn(&&Item) -> bool) -> impl Iterator<Item = &Item> {
         self.items.iter().filter(predicate)
     }
