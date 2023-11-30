@@ -18,7 +18,12 @@ impl CraftingStep for BasicSynthesis {
 
         // todo: muscle memory, veneration
 
-        let total_increase = (progression_modified_by_level * self.potency) / 100;
+        let mut potency = self.potency;
+        if state.veneration_stacks > 0 {
+            potency += potency / 2;
+        }
+
+        let total_increase = (progression_modified_by_level * potency) / 100;
 
         CraftingState {
             progress: state.progress + total_increase,
