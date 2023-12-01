@@ -8,8 +8,8 @@ impl Presets {
             rlvl: 640,
             progress_divider: 130,
             progress_modifier: 80,
-            quality_divider: 180,
-            quality_modifier: 100,
+            quality_divider: 115,
+            quality_modifier: 70,
         }
     }
 
@@ -24,5 +24,9 @@ impl Presets {
 
     pub fn l90_player() -> PlayerStats {
         PlayerStats::level_90(4014, 3574, 500)
+    }
+
+    pub fn l90_player_with_jhinga_biryani_hq() -> PlayerStats {
+        PlayerStats::level_90(4014, 3574 + 90, 536 + 86)
     }
 }

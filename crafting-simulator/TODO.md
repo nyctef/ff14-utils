@@ -15,3 +15,5 @@ things that we aren't considering (yet?)
 - food and medicine (we'll just assume they're baked into the basic stats for now)
 - lower level recipes (having a higher crafter level gives a bonus to recipe progression / quality increases)
 - minimum required stats for a craft
+- action potency changes from earlier levels (eg a lower-level crafter has 100 potency for basic synthesis rather than 120)
+- crafting state procs (excellent/poor/good/etc)

@@ -53,6 +53,28 @@ impl CraftingStep for Veneration {
     }
 }
 
+pub struct BasicTouch {
+    potency: u16,
+    cp_cost: u8,
+    durability_cost: u8,
+}
+
+impl CraftingStep for BasicTouch {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        let base_quality = (stats.control * 10) / recipe.rlvl.quality_divider as u16 + 35;
+        let base_quality_modified_by_level =
+            (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u16;
+
+        let total_quality_increase = (base_quality_modified_by_level * self.potency) / 100;
+        CraftingState {
+            quality: state.quality + total_quality_increase,
+            durability: state.durability - self.durability_cost as u16,
+            cp: state.cp - self.cp_cost as u16,
+            ..*state
+        }
+    }
+}
+
 pub struct Actions {}
 impl Actions {
     pub fn basic_synthesis() -> impl CraftingStep {
@@ -89,6 +111,14 @@ impl Actions {
 
     pub fn veneration() -> impl CraftingStep {
         Veneration {}
+    }
+
+    pub fn basic_touch() -> impl CraftingStep {
+        BasicTouch {
+            potency: 100,
+            cp_cost: 18,
+            durability_cost: 10,
+        }
     }
 }
 
@@ -166,5 +196,23 @@ mod tests {
 
         assert_eq!((446 * 4) + 297, new_state.progress);
         assert_eq!(500 - 18, new_state.cp);
+    }
+
+    #[test]
+    fn basic_touch_1() {
+        let initial_state =
+            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
+
+        let new_state = s::run_steps(
+            initial_state,
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Basic Touch"],
+        );
+
+        assert_eq!(0, new_state.progress);
+        assert_eq!(60, new_state.durability);
+        assert_eq!(247, new_state.quality);
+        assert_eq!(622 - 18, new_state.cp);
     }
 }

@@ -29,6 +29,7 @@ impl Simulator {
         m.insert("Prudent Synthesis", Box::new(Actions::prudent_synthesis()));
         m.insert("Groundwork", Box::new(Actions::groundwork()));
         m.insert("Veneration", Box::new(Actions::veneration()));
+        m.insert("Basic Touch", Box::new(Actions::basic_touch()));
         m
     }
 }
