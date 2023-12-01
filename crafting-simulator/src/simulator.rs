@@ -38,6 +38,7 @@ impl Simulator {
         m.insert("Preparatory Touch", Box::new(Actions::preparatory_touch()));
         m.insert("Innovation", Box::new(Actions::innovation()));
         m.insert("Great Strides", Box::new(Actions::great_strides()));
+        m.insert("Byregot's Blessing", Box::new(Actions::byregots_blessing()));
         m
     }
 }

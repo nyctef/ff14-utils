@@ -59,28 +59,37 @@ pub struct BasicTouch {
     durability_cost: u8,
 }
 
+fn calc_quality_increase(
+    stats: &PlayerStats,
+    recipe: &Recipe,
+    state: &CraftingState,
+    potency: u16,
+) -> u16 {
+    let base_quality = (stats.control * 10) / recipe.rlvl.quality_divider as u16 + 35;
+    let base_quality_modified_by_level =
+        (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u16;
+
+    let mut buff_modifier: f32 = 1.0;
+    buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
+
+    let mut buff_modifier_multiplier = 1.0;
+    if state.innovation_stacks > 0 {
+        buff_modifier_multiplier += 0.5;
+    }
+    if state.great_strides {
+        buff_modifier_multiplier += 1.0;
+    }
+    buff_modifier *= buff_modifier_multiplier;
+
+    let total_quality_increase =
+        buff_modifier * (base_quality_modified_by_level * potency) as f32 / 100.;
+    total_quality_increase as u16
+}
+
 impl CraftingStep for BasicTouch {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
-        let base_quality = (stats.control * 10) / recipe.rlvl.quality_divider as u16 + 35;
-        let base_quality_modified_by_level =
-            (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u16;
-
-        let mut buff_modifier: f32 = 1.0;
-        buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
-
-        let mut buff_modifier_multiplier = 1.0;
-        if state.innovation_stacks > 0 {
-            buff_modifier_multiplier += 0.5;
-        }
-        if state.great_strides {
-            buff_modifier_multiplier += 1.0;
-        }
-        buff_modifier *= buff_modifier_multiplier;
-
-        let total_quality_increase =
-            buff_modifier * (base_quality_modified_by_level * self.potency) as f32 / 100.;
         CraftingState {
-            quality: state.quality + total_quality_increase as u16,
+            quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             durability: state.durability - self.durability_cost as i16,
             cp: state.cp - self.cp_cost as i16,
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
@@ -119,6 +128,24 @@ impl CraftingStep for GreatStrides {
         CraftingState {
             cp: state.cp - 32,
             great_strides: true,
+            ..*state
+        }
+    }
+}
+
+pub struct ByregotsBlessing {}
+impl CraftingStep for ByregotsBlessing {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        if state.inner_quiet_stacks == 0 {
+            // TODO: emit a warning or an error somehow?
+            return state.clone();
+        }
+        let potency = 100 + (state.inner_quiet_stacks as u16 * 20);
+        CraftingState {
+            cp: state.cp - 24,
+            inner_quiet_stacks: 0,
+            quality: state.quality + calc_quality_increase(stats, recipe, state, potency),
+            durability: state.durability - 10,
             ..*state
         }
     }
@@ -194,6 +221,10 @@ impl Actions {
 
     pub fn great_strides() -> impl CraftingStep {
         GreatStrides {}
+    }
+
+    pub fn byregots_blessing() -> impl CraftingStep {
+        ByregotsBlessing {}
     }
 }
 
@@ -327,5 +358,18 @@ mod tests {
         );
 
         assert_eq!(247 * 2, new_state.quality);
+    }
+
+    #[test]
+    fn byregots_blessing() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Basic Touch", "Great Strides", "Byregot's Blessing"],
+        );
+
+        assert_eq!(0, new_state.inner_quiet_stacks);
+        assert_eq!(247 + 652, new_state.quality);
+        assert_eq!(50, new_state.durability);
     }
 }
