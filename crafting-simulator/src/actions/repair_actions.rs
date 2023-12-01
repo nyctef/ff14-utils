@@ -26,6 +26,7 @@ impl CraftingStep for Manipulation {
 
 #[cfg(test)]
 mod tests {
+    use crate::model::CraftStatus;
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -88,6 +89,20 @@ mod tests {
 
     #[test]
     fn manipulation_cant_recover_a_craft_if_it_hit_zero_in_the_previous_step() {
-        todo!();
+        let just_too_late = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &[
+                "Groundwork",
+                "Groundwork",
+                "Groundwork",
+                // 10 durability left here
+                "Manipulation",
+                "Basic Synthesis",
+                // Basic Synthesis takes 10 durability away before Manipulation can restore it
+            ],
+        );
+
+        assert_eq!(CraftStatus::Failure, just_too_late.state);
     }
 }
