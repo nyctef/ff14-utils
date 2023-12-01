@@ -17,12 +17,13 @@ impl Simulator {
             })
             .try_collect()
             .unwrap();
-        steps.iter().fold(initial_state, |state, step| {
-            let mut next_state = state;
-            next_state.veneration_stacks = state.veneration_stacks.saturating_sub(1);
-            next_state.innovation_stacks = state.innovation_stacks.saturating_sub(1);
-            next_state = step.apply(&next_state, &player, &recipe);
-            next_state
+        steps.iter().fold(initial_state, |prev_state, step| {
+            let mut next = prev_state;
+            next = step.apply(&next, &player, &recipe);
+            next.veneration_stacks = next.veneration_stacks.saturating_sub(step.num_steps());
+            next.innovation_stacks = next.innovation_stacks.saturating_sub(step.num_steps());
+            next.steps += step.num_steps();
+            next
         })
     }
 
