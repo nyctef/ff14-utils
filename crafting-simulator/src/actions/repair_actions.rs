@@ -1,4 +1,5 @@
 use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use derive_more::Constructor;
 
 pub struct Manipulation {}
 impl CraftingStep for Manipulation {
@@ -17,6 +18,35 @@ impl CraftingStep for Manipulation {
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
         96
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
+    }
+}
+
+// TODO: Master's Mend
+
+#[derive(Constructor)]
+pub struct WasteNot {
+    length: u8,
+    cp_cost: u8,
+}
+impl CraftingStep for WasteNot {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            waste_not_stacks: self.length + 1,
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
+        self.cp_cost
     }
 
     fn durability_cost(&self) -> u8 {
@@ -104,5 +134,24 @@ mod tests {
         );
 
         assert_eq!(CraftStatus::Failure, just_too_late.state);
+    }
+
+    #[test]
+    fn waste_not_reduces_durability_cost_of_next_four_steps_by_50_percent() {
+        let final_state = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &[
+                "Waste Not",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                "Basic Synthesis",
+                "Basic Synthesis",
+            ],
+        )
+        .final_state;
+
+        assert_eq!(70 - (4 * 5) - 10, final_state.durability);
     }
 }

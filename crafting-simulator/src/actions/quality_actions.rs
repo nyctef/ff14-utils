@@ -6,6 +6,7 @@ pub struct BasicTouch {
     potency: u16,
     cp_cost: u8,
     durability_cost: u8,
+    prevented_by_waste_not: bool,
 }
 
 fn calc_quality_increase(
@@ -37,6 +38,11 @@ fn calc_quality_increase(
 
 impl CraftingStep for BasicTouch {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
+            // TODO: warning or error
+            return state.clone();
+        }
+
         CraftingState {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
@@ -409,4 +415,21 @@ mod tests {
     // TODO: pretty much every action except basic/standard/advanced touch should break the combo -
     // is there a way we can reliably test them all, or move the logic somehow so that resetting
     // the combo is the default behavior?
+
+    #[test]
+    fn prudent_touch_not_allowed_during_waste_not() {
+        let final_state = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &["Waste Not", "Prudent Touch"],
+        )
+        .final_state;
+
+        assert_eq!(0, final_state.quality);
+        // TODO: we don't actually have a good way of preventing the durability cost from triggering here
+        // maybe we need to bring back the Result<,> return type from applying crafting steps?
+
+        // assert_eq!(70, final_state.durability);
+        //assert_eq!(500 - 56, final_state.cp);
+    }
 }

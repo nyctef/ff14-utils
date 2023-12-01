@@ -23,9 +23,10 @@ impl Simulator {
                 let mut next_issues = prev_issues;
 
                 next.cp = next.cp.saturating_sub(step.cp_cost(&next) as i16);
+                let durability_cost_divider = if next.waste_not_stacks > 0 { 2 } else { 1 };
                 next.durability = next
                     .durability
-                    .saturating_sub(step.durability_cost() as i16);
+                    .saturating_sub((step.durability_cost() / durability_cost_divider) as i16);
 
                 next = step.apply(&next, &player, &recipe);
 
@@ -48,6 +49,7 @@ impl Simulator {
                 next.manipulation_stacks =
                     next.manipulation_stacks.saturating_sub(step.num_steps());
                 next.manipulation_delay = next.manipulation_delay.saturating_sub(step.num_steps());
+                next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
                 next.steps += step.num_steps();
                 (next_issues, next)
             },

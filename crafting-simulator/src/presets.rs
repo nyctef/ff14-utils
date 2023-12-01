@@ -14,6 +14,7 @@ impl Presets {
     }
 
     pub fn rlvl640_gear() -> Recipe {
+        // ie diadochos gear
         Recipe {
             rlvl: Self::rlvl_640(),
             difficulty: 6600,

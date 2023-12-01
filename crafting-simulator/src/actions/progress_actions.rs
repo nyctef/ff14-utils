@@ -6,6 +6,7 @@ pub struct BasicSynthesis {
     potency: u16,
     cp_cost: u8,
     durability_cost: u8,
+    prevented_by_waste_not: bool,
 }
 
 fn calculate_progress_increase(
@@ -36,6 +37,11 @@ fn calculate_progress_increase(
 
 impl CraftingStep for BasicSynthesis {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
+            // TODO: warning or error
+            return state.clone();
+        }
+
         let total_increase = calculate_progress_increase(state, stats, recipe, self.potency);
 
         CraftingState {
@@ -242,5 +248,22 @@ mod tests {
         .final_state;
 
         assert_eq!(744 + 595 + 297, final_state.progress);
+    }
+
+    #[test]
+    fn prudent_synthesis_not_allowed_during_waste_not() {
+        let final_state = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &["Waste Not", "Prudent Synthesis"],
+        )
+        .final_state;
+
+        assert_eq!(0, final_state.progress);
+        // TODO: we don't actually have a good way of preventing the durability cost from triggering here
+        // maybe we need to bring back the Result<,> return type from applying crafting steps?
+
+        // assert_eq!(70, final_state.durability);
+        //assert_eq!(500 - 56, final_state.cp);
     }
 }

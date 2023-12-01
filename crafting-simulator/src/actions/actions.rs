@@ -9,19 +9,19 @@ use crate::model::CraftingStep;
 pub struct Actions {}
 impl Actions {
     fn basic_synthesis() -> impl CraftingStep {
-        BasicSynthesis::new(120, 0, 10)
+        BasicSynthesis::new(120, 0, 10, false)
     }
 
     fn careful_synthesis() -> impl CraftingStep {
-        BasicSynthesis::new(180, 7, 10)
+        BasicSynthesis::new(180, 7, 10, false)
     }
 
     fn prudent_synthesis() -> impl CraftingStep {
-        BasicSynthesis::new(180, 18, 5)
+        BasicSynthesis::new(180, 18, 5, true)
     }
 
     fn groundwork() -> impl CraftingStep {
-        BasicSynthesis::new(360, 18, 20)
+        BasicSynthesis::new(360, 18, 20, false)
     }
 
     fn veneration() -> impl CraftingStep {
@@ -43,11 +43,11 @@ impl Actions {
     // TODO: standard and advanced touch (probably easiest to implement these as combo steps?)
 
     fn prudent_touch() -> impl CraftingStep {
-        BasicTouch::new(100, 25, 5)
+        BasicTouch::new(100, 25, 5, true)
     }
 
     fn preparatory_touch() -> impl CraftingStep {
-        BasicTouch::new(200, 40, 20)
+        BasicTouch::new(200, 40, 20, false)
     }
 
     fn innovation() -> impl CraftingStep {
@@ -67,11 +67,11 @@ impl Actions {
     }
 
     fn focused_synthesis() -> impl CraftingStep {
-        FocusedStep::new(Box::new(BasicSynthesis::new(200, 5, 10)))
+        FocusedStep::new(Box::new(BasicSynthesis::new(200, 5, 10, false)))
     }
 
     fn focused_touch() -> impl CraftingStep {
-        FocusedStep::new(Box::new(BasicTouch::new(150, 18, 10)))
+        FocusedStep::new(Box::new(BasicTouch::new(150, 18, 10, false)))
     }
 
     fn muscle_memory() -> impl CraftingStep {
@@ -80,6 +80,14 @@ impl Actions {
 
     fn manipulation() -> impl CraftingStep {
         Manipulation {}
+    }
+
+    fn waste_not() -> impl CraftingStep {
+        WasteNot::new(4, 56)
+    }
+
+    fn waste_not_2() -> impl CraftingStep {
+        WasteNot::new(8, 98)
     }
 
     pub fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
@@ -102,6 +110,8 @@ impl Actions {
         m.insert("Advanced Touch", Box::new(Actions::advanced_touch()));
         m.insert("Muscle Memory", Box::new(Actions::muscle_memory()));
         m.insert("Manipulation", Box::new(Actions::manipulation()));
+        m.insert("Waste Not", Box::new(Actions::waste_not()));
+        m.insert("Waste Not II", Box::new(Actions::waste_not_2()));
         m
     }
 }
