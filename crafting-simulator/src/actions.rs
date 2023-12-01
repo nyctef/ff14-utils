@@ -68,6 +68,10 @@ impl CraftingStep for BasicTouch {
         let mut buff_modifier: f32 = 1.0;
         buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
 
+        if state.innovation_stacks > 0 {
+            buff_modifier *= 1.5;
+        }
+
         let total_quality_increase =
             buff_modifier * (base_quality_modified_by_level * self.potency) as f32 / 100.;
         CraftingState {
@@ -75,6 +79,24 @@ impl CraftingStep for BasicTouch {
             durability: state.durability - self.durability_cost as i16,
             cp: state.cp - self.cp_cost as i16,
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
+            ..*state
+        }
+    }
+}
+
+pub struct Innovation {}
+
+impl CraftingStep for Innovation {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            cp: state.cp - 18,
+            // see above comment about veneration stacks being 5 instead of 4
+            innovation_stacks: 5,
             ..*state
         }
     }
@@ -142,6 +164,10 @@ impl Actions {
             cp_cost: 40,
             durability_cost: 20,
         }
+    }
+
+    pub fn innovation() -> impl CraftingStep {
+        Innovation {}
     }
 }
 
@@ -244,6 +270,25 @@ mod tests {
 
     #[test]
     fn innovation_buffs_basic_touch() {
-        todo!();
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Innovation",
+                "Basic Touch",
+                "Basic Touch",
+                "Basic Touch",
+                "Basic Touch",
+                "Basic Touch",
+            ],
+        );
+
+        assert_eq!(
+            // first four touches get buffed by innovation and inner quiet
+            370 + 407 + 444 + 481
+            // fifth touch only gets the inner quiet stacks            
+             + 345,
+            new_state.quality
+        );
     }
 }

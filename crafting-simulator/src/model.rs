@@ -27,6 +27,7 @@ pub struct CraftingState {
     pub steps: u8,
     pub inner_quiet_stacks: u8,
     pub veneration_stacks: u8,
+    pub innovation_stacks: u8,
 }
 
 impl CraftingState {
@@ -39,6 +40,7 @@ impl CraftingState {
             steps: 0,
             inner_quiet_stacks: 0,
             veneration_stacks: 0,
+            innovation_stacks: 0,
         }
     }
 
