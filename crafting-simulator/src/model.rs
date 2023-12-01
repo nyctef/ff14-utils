@@ -29,6 +29,7 @@ pub struct CraftingState {
     pub veneration_stacks: u8,
     pub innovation_stacks: u8,
     pub great_strides: bool,
+    pub muscle_memory: bool,
     pub prev_step_was_observe: bool,
     pub touch_combo_stage: u8,
 }
@@ -45,6 +46,7 @@ impl CraftingState {
             veneration_stacks: 0,
             innovation_stacks: 0,
             great_strides: false,
+            muscle_memory: false,
             prev_step_was_observe: false,
             touch_combo_stage: 0,
         }

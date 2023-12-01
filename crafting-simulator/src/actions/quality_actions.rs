@@ -1,73 +1,7 @@
 use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use derive_more::Constructor;
 
-pub struct BasicSynthesis {
-    potency: u16,
-    cp_cost: u8,
-    durability_cost: u8,
-}
-
-impl CraftingStep for BasicSynthesis {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
-        // based on some of the calculations in https://github.com/ffxiv-teamcraft/simulator/tree/dec02537f2ac0ec8c1bd61d85bc45f7b4b34e301/src/model/actions
-        // ignoring recipe level difference for now
-        let base_progression = (stats.craftsmanship * 10) / recipe.rlvl.progress_divider as u16 + 2;
-
-        let progression_modified_by_level =
-            (base_progression as f32 * recipe.rlvl.progress_modifier as f32 * 0.01f32) as u16;
-
-        // todo: muscle memory, veneration
-
-        let mut potency = self.potency;
-        if state.veneration_stacks > 0 {
-            potency += potency / 2;
-        }
-
-        let total_increase = (progression_modified_by_level * potency) / 100;
-
-        CraftingState {
-            progress: state.progress + total_increase,
-            touch_combo_stage: 0,
-            ..*state
-        }
-    }
-
-    fn cp_cost(&self, _state: &CraftingState) -> u8 {
-        self.cp_cost
-    }
-
-    fn durability_cost(&self) -> u8 {
-        self.durability_cost
-    }
-}
-
-pub struct Veneration {}
-
-impl CraftingStep for Veneration {
-    fn apply(
-        &self,
-        state: &CraftingState,
-        _stats: &PlayerStats,
-        _recipe: &Recipe,
-    ) -> CraftingState {
-        CraftingState {
-            // note that we set the stack count here to 5 instead of 4,
-            // since the generic logic will decrement it by 1 every time a step happens.
-            // Is there a nicer way to make this read how it should?
-            veneration_stacks: 5,
-            touch_combo_stage: 0,
-            ..*state
-        }
-    }
-
-    fn cp_cost(&self, _state: &CraftingState) -> u8 {
-        18
-    }
-
-    fn durability_cost(&self) -> u8 {
-        0
-    }
-}
-
+#[derive(Constructor)]
 pub struct BasicTouch {
     potency: u16,
     cp_cost: u8,
@@ -196,63 +130,13 @@ impl CraftingStep for ByregotsBlessing {
     }
 }
 
-pub struct Observe {}
-impl CraftingStep for Observe {
-    fn apply(
-        &self,
-        state: &CraftingState,
-        _stats: &PlayerStats,
-        _recipe: &Recipe,
-    ) -> CraftingState {
-        CraftingState {
-            prev_step_was_observe: true,
-            touch_combo_stage: 0,
-            ..*state
-        }
-    }
-
-    fn cp_cost(&self, _state: &CraftingState) -> u8 {
-        7
-    }
-
-    fn durability_cost(&self) -> u8 {
-        0
-    }
-}
-
-pub struct FocusedStep {
-    underlying: Box<dyn CraftingStep>,
-}
-impl CraftingStep for FocusedStep {
-    fn apply(
-        &self,
-        state: &CraftingState,
-        _stats: &PlayerStats,
-        _recipe: &Recipe,
-    ) -> CraftingState {
-        if !state.prev_step_was_observe {
-            // TODO output some  kind of warning or error
-            return state.clone();
-        }
-
-        self.underlying.apply(state, _stats, _recipe)
-    }
-
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
-        self.underlying.cp_cost(state)
-    }
-
-    fn durability_cost(&self) -> u8 {
-        self.underlying.durability_cost()
-    }
-}
-
+#[derive(Constructor)]
 pub struct ComboTouch {
-    touch_combo_stage_required: Option<u8>,
-    touch_combo_stage_applied: u8,
     potency: u16,
     regular_cp_cost: u8,
     combo_cp_cost: u8,
+    touch_combo_stage_required: Option<u8>,
+    touch_combo_stage_applied: u8,
     durability_cost: u8,
 }
 impl CraftingStep for ComboTouch {
@@ -282,133 +166,7 @@ impl CraftingStep for ComboTouch {
     }
 
     fn durability_cost(&self) -> u8 {
-        10
-    }
-}
-
-pub struct Actions {}
-impl Actions {
-    pub fn basic_synthesis() -> impl CraftingStep {
-        BasicSynthesis {
-            potency: 120,
-            cp_cost: 0,
-            durability_cost: 10,
-        }
-    }
-
-    pub fn careful_synthesis() -> impl CraftingStep {
-        BasicSynthesis {
-            potency: 180,
-            cp_cost: 7,
-            durability_cost: 10,
-        }
-    }
-
-    pub fn prudent_synthesis() -> impl CraftingStep {
-        BasicSynthesis {
-            potency: 180,
-            cp_cost: 18,
-            durability_cost: 5,
-        }
-    }
-
-    pub fn groundwork() -> impl CraftingStep {
-        BasicSynthesis {
-            potency: 360,
-            cp_cost: 18,
-            durability_cost: 20,
-        }
-    }
-
-    pub fn veneration() -> impl CraftingStep {
-        Veneration {}
-    }
-
-    pub fn basic_touch() -> impl CraftingStep {
-        ComboTouch {
-            potency: 100,
-            regular_cp_cost: 18,
-            combo_cp_cost: 18,
-            durability_cost: 10,
-            touch_combo_stage_required: None,
-            touch_combo_stage_applied: 1,
-        }
-    }
-
-    pub fn standard_touch() -> impl CraftingStep {
-        ComboTouch {
-            potency: 125,
-            regular_cp_cost: 32,
-            combo_cp_cost: 18,
-            durability_cost: 10,
-            touch_combo_stage_required: Some(1),
-            touch_combo_stage_applied: 2,
-        }
-    }
-
-    pub fn advanced_touch() -> impl CraftingStep {
-        ComboTouch {
-            potency: 150,
-            regular_cp_cost: 46,
-            combo_cp_cost: 18,
-            durability_cost: 10,
-            touch_combo_stage_required: Some(2),
-            touch_combo_stage_applied: 0,
-        }
-    }
-
-    // TODO: standard and advanced touch (probably easiest to implement these as combo steps?)
-
-    pub fn prudent_touch() -> impl CraftingStep {
-        BasicTouch {
-            potency: 100,
-            cp_cost: 25,
-            durability_cost: 5,
-        }
-    }
-
-    pub fn preparatory_touch() -> impl CraftingStep {
-        BasicTouch {
-            potency: 200,
-            cp_cost: 40,
-            durability_cost: 20,
-        }
-    }
-
-    pub fn innovation() -> impl CraftingStep {
-        Innovation {}
-    }
-
-    pub fn great_strides() -> impl CraftingStep {
-        GreatStrides {}
-    }
-
-    pub fn byregots_blessing() -> impl CraftingStep {
-        ByregotsBlessing {}
-    }
-
-    pub fn observe() -> impl CraftingStep {
-        Observe {}
-    }
-
-    pub fn focused_synthesis() -> impl CraftingStep {
-        FocusedStep {
-            underlying: Box::new(BasicSynthesis {
-                potency: 200,
-                cp_cost: 5,
-                durability_cost: 10,
-            }),
-        }
-    }
-
-    pub fn focused_touch() -> impl CraftingStep {
-        FocusedStep {
-            underlying: Box::new(BasicTouch {
-                potency: 150,
-                cp_cost: 18,
-                durability_cost: 10,
-            }),
-        }
+        self.durability_cost
     }
 }
 
@@ -416,61 +174,6 @@ impl Actions {
 mod tests {
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
-
-    // basically just setting up scenarios on teamcraft and checking that these numbers match theirs
-
-    #[test]
-    fn basic_synthesis_1() {
-        let final_state =
-            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Basic Synthesis"]).final_state;
-
-        assert_eq!(297, final_state.progress);
-        assert_eq!(60, final_state.durability);
-    }
-
-    #[test]
-    fn careful_synthesis_1() {
-        let final_state =
-            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Careful Synthesis"]).final_state;
-
-        assert_eq!(446, final_state.progress);
-        assert_eq!(60, final_state.durability);
-        assert_eq!(500 - 7, final_state.cp);
-    }
-
-    #[test]
-    fn veneration_increases_next_synthesis_step_by_50_percent() {
-        let final_state = s::run_steps(
-            p::l90_player(),
-            p::rlvl640_gear(),
-            &["Veneration", "Basic Synthesis"],
-        )
-        .final_state;
-
-        assert_eq!(446, final_state.progress);
-        assert_eq!(500 - 18, final_state.cp);
-    }
-
-    #[test]
-    fn veneration_runs_out_after_four_steps() {
-        let final_state = s::run_steps(
-            p::l90_player(),
-            p::rlvl640_gear(),
-            &[
-                "Veneration",
-                "Basic Synthesis",
-                "Basic Synthesis",
-                "Basic Synthesis",
-                "Basic Synthesis",
-                // this fifth synthesis should not be affected by veneration any more
-                "Basic Synthesis",
-            ],
-        )
-        .final_state;
-
-        assert_eq!((446 * 4) + 297, final_state.progress);
-        assert_eq!(500 - 18, final_state.cp);
-    }
 
     #[test]
     fn basic_touch_1() {
@@ -566,55 +269,6 @@ mod tests {
         assert_eq!(247 + 652, final_state.quality);
         assert_eq!(50, final_state.durability);
     }
-
-    #[test]
-    fn focused_synthesis_fails_if_not_preceded_by_observe() {
-        // technically it has a 50% success rate, but we don't want to rely on that in a simulator
-        let final_state = s::run_steps(
-            p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
-            &["Focused Synthesis"],
-        )
-        .final_state;
-
-        assert_eq!(0, final_state.progress);
-        assert_eq!(60, final_state.durability);
-    }
-
-    #[test]
-    fn focused_synthesis_succeeds_if_preceded_by_observe() {
-        let final_state = s::run_steps(
-            p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
-            &["Observe", "Focused Synthesis"],
-        )
-        .final_state;
-
-        assert_eq!(496, final_state.progress);
-        assert_eq!(60, final_state.durability);
-        assert_eq!(622 - 7 - 5, final_state.cp);
-        assert_eq!(2, final_state.steps);
-    }
-
-    #[test]
-    fn focused_touch_succeeds_if_preceded_by_observe() {
-        let final_state = s::run_steps(
-            p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
-            &["Observe", "Focused Touch"],
-        )
-        .final_state;
-
-        assert_eq!(370, final_state.quality);
-        assert_eq!(60, final_state.durability);
-        assert_eq!(622 - 7 - 18, final_state.cp);
-        assert_eq!(2, final_state.steps);
-    }
-
-    // basic -> standard -> advanced is the combo
-    // standard -> advanced doesn't work
-    // basic -> standard -> standard -> advanced breaks the combo
-    // basic -> basic -> standard -> advanced works
 
     #[test]
     fn advanced_touch_costs_46_cp_if_not_comboed() {
