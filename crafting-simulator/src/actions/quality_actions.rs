@@ -25,7 +25,7 @@ fn calc_quality_increase(
     if state.innovation_stacks > 0 {
         buff_modifier_multiplier += 0.5;
     }
-    if state.great_strides {
+    if state.great_strides_stacks > 0 {
         buff_modifier_multiplier += 1.0;
     }
     buff_modifier *= buff_modifier_multiplier;
@@ -40,7 +40,7 @@ impl CraftingStep for BasicTouch {
         CraftingState {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
-            great_strides: false,
+            great_strides_stacks: 0,
             touch_combo_stage: 0,
             ..*state
         }
@@ -90,7 +90,7 @@ impl CraftingStep for GreatStrides {
         _recipe: &Recipe,
     ) -> CraftingState {
         CraftingState {
-            great_strides: true,
+            great_strides_stacks: 4,
             touch_combo_stage: 0,
             ..*state
         }
@@ -254,6 +254,24 @@ mod tests {
         .final_state;
 
         assert_eq!(247 * 2, final_state.quality);
+    }
+
+    #[test]
+    fn great_strides_buff_expires_after_3_turns() {
+        let final_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Great Strides",
+                "Observe",
+                "Observe",
+                "Observe",
+                "Basic Touch",
+            ],
+        )
+        .final_state;
+
+        assert_eq!(247 + 0, final_state.quality);
     }
 
     #[test]

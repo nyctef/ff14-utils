@@ -70,4 +70,8 @@ impl Actions {
     pub fn focused_touch() -> impl CraftingStep {
         FocusedStep::new(Box::new(BasicTouch::new(150, 18, 10)))
     }
+
+    pub fn muscle_memory() -> impl CraftingStep {
+        MuscleMemory {}
+    }
 }
