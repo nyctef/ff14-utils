@@ -5,7 +5,7 @@ use std::collections::HashMap;
 pub struct Simulator;
 
 impl Simulator {
-    pub fn run_steps(player: PlayerStats, recipe: Recipe, steps: &[&str]) -> CraftingState {
+    pub fn run_steps(player: PlayerStats, recipe: Recipe, steps: &[&str]) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, &recipe);
         let actions = Self::make_action_lookup();
         let steps: Vec<_> = steps
@@ -17,7 +17,7 @@ impl Simulator {
             })
             .try_collect()
             .unwrap();
-        steps.iter().fold(initial_state, |prev_state, step| {
+        let final_state = steps.iter().fold(initial_state, |prev_state, step| {
             let mut next = prev_state;
             next.cp = next.cp.saturating_sub(step.cp_cost(&next) as i16);
             next.durability = next
@@ -32,7 +32,9 @@ impl Simulator {
             next.innovation_stacks = next.innovation_stacks.saturating_sub(step.num_steps());
             next.steps += step.num_steps();
             next
-        })
+        });
+
+        CraftingReport { final_state }
     }
 
     fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {

@@ -421,36 +421,39 @@ mod tests {
 
     #[test]
     fn basic_synthesis_1() {
-        let new_state = s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Basic Synthesis"]);
+        let final_state =
+            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Basic Synthesis"]).final_state;
 
-        assert_eq!(297, new_state.progress);
-        assert_eq!(60, new_state.durability);
+        assert_eq!(297, final_state.progress);
+        assert_eq!(60, final_state.durability);
     }
 
     #[test]
     fn careful_synthesis_1() {
-        let new_state = s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Careful Synthesis"]);
+        let final_state =
+            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Careful Synthesis"]).final_state;
 
-        assert_eq!(446, new_state.progress);
-        assert_eq!(60, new_state.durability);
-        assert_eq!(500 - 7, new_state.cp);
+        assert_eq!(446, final_state.progress);
+        assert_eq!(60, final_state.durability);
+        assert_eq!(500 - 7, final_state.cp);
     }
 
     #[test]
     fn veneration_increases_next_synthesis_step_by_50_percent() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player(),
             p::rlvl640_gear(),
             &["Veneration", "Basic Synthesis"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(446, new_state.progress);
-        assert_eq!(500 - 18, new_state.cp);
+        assert_eq!(446, final_state.progress);
+        assert_eq!(500 - 18, final_state.cp);
     }
 
     #[test]
     fn veneration_runs_out_after_four_steps() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player(),
             p::rlvl640_gear(),
             &[
@@ -462,56 +465,60 @@ mod tests {
                 // this fifth synthesis should not be affected by veneration any more
                 "Basic Synthesis",
             ],
-        );
+        )
+        .final_state;
 
-        assert_eq!((446 * 4) + 297, new_state.progress);
-        assert_eq!(500 - 18, new_state.cp);
+        assert_eq!((446 * 4) + 297, final_state.progress);
+        assert_eq!(500 - 18, final_state.cp);
     }
 
     #[test]
     fn basic_touch_1() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(0, new_state.progress);
-        assert_eq!(60, new_state.durability);
-        assert_eq!(247, new_state.quality);
-        assert_eq!(622 - 18, new_state.cp);
+        assert_eq!(0, final_state.progress);
+        assert_eq!(60, final_state.durability);
+        assert_eq!(247, final_state.quality);
+        assert_eq!(622 - 18, final_state.cp);
     }
 
     #[test]
     fn basic_touch_2() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch", "Basic Touch"],
-        );
+        )
+        .final_state;
 
         // each Basic Touch adds an inner quiet stack, so the next touch action will be stronger
-        assert_eq!(247 + 271, new_state.quality);
+        assert_eq!(247 + 271, final_state.quality);
     }
 
     #[test]
     fn basic_touch_caps_at_10_inner_quiet_stacks() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch"; 12],
-        );
+        )
+        .final_state;
 
         // each Basic Touch adds an inner quiet stack, so the next touch action will be stronger
         assert_eq!(
             247 + 271 + 296 + 321 + 345 + 370 + 395 + 419 + 444 + 469 + (2 * 494),
-            new_state.quality
+            final_state.quality
         );
     }
 
     #[test]
     fn innovation_buffs_basic_touch() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &[
@@ -522,80 +529,86 @@ mod tests {
                 "Basic Touch",
                 "Basic Touch",
             ],
-        );
+        )
+        .final_state;
 
         assert_eq!(
             // first four touches get buffed by innovation and inner quiet
             370 + 407 + 444 + 481
             // fifth touch only gets the inner quiet stacks            
              + 345,
-            new_state.quality
+            final_state.quality
         );
     }
 
     #[test]
     fn great_strides_buffs_basic_touch() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Great Strides", "Basic Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(247 * 2, new_state.quality);
+        assert_eq!(247 * 2, final_state.quality);
     }
 
     #[test]
     fn byregots_blessing() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch", "Great Strides", "Byregot's Blessing"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(0, new_state.inner_quiet_stacks);
-        assert_eq!(247 + 652, new_state.quality);
-        assert_eq!(50, new_state.durability);
+        assert_eq!(0, final_state.inner_quiet_stacks);
+        assert_eq!(247 + 652, final_state.quality);
+        assert_eq!(50, final_state.durability);
     }
 
     #[test]
     fn focused_synthesis_fails_if_not_preceded_by_observe() {
         // technically it has a 50% success rate, but we don't want to rely on that in a simulator
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Focused Synthesis"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(0, new_state.progress);
-        assert_eq!(60, new_state.durability);
+        assert_eq!(0, final_state.progress);
+        assert_eq!(60, final_state.durability);
     }
 
     #[test]
     fn focused_synthesis_succeeds_if_preceded_by_observe() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Observe", "Focused Synthesis"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(496, new_state.progress);
-        assert_eq!(60, new_state.durability);
-        assert_eq!(622 - 7 - 5, new_state.cp);
-        assert_eq!(2, new_state.steps);
+        assert_eq!(496, final_state.progress);
+        assert_eq!(60, final_state.durability);
+        assert_eq!(622 - 7 - 5, final_state.cp);
+        assert_eq!(2, final_state.steps);
     }
 
     #[test]
     fn focused_touch_succeeds_if_preceded_by_observe() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Observe", "Focused Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(370, new_state.quality);
-        assert_eq!(60, new_state.durability);
-        assert_eq!(622 - 7 - 18, new_state.cp);
-        assert_eq!(2, new_state.steps);
+        assert_eq!(370, final_state.quality);
+        assert_eq!(60, final_state.durability);
+        assert_eq!(622 - 7 - 18, final_state.cp);
+        assert_eq!(2, final_state.steps);
     }
 
     // basic -> standard -> advanced is the combo
@@ -605,53 +618,57 @@ mod tests {
 
     #[test]
     fn advanced_touch_costs_46_cp_if_not_comboed() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Advanced Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 46, new_state.cp);
+        assert_eq!(622 - 46, final_state.cp);
     }
 
     #[test]
     fn standard_touch_costs_32_cp_if_not_comboed() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Standard Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 32, new_state.cp);
+        assert_eq!(622 - 32, final_state.cp);
     }
 
     #[test]
     fn standard_touch_by_itself_isnt_enough_to_combo_advanced_touch() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Standard Touch", "Advanced Touch"],
-        );
+        )
+        .final_state;
 
         // the tooltip just says "combo action: standard touch" but it
         // seems to require that standard touch was also combo'd from basic touch
-        assert_eq!(622 - 32 - 46, new_state.cp);
+        assert_eq!(622 - 32 - 46, final_state.cp);
     }
 
     #[test]
     fn basic_standard_advanced_touch_combo_works() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch", "Standard Touch", "Advanced Touch"],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 18 - 18 - 18, new_state.cp);
+        assert_eq!(622 - 18 - 18 - 18, final_state.cp);
     }
 
     #[test]
     fn multiple_standard_touches_break_the_combo() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &[
@@ -660,14 +677,15 @@ mod tests {
                 "Standard Touch",
                 "Advanced Touch",
             ],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 18 - 18 - 32 - 46, new_state.cp);
+        assert_eq!(622 - 18 - 18 - 32 - 46, final_state.cp);
     }
 
     #[test]
     fn further_advanced_touches_dont_combo() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &[
@@ -676,14 +694,15 @@ mod tests {
                 "Advanced Touch",
                 "Advanced Touch",
             ],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 18 - 18 - 18 - 46, new_state.cp);
+        assert_eq!(622 - 18 - 18 - 18 - 46, final_state.cp);
     }
 
     #[test]
     fn other_touches_break_the_combo() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &[
@@ -692,14 +711,15 @@ mod tests {
                 "Prudent Touch",
                 "Advanced Touch",
             ],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 18 - 18 - 25 - 46, new_state.cp);
+        assert_eq!(622 - 18 - 18 - 25 - 46, final_state.cp);
     }
 
     #[test]
     fn buff_actions_break_the_combo() {
-        let new_state = s::run_steps(
+        let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &[
@@ -708,9 +728,10 @@ mod tests {
                 "Innovation",
                 "Advanced Touch",
             ],
-        );
+        )
+        .final_state;
 
-        assert_eq!(622 - 18 - 18 - 18 - 46, new_state.cp);
+        assert_eq!(622 - 18 - 18 - 18 - 46, final_state.cp);
     }
 
     // TODO: pretty much every action except basic/standard/advanced touch should break the combo -

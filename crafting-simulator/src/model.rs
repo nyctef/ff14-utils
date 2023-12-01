@@ -89,3 +89,7 @@ pub trait CraftingStep {
         1
     }
 }
+
+pub struct CraftingReport {
+    pub final_state: CraftingState,
+}
