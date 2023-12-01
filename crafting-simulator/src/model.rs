@@ -96,6 +96,14 @@ pub trait CraftingStep {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum CraftStatus {
+    Success,
+    Failure,
+    Incomplete,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CraftingIssue {
     DurabilityFailed { step_index: u8 },
 }
@@ -103,4 +111,5 @@ pub enum CraftingIssue {
 pub struct CraftingReport {
     pub final_state: CraftingState,
     pub issues: Vec<CraftingIssue>,
+    pub state: CraftStatus,
 }
