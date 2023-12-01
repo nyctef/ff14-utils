@@ -26,10 +26,16 @@ impl CraftingStep for BasicSynthesis {
 
         CraftingState {
             progress: state.progress + total_increase,
-            durability: state.durability - self.durability_cost as i16,
-            cp: state.cp - self.cp_cost as i16,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        self.cp_cost
+    }
+
+    fn durability_cost(&self) -> u8 {
+        self.durability_cost
     }
 }
 
@@ -43,13 +49,20 @@ impl CraftingStep for Veneration {
         _recipe: &Recipe,
     ) -> CraftingState {
         CraftingState {
-            cp: state.cp - 18,
             // note that we set the stack count here to 5 instead of 4,
             // since the generic logic will decrement it by 1 every time a step happens.
             // Is there a nicer way to make this read how it should?
             veneration_stacks: 5,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        18
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
     }
 }
 
@@ -90,12 +103,18 @@ impl CraftingStep for BasicTouch {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
         CraftingState {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
-            durability: state.durability - self.durability_cost as i16,
-            cp: state.cp - self.cp_cost as i16,
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
             great_strides: false,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        self.cp_cost
+    }
+
+    fn durability_cost(&self) -> u8 {
+        self.durability_cost
     }
 }
 
@@ -109,11 +128,18 @@ impl CraftingStep for Innovation {
         _recipe: &Recipe,
     ) -> CraftingState {
         CraftingState {
-            cp: state.cp - 18,
             // see above comment about veneration stacks being 5 instead of 4
             innovation_stacks: 5,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        18
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
     }
 }
 
@@ -126,10 +152,17 @@ impl CraftingStep for GreatStrides {
         _recipe: &Recipe,
     ) -> CraftingState {
         CraftingState {
-            cp: state.cp - 32,
             great_strides: true,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        32
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
     }
 }
 
@@ -142,12 +175,18 @@ impl CraftingStep for ByregotsBlessing {
         }
         let potency = 100 + (state.inner_quiet_stacks as u16 * 20);
         CraftingState {
-            cp: state.cp - 24,
             inner_quiet_stacks: 0,
             quality: state.quality + calc_quality_increase(stats, recipe, state, potency),
-            durability: state.durability - 10,
             ..*state
         }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        24
+    }
+
+    fn durability_cost(&self) -> u8 {
+        10
     }
 }
 

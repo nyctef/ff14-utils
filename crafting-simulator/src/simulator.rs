@@ -19,7 +19,15 @@ impl Simulator {
             .unwrap();
         steps.iter().fold(initial_state, |prev_state, step| {
             let mut next = prev_state;
+            next.cp = next.cp.saturating_sub(step.cp_cost() as i16);
+            next.durability = next
+                .durability
+                .saturating_sub(step.durability_cost() as i16);
+
+            // TODO warn or error if cp+durability are now negative and/or zero
+
             next = step.apply(&next, &player, &recipe);
+
             next.veneration_stacks = next.veneration_stacks.saturating_sub(step.num_steps());
             next.innovation_stacks = next.innovation_stacks.saturating_sub(step.num_steps());
             next.steps += step.num_steps();

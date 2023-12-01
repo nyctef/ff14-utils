@@ -72,6 +72,10 @@ pub struct RecipeLevel {
 pub trait CraftingStep {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
 
+    fn cp_cost(&self) -> u8;
+
+    fn durability_cost(&self) -> u8;
+
     /**
      * most of the time, a crafting step will increment the step count by one as expected. Some exceptions:
      * - if we do combo steps, then those count as more than one
