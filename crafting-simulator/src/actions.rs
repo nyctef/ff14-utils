@@ -213,13 +213,8 @@ impl CraftingStep for Observe {
     }
 }
 
-pub struct FocusedSynthesis {}
-impl FocusedSynthesis {
-    const UNDERLYING: BasicSynthesis = BasicSynthesis {
-        potency: 200,
-        cp_cost: 5,
-        durability_cost: 10,
-    };
+pub struct FocusedSynthesis {
+    underlying: Box<dyn CraftingStep>,
 }
 impl CraftingStep for FocusedSynthesis {
     fn apply(
@@ -233,15 +228,15 @@ impl CraftingStep for FocusedSynthesis {
             return state.clone();
         }
 
-        FocusedSynthesis::UNDERLYING.apply(state, _stats, _recipe)
+        self.underlying.apply(state, _stats, _recipe)
     }
 
     fn cp_cost(&self) -> u8 {
-        FocusedSynthesis::UNDERLYING.cp_cost()
+        self.underlying.cp_cost()
     }
 
     fn durability_cost(&self) -> u8 {
-        FocusedSynthesis::UNDERLYING.durability_cost()
+        self.underlying.durability_cost()
     }
 }
 
@@ -326,7 +321,13 @@ impl Actions {
     }
 
     pub fn focused_synthesis() -> impl CraftingStep {
-        FocusedSynthesis {}
+        FocusedSynthesis {
+            underlying: Box::new(BasicSynthesis {
+                potency: 200,
+                cp_cost: 5,
+                durability_cost: 10,
+            }),
+        }
     }
 }
 
