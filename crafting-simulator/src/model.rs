@@ -29,6 +29,7 @@ pub struct CraftingState {
     pub veneration_stacks: u8,
     pub innovation_stacks: u8,
     pub great_strides: bool,
+    pub prev_step_was_observe: bool,
 }
 
 impl CraftingState {
@@ -43,6 +44,7 @@ impl CraftingState {
             veneration_stacks: 0,
             innovation_stacks: 0,
             great_strides: false,
+            prev_step_was_observe: false,
         }
     }
 

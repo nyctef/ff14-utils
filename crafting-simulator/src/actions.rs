@@ -190,6 +190,61 @@ impl CraftingStep for ByregotsBlessing {
     }
 }
 
+pub struct Observe {}
+impl CraftingStep for Observe {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            prev_step_was_observe: true,
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self) -> u8 {
+        7
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
+    }
+}
+
+pub struct FocusedSynthesis {}
+impl FocusedSynthesis {
+    const UNDERLYING: BasicSynthesis = BasicSynthesis {
+        potency: 200,
+        cp_cost: 5,
+        durability_cost: 10,
+    };
+}
+impl CraftingStep for FocusedSynthesis {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        if !state.prev_step_was_observe {
+            // TODO output some  kind of warning or error
+            return state.clone();
+        }
+
+        FocusedSynthesis::UNDERLYING.apply(state, _stats, _recipe)
+    }
+
+    fn cp_cost(&self) -> u8 {
+        FocusedSynthesis::UNDERLYING.cp_cost()
+    }
+
+    fn durability_cost(&self) -> u8 {
+        FocusedSynthesis::UNDERLYING.durability_cost()
+    }
+}
+
 pub struct Actions {}
 impl Actions {
     pub fn basic_synthesis() -> impl CraftingStep {
@@ -264,6 +319,14 @@ impl Actions {
 
     pub fn byregots_blessing() -> impl CraftingStep {
         ByregotsBlessing {}
+    }
+
+    pub fn observe() -> impl CraftingStep {
+        Observe {}
+    }
+
+    pub fn focused_synthesis() -> impl CraftingStep {
+        FocusedSynthesis {}
     }
 }
 
@@ -410,5 +473,32 @@ mod tests {
         assert_eq!(0, new_state.inner_quiet_stacks);
         assert_eq!(247 + 652, new_state.quality);
         assert_eq!(50, new_state.durability);
+    }
+
+    #[test]
+    fn focused_synthesis_fails_if_not_preceded_by_observe() {
+        // technically it has a 50% success rate, but we don't want to rely on that in a simulator
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Focused Synthesis"],
+        );
+
+        assert_eq!(0, new_state.progress);
+        assert_eq!(60, new_state.durability);
+    }
+
+    #[test]
+    fn focused_synthesis_succeeds_if_preceded_by_observe() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Observe", "Focused Synthesis"],
+        );
+
+        assert_eq!(496, new_state.progress);
+        assert_eq!(60, new_state.durability);
+        assert_eq!(622 - 7 - 5, new_state.cp);
+        assert_eq!(2, new_state.steps);
     }
 }
