@@ -29,4 +29,27 @@ impl Presets {
     pub fn l90_player_with_jhinga_biryani_hq() -> PlayerStats {
         PlayerStats::level_90(4014, 3574 + 90, 536 + 86)
     }
+
+    pub fn baseline_player() -> PlayerStats {
+        // craftsmanship and control here are chosen to cancel out the +2 and +35 terms
+        // in the progress/quality calculations
+        PlayerStats::level_90(980, 650, 1000)
+    }
+
+    pub fn baseline_recipe(difficulty: u16, durability: u16, quality_target: u16) -> Recipe {
+        Recipe {
+            rlvl: RecipeLevel {
+                // we assume the rlvl is always higher than the player's crafter level
+                rlvl: 999,
+                // these values just cancel out in the progress/quality calculations
+                progress_divider: 100,
+                progress_modifier: 100,
+                quality_divider: 100,
+                quality_modifier: 100,
+            },
+            difficulty,
+            durability,
+            quality_target,
+        }
+    }
 }

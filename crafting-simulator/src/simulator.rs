@@ -47,3 +47,37 @@ impl Simulator {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::presets::Presets as p;
+    use crate::simulator::Simulator as s;
+
+    // for simplicity we'll create a few baseline setups which should mean
+    // that the actual progress/quality numbers are just equal to the potency
+    // values of the actions themselves
+
+    #[test]
+    fn baseline_synthesis_is_potency() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(1000, 70, 1000),
+            &["Basic Synthesis"],
+        )
+        .final_state;
+
+        assert_eq!(120, final_state.progress);
+    }
+
+    #[test]
+    fn baseline_touch_is_potency() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(1000, 70, 1000),
+            &["Basic Touch"],
+        )
+        .final_state;
+
+        assert_eq!(100, final_state.quality);
+    }
+}
