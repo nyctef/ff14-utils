@@ -1,6 +1,7 @@
 use super::focused_actions::*;
 use super::progress_actions::*;
 use super::quality_actions::*;
+use super::repair_actions::*;
 use crate::model::CraftingStep;
 
 pub struct Actions {}
@@ -73,5 +74,9 @@ impl Actions {
 
     pub fn muscle_memory() -> impl CraftingStep {
         MuscleMemory {}
+    }
+
+    pub fn manipulation() -> impl CraftingStep {
+        Manipulation {}
     }
 }

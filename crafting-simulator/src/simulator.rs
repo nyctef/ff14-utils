@@ -28,10 +28,16 @@ impl Simulator {
 
             next = step.apply(&next, &player, &recipe);
 
+            if next.manipulation_stacks > 0 && next.manipulation_delay == 0 {
+                next.durability = i16::min(next.durability + 5, recipe.durability as i16);
+            }
+
             next.veneration_stacks = next.veneration_stacks.saturating_sub(step.num_steps());
             next.innovation_stacks = next.innovation_stacks.saturating_sub(step.num_steps());
             next.muscle_memory_stacks = next.muscle_memory_stacks.saturating_sub(step.num_steps());
             next.great_strides_stacks = next.great_strides_stacks.saturating_sub(step.num_steps());
+            next.manipulation_stacks = next.manipulation_stacks.saturating_sub(step.num_steps());
+            next.manipulation_delay = next.manipulation_delay.saturating_sub(step.num_steps());
             next.steps += step.num_steps();
             next
         });
@@ -58,6 +64,7 @@ impl Simulator {
         m.insert("Standard Touch", Box::new(Actions::standard_touch()));
         m.insert("Advanced Touch", Box::new(Actions::advanced_touch()));
         m.insert("Muscle Memory", Box::new(Actions::muscle_memory()));
+        m.insert("Manipulation", Box::new(Actions::manipulation()));
         m
     }
 }

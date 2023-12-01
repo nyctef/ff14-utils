@@ -30,6 +30,8 @@ pub struct CraftingState {
     pub innovation_stacks: u8,
     pub great_strides_stacks: u8,
     pub muscle_memory_stacks: u8,
+    pub manipulation_stacks: u8,
+    pub manipulation_delay: u8,
     pub prev_step_was_observe: bool,
     pub touch_combo_stage: u8,
 }
@@ -47,6 +49,8 @@ impl CraftingState {
             innovation_stacks: 0,
             great_strides_stacks: 0,
             muscle_memory_stacks: 0,
+            manipulation_stacks: 0,
+            manipulation_delay: 0,
             prev_step_was_observe: false,
             touch_combo_stage: 0,
         }
