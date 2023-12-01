@@ -17,3 +17,5 @@ things that we aren't considering (yet?)
 - minimum required stats for a craft
 - action potency changes from earlier levels (eg a lower-level crafter has 100 potency for basic synthesis rather than 120)
 - crafting state procs (excellent/poor/good/etc)
+- specialist actions
+- expert recipes

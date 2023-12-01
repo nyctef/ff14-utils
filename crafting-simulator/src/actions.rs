@@ -26,11 +26,12 @@ impl CraftingStep for BasicSynthesis {
 
         CraftingState {
             progress: state.progress + total_increase,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         self.cp_cost
     }
 
@@ -53,11 +54,12 @@ impl CraftingStep for Veneration {
             // since the generic logic will decrement it by 1 every time a step happens.
             // Is there a nicer way to make this read how it should?
             veneration_stacks: 5,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         18
     }
 
@@ -105,11 +107,12 @@ impl CraftingStep for BasicTouch {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
             great_strides: false,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         self.cp_cost
     }
 
@@ -130,11 +133,12 @@ impl CraftingStep for Innovation {
         CraftingState {
             // see above comment about veneration stacks being 5 instead of 4
             innovation_stacks: 5,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         18
     }
 
@@ -153,11 +157,12 @@ impl CraftingStep for GreatStrides {
     ) -> CraftingState {
         CraftingState {
             great_strides: true,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         32
     }
 
@@ -177,11 +182,12 @@ impl CraftingStep for ByregotsBlessing {
         CraftingState {
             inner_quiet_stacks: 0,
             quality: state.quality + calc_quality_increase(stats, recipe, state, potency),
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         24
     }
 
@@ -200,11 +206,12 @@ impl CraftingStep for Observe {
     ) -> CraftingState {
         CraftingState {
             prev_step_was_observe: true,
+            touch_combo_stage: 0,
             ..*state
         }
     }
 
-    fn cp_cost(&self, state: &CraftingState) -> u8 {
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
         7
     }
 
@@ -237,6 +244,45 @@ impl CraftingStep for FocusedStep {
 
     fn durability_cost(&self) -> u8 {
         self.underlying.durability_cost()
+    }
+}
+
+pub struct ComboTouch {
+    touch_combo_stage_required: Option<u8>,
+    touch_combo_stage_applied: u8,
+    potency: u16,
+    regular_cp_cost: u8,
+    combo_cp_cost: u8,
+    durability_cost: u8,
+}
+impl CraftingStep for ComboTouch {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        let new_touch_combo_stage = if self.touch_combo_stage_required.is_none()
+            || self.touch_combo_stage_required == Some(state.touch_combo_stage)
+        {
+            self.touch_combo_stage_applied
+        } else {
+            0
+        };
+
+        CraftingState {
+            inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
+            quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
+            touch_combo_stage: new_touch_combo_stage,
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
+        if self.touch_combo_stage_required == Some(state.touch_combo_stage) {
+            self.combo_cp_cost
+        } else {
+            self.regular_cp_cost
+        }
+    }
+
+    fn durability_cost(&self) -> u8 {
+        10
     }
 }
 
@@ -279,10 +325,35 @@ impl Actions {
     }
 
     pub fn basic_touch() -> impl CraftingStep {
-        BasicTouch {
+        ComboTouch {
             potency: 100,
-            cp_cost: 18,
+            regular_cp_cost: 18,
+            combo_cp_cost: 18,
             durability_cost: 10,
+            touch_combo_stage_required: None,
+            touch_combo_stage_applied: 1,
+        }
+    }
+
+    pub fn standard_touch() -> impl CraftingStep {
+        ComboTouch {
+            potency: 125,
+            regular_cp_cost: 32,
+            combo_cp_cost: 18,
+            durability_cost: 10,
+            touch_combo_stage_required: Some(1),
+            touch_combo_stage_applied: 2,
+        }
+    }
+
+    pub fn advanced_touch() -> impl CraftingStep {
+        ComboTouch {
+            potency: 150,
+            regular_cp_cost: 46,
+            combo_cp_cost: 18,
+            durability_cost: 10,
+            touch_combo_stage_required: Some(2),
+            touch_combo_stage_applied: 0,
         }
     }
 
@@ -526,4 +597,123 @@ mod tests {
         assert_eq!(622 - 7 - 18, new_state.cp);
         assert_eq!(2, new_state.steps);
     }
+
+    // basic -> standard -> advanced is the combo
+    // standard -> advanced doesn't work
+    // basic -> standard -> standard -> advanced breaks the combo
+    // basic -> basic -> standard -> advanced works
+
+    #[test]
+    fn advanced_touch_costs_46_cp_if_not_comboed() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Advanced Touch"],
+        );
+
+        assert_eq!(622 - 46, new_state.cp);
+    }
+
+    #[test]
+    fn standard_touch_costs_32_cp_if_not_comboed() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Standard Touch"],
+        );
+
+        assert_eq!(622 - 32, new_state.cp);
+    }
+
+    #[test]
+    fn standard_touch_by_itself_isnt_enough_to_combo_advanced_touch() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Standard Touch", "Advanced Touch"],
+        );
+
+        // the tooltip just says "combo action: standard touch" but it
+        // seems to require that standard touch was also combo'd from basic touch
+        assert_eq!(622 - 32 - 46, new_state.cp);
+    }
+
+    #[test]
+    fn basic_standard_advanced_touch_combo_works() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Basic Touch", "Standard Touch", "Advanced Touch"],
+        );
+
+        assert_eq!(622 - 18 - 18 - 18, new_state.cp);
+    }
+
+    #[test]
+    fn multiple_standard_touches_break_the_combo() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Basic Touch",
+                "Standard Touch",
+                "Standard Touch",
+                "Advanced Touch",
+            ],
+        );
+
+        assert_eq!(622 - 18 - 18 - 32 - 46, new_state.cp);
+    }
+
+    #[test]
+    fn further_advanced_touches_dont_combo() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Basic Touch",
+                "Standard Touch",
+                "Advanced Touch",
+                "Advanced Touch",
+            ],
+        );
+
+        assert_eq!(622 - 18 - 18 - 18 - 46, new_state.cp);
+    }
+
+    #[test]
+    fn other_touches_break_the_combo() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Basic Touch",
+                "Standard Touch",
+                "Prudent Touch",
+                "Advanced Touch",
+            ],
+        );
+
+        assert_eq!(622 - 18 - 18 - 25 - 46, new_state.cp);
+    }
+
+    #[test]
+    fn buff_actions_break_the_combo() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &[
+                "Basic Touch",
+                "Standard Touch",
+                "Innovation",
+                "Advanced Touch",
+            ],
+        );
+
+        assert_eq!(622 - 18 - 18 - 18 - 46, new_state.cp);
+    }
+
+    // TODO: pretty much every action except basic/standard/advanced touch should break the combo -
+    // is there a way we can reliably test them all, or move the logic somehow so that resetting
+    // the combo is the default behavior?
 }

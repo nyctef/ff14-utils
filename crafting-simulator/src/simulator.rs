@@ -51,6 +51,8 @@ impl Simulator {
         m.insert("Observe", Box::new(Actions::observe()));
         m.insert("Focused Synthesis", Box::new(Actions::focused_synthesis()));
         m.insert("Focused Touch", Box::new(Actions::focused_touch()));
+        m.insert("Standard Touch", Box::new(Actions::standard_touch()));
+        m.insert("Advanced Touch", Box::new(Actions::advanced_touch()));
         m
     }
 }

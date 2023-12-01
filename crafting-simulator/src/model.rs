@@ -30,6 +30,7 @@ pub struct CraftingState {
     pub innovation_stacks: u8,
     pub great_strides: bool,
     pub prev_step_was_observe: bool,
+    pub touch_combo_stage: u8,
 }
 
 impl CraftingState {
@@ -45,6 +46,7 @@ impl CraftingState {
             innovation_stacks: 0,
             great_strides: false,
             prev_step_was_observe: false,
+            touch_combo_stage: 0,
         }
     }
 
