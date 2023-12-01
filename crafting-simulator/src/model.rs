@@ -96,6 +96,11 @@ pub trait CraftingStep {
     }
 }
 
+pub enum CraftingIssue {
+    DurabilityFailed { step_index: u8 },
+}
+
 pub struct CraftingReport {
     pub final_state: CraftingState,
+    pub issues: Vec<CraftingIssue>,
 }

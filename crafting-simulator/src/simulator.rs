@@ -42,7 +42,10 @@ impl Simulator {
             next
         });
 
-        CraftingReport { final_state }
+        CraftingReport {
+            final_state,
+            issues: Vec::new(),
+        }
     }
 
     fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
