@@ -74,7 +74,7 @@ pub struct RecipeLevel {
 pub trait CraftingStep {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
 
-    fn cp_cost(&self) -> u8;
+    fn cp_cost(&self, state: &CraftingState) -> u8;
 
     fn durability_cost(&self) -> u8;
 

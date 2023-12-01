@@ -30,7 +30,7 @@ impl CraftingStep for BasicSynthesis {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         self.cp_cost
     }
 
@@ -57,7 +57,7 @@ impl CraftingStep for Veneration {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         18
     }
 
@@ -109,7 +109,7 @@ impl CraftingStep for BasicTouch {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         self.cp_cost
     }
 
@@ -134,7 +134,7 @@ impl CraftingStep for Innovation {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         18
     }
 
@@ -157,7 +157,7 @@ impl CraftingStep for GreatStrides {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         32
     }
 
@@ -181,7 +181,7 @@ impl CraftingStep for ByregotsBlessing {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         24
     }
 
@@ -204,7 +204,7 @@ impl CraftingStep for Observe {
         }
     }
 
-    fn cp_cost(&self) -> u8 {
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
         7
     }
 
@@ -231,8 +231,8 @@ impl CraftingStep for FocusedStep {
         self.underlying.apply(state, _stats, _recipe)
     }
 
-    fn cp_cost(&self) -> u8 {
-        self.underlying.cp_cost()
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
+        self.underlying.cp_cost(state)
     }
 
     fn durability_cost(&self) -> u8 {
