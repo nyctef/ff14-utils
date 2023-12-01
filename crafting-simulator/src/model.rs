@@ -28,6 +28,7 @@ pub struct CraftingState {
     pub inner_quiet_stacks: u8,
     pub veneration_stacks: u8,
     pub innovation_stacks: u8,
+    pub great_strides: bool,
 }
 
 impl CraftingState {
@@ -41,6 +42,7 @@ impl CraftingState {
             inner_quiet_stacks: 0,
             veneration_stacks: 0,
             innovation_stacks: 0,
+            great_strides: false,
         }
     }
 

@@ -68,9 +68,14 @@ impl CraftingStep for BasicTouch {
         let mut buff_modifier: f32 = 1.0;
         buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
 
+        let mut buff_modifier_multiplier = 1.0;
         if state.innovation_stacks > 0 {
-            buff_modifier *= 1.5;
+            buff_modifier_multiplier += 0.5;
         }
+        if state.great_strides {
+            buff_modifier_multiplier += 1.0;
+        }
+        buff_modifier *= buff_modifier_multiplier;
 
         let total_quality_increase =
             buff_modifier * (base_quality_modified_by_level * self.potency) as f32 / 100.;
@@ -79,6 +84,7 @@ impl CraftingStep for BasicTouch {
             durability: state.durability - self.durability_cost as i16,
             cp: state.cp - self.cp_cost as i16,
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
+            great_strides: false,
             ..*state
         }
     }
@@ -97,6 +103,22 @@ impl CraftingStep for Innovation {
             cp: state.cp - 18,
             // see above comment about veneration stacks being 5 instead of 4
             innovation_stacks: 5,
+            ..*state
+        }
+    }
+}
+
+pub struct GreatStrides {}
+impl CraftingStep for GreatStrides {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            cp: state.cp - 32,
+            great_strides: true,
             ..*state
         }
     }
@@ -168,6 +190,10 @@ impl Actions {
 
     pub fn innovation() -> impl CraftingStep {
         Innovation {}
+    }
+
+    pub fn great_strides() -> impl CraftingStep {
+        GreatStrides {}
     }
 }
 
@@ -290,5 +316,16 @@ mod tests {
              + 345,
             new_state.quality
         );
+    }
+
+    #[test]
+    fn great_strides_buffs_basic_touch() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Great Strides", "Basic Touch"],
+        );
+
+        assert_eq!(247 * 2, new_state.quality);
     }
 }

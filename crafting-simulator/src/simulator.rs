@@ -37,6 +37,7 @@ impl Simulator {
         m.insert("Prudent Touch", Box::new(Actions::prudent_touch()));
         m.insert("Preparatory Touch", Box::new(Actions::preparatory_touch()));
         m.insert("Innovation", Box::new(Actions::innovation()));
+        m.insert("Great Strides", Box::new(Actions::great_strides()));
         m
     }
 }
