@@ -1,5 +1,5 @@
 use crate::{actions::Actions, model::*};
-use color_eyre::eyre::Result;
+use itertools::Itertools;
 use std::collections::HashMap;
 
 pub struct Simulator;
@@ -8,15 +8,16 @@ impl Simulator {
     pub fn run_steps(player: PlayerStats, recipe: Recipe, steps: &[&str]) -> CraftingState {
         let initial_state = CraftingState::initial(&player, &recipe);
         let actions = Self::make_action_lookup();
-        let steps: Result<Vec<_>, _> = steps
+        let steps: Vec<_> = steps
             .iter()
             .map(|name| {
                 actions
                     .get(name)
                     .ok_or_else(|| format!("Unknown action: {}", name))
             })
-            .collect();
-        steps.unwrap().iter().fold(initial_state, |state, step| {
+            .try_collect()
+            .unwrap();
+        steps.iter().fold(initial_state, |state, step| {
             let mut next_state = state;
             next_state.veneration_stacks = state.veneration_stacks.saturating_sub(1);
             next_state.innovation_stacks = state.innovation_stacks.saturating_sub(1);
