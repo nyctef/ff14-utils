@@ -23,11 +23,6 @@ impl Presets {
     }
 
     pub fn l90_player() -> PlayerStats {
-        PlayerStats {
-            player_lvl: 560,
-            craftsmanship: 4014,
-            control: 3574,
-            cp: 500,
-        }
+        PlayerStats::level_90(4014, 3574, 500)
     }
 }
