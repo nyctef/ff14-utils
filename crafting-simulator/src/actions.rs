@@ -106,22 +106,9 @@ pub fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{Recipe, RLVL640};
+    use crate::presets::Presets as p;
 
     // basically just setting up scenarios on teamcraft and checking that these numbers match theirs
-
-    static RLVL640_GEAR: Recipe = Recipe {
-        rlvl: RLVL640,
-        difficulty: 6600,
-        durability: 70,
-        quality_target: 14040,
-    };
-    static L90_PLAYER: PlayerStats = PlayerStats {
-        player_lvl: 560,
-        craftsmanship: 4014,
-        control: 3574,
-        cp: 500,
-    };
 
     fn run_steps(
         initial_state: CraftingState,
@@ -142,12 +129,12 @@ mod tests {
 
     #[test]
     fn basic_synthesis_1() {
-        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
 
         let new_state = run_steps(
             initial_state,
-            L90_PLAYER,
-            RLVL640_GEAR,
+            p::l90_player(),
+            p::rlvl640_gear(),
             &["Basic Synthesis"],
         );
 
@@ -157,12 +144,12 @@ mod tests {
 
     #[test]
     fn careful_synthesis_1() {
-        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
 
         let new_state = run_steps(
             initial_state,
-            L90_PLAYER,
-            RLVL640_GEAR,
+            p::l90_player(),
+            p::rlvl640_gear(),
             &["Careful Synthesis"],
         );
 
@@ -173,11 +160,11 @@ mod tests {
 
     #[test]
     fn veneration_increases_next_synthesis_step_by_50_percent() {
-        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
         let new_state = run_steps(
             initial_state,
-            L90_PLAYER,
-            RLVL640_GEAR,
+            p::l90_player(),
+            p::rlvl640_gear(),
             &["Veneration", "Basic Synthesis"],
         );
 
@@ -187,12 +174,12 @@ mod tests {
 
     #[test]
     fn veneration_runs_out_after_four_steps() {
-        let initial_state = CraftingState::initial(&L90_PLAYER, &RLVL640_GEAR);
+        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
 
         let new_state = run_steps(
             initial_state,
-            L90_PLAYER,
-            RLVL640_GEAR,
+            p::l90_player(),
+            p::rlvl640_gear(),
             &[
                 "Veneration",
                 "Basic Synthesis",

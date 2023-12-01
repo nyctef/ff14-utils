@@ -65,14 +65,6 @@ pub struct RecipeLevel {
     pub quality_modifier: u8,
 }
 
-pub static RLVL640: RecipeLevel = RecipeLevel {
-    rlvl: 640,
-    progress_divider: 130,
-    progress_modifier: 80,
-    quality_divider: 180,
-    quality_modifier: 100,
-};
-
 pub trait CraftingStep {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
 
