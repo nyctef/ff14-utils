@@ -20,7 +20,7 @@ impl Simulator {
             (Vec::<CraftingIssue>::new(), initial_state),
             |(prev_issues, prev_state), step| {
                 let mut next = prev_state;
-                let mut next_issues = prev_issues.clone();
+                let mut next_issues = prev_issues;
 
                 next.cp = next.cp.saturating_sub(step.cp_cost(&next) as i16);
                 next.durability = next
