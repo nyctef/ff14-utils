@@ -26,8 +26,8 @@ impl CraftingStep for BasicSynthesis {
 
         CraftingState {
             progress: state.progress + total_increase,
-            durability: state.durability - self.durability_cost as u16,
-            cp: state.cp - self.cp_cost as u16,
+            durability: state.durability - self.durability_cost as i16,
+            cp: state.cp - self.cp_cost as i16,
             ..*state
         }
     }
@@ -65,11 +65,16 @@ impl CraftingStep for BasicTouch {
         let base_quality_modified_by_level =
             (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u16;
 
-        let total_quality_increase = (base_quality_modified_by_level * self.potency) / 100;
+        let mut buff_modifier: f32 = 1.0;
+        buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
+
+        let total_quality_increase =
+            buff_modifier * (base_quality_modified_by_level * self.potency) as f32 / 100.;
         CraftingState {
-            quality: state.quality + total_quality_increase,
-            durability: state.durability - self.durability_cost as u16,
-            cp: state.cp - self.cp_cost as u16,
+            quality: state.quality + total_quality_increase as u16,
+            durability: state.durability - self.durability_cost as i16,
+            cp: state.cp - self.cp_cost as i16,
+            inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
             ..*state
         }
     }
@@ -118,6 +123,24 @@ impl Actions {
             potency: 100,
             cp_cost: 18,
             durability_cost: 10,
+        }
+    }
+
+    // TODO: standard and advanced touch (probably easiest to implement these as combo steps?)
+
+    pub fn prudent_touch() -> impl CraftingStep {
+        BasicTouch {
+            potency: 100,
+            cp_cost: 25,
+            durability_cost: 5,
+        }
+    }
+
+    pub fn preparatory_touch() -> impl CraftingStep {
+        BasicTouch {
+            potency: 200,
+            cp_cost: 40,
+            durability_cost: 20,
         }
     }
 }
@@ -214,5 +237,40 @@ mod tests {
         assert_eq!(60, new_state.durability);
         assert_eq!(247, new_state.quality);
         assert_eq!(622 - 18, new_state.cp);
+    }
+
+    #[test]
+    fn basic_touch_2() {
+        let initial_state =
+            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
+
+        let new_state = s::run_steps(
+            initial_state,
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Basic Touch", "Basic Touch"],
+        );
+
+        // each Basic Touch adds an inner quiet stack, so the next touch action will be stronger
+        assert_eq!(247 + 271, new_state.quality);
+    }
+
+    #[test]
+    fn basic_touch_caps_at_10_inner_quiet_stacks() {
+        let initial_state =
+            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
+
+        let new_state = s::run_steps(
+            initial_state,
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Basic Touch"; 12],
+        );
+
+        // each Basic Touch adds an inner quiet stack, so the next touch action will be stronger
+        assert_eq!(
+            247 + 271 + 296 + 321 + 345 + 370 + 395 + 419 + 444 + 469 + (2 * 494),
+            new_state.quality
+        );
     }
 }

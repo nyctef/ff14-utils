@@ -20,10 +20,10 @@ impl PlayerStats {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct CraftingState {
-    pub durability: u16,
+    pub durability: i16,
     pub progress: u16,
     pub quality: u16,
-    pub cp: u16,
+    pub cp: i16,
     pub steps: u8,
     pub inner_quiet_stacks: u8,
     pub veneration_stacks: u8,
@@ -32,10 +32,10 @@ pub struct CraftingState {
 impl CraftingState {
     pub fn new(durability: u16, cp: u16) -> CraftingState {
         CraftingState {
-            durability,
+            durability: durability as i16,
             progress: 0,
             quality: 0,
-            cp,
+            cp: cp as i16,
             steps: 0,
             inner_quiet_stacks: 0,
             veneration_stacks: 0,
