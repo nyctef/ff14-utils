@@ -213,10 +213,10 @@ impl CraftingStep for Observe {
     }
 }
 
-pub struct FocusedSynthesis {
+pub struct FocusedStep {
     underlying: Box<dyn CraftingStep>,
 }
-impl CraftingStep for FocusedSynthesis {
+impl CraftingStep for FocusedStep {
     fn apply(
         &self,
         state: &CraftingState,
@@ -321,10 +321,20 @@ impl Actions {
     }
 
     pub fn focused_synthesis() -> impl CraftingStep {
-        FocusedSynthesis {
+        FocusedStep {
             underlying: Box::new(BasicSynthesis {
                 potency: 200,
                 cp_cost: 5,
+                durability_cost: 10,
+            }),
+        }
+    }
+
+    pub fn focused_touch() -> impl CraftingStep {
+        FocusedStep {
+            underlying: Box::new(BasicTouch {
+                potency: 150,
+                cp_cost: 18,
                 durability_cost: 10,
             }),
         }
@@ -500,6 +510,20 @@ mod tests {
         assert_eq!(496, new_state.progress);
         assert_eq!(60, new_state.durability);
         assert_eq!(622 - 7 - 5, new_state.cp);
+        assert_eq!(2, new_state.steps);
+    }
+
+    #[test]
+    fn focused_touch_succeeds_if_preceded_by_observe() {
+        let new_state = s::run_steps(
+            p::l90_player_with_jhinga_biryani_hq(),
+            p::rlvl640_gear(),
+            &["Observe", "Focused Touch"],
+        );
+
+        assert_eq!(370, new_state.quality);
+        assert_eq!(60, new_state.durability);
+        assert_eq!(622 - 7 - 18, new_state.cp);
         assert_eq!(2, new_state.steps);
     }
 }

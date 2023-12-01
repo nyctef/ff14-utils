@@ -50,6 +50,7 @@ impl Simulator {
         m.insert("Byregot's Blessing", Box::new(Actions::byregots_blessing()));
         m.insert("Observe", Box::new(Actions::observe()));
         m.insert("Focused Synthesis", Box::new(Actions::focused_synthesis()));
+        m.insert("Focused Touch", Box::new(Actions::focused_touch()));
         m
     }
 }
