@@ -5,12 +5,8 @@ use crate::{actions::Actions, model::*};
 pub struct Simulator;
 
 impl Simulator {
-    pub fn run_steps(
-        initial_state: CraftingState,
-        player: PlayerStats,
-        recipe: Recipe,
-        steps: &[&str],
-    ) -> CraftingState {
+    pub fn run_steps(player: PlayerStats, recipe: Recipe, steps: &[&str]) -> CraftingState {
+        let initial_state = CraftingState::initial(&player, &recipe);
         let actions = Self::make_action_lookup();
         let steps = steps.iter().map(|name| actions.get(name).unwrap());
 

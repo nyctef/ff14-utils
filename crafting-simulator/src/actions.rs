@@ -147,7 +147,6 @@ impl Actions {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -155,14 +154,7 @@ mod tests {
 
     #[test]
     fn basic_synthesis_1() {
-        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
-
-        let new_state = s::run_steps(
-            initial_state,
-            p::l90_player(),
-            p::rlvl640_gear(),
-            &["Basic Synthesis"],
-        );
+        let new_state = s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Basic Synthesis"]);
 
         assert_eq!(297, new_state.progress);
         assert_eq!(60, new_state.durability);
@@ -170,14 +162,7 @@ mod tests {
 
     #[test]
     fn careful_synthesis_1() {
-        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
-
-        let new_state = s::run_steps(
-            initial_state,
-            p::l90_player(),
-            p::rlvl640_gear(),
-            &["Careful Synthesis"],
-        );
+        let new_state = s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Careful Synthesis"]);
 
         assert_eq!(446, new_state.progress);
         assert_eq!(60, new_state.durability);
@@ -186,9 +171,7 @@ mod tests {
 
     #[test]
     fn veneration_increases_next_synthesis_step_by_50_percent() {
-        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
         let new_state = s::run_steps(
-            initial_state,
             p::l90_player(),
             p::rlvl640_gear(),
             &["Veneration", "Basic Synthesis"],
@@ -200,10 +183,7 @@ mod tests {
 
     #[test]
     fn veneration_runs_out_after_four_steps() {
-        let initial_state = CraftingState::initial(&p::l90_player(), &p::rlvl640_gear());
-
         let new_state = s::run_steps(
-            initial_state,
             p::l90_player(),
             p::rlvl640_gear(),
             &[
@@ -223,11 +203,7 @@ mod tests {
 
     #[test]
     fn basic_touch_1() {
-        let initial_state =
-            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
-
         let new_state = s::run_steps(
-            initial_state,
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch"],
@@ -241,11 +217,7 @@ mod tests {
 
     #[test]
     fn basic_touch_2() {
-        let initial_state =
-            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
-
         let new_state = s::run_steps(
-            initial_state,
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch", "Basic Touch"],
@@ -257,11 +229,7 @@ mod tests {
 
     #[test]
     fn basic_touch_caps_at_10_inner_quiet_stacks() {
-        let initial_state =
-            CraftingState::initial(&p::l90_player_with_jhinga_biryani_hq(), &p::rlvl640_gear());
-
         let new_state = s::run_steps(
-            initial_state,
             p::l90_player_with_jhinga_biryani_hq(),
             p::rlvl640_gear(),
             &["Basic Touch"; 12],
@@ -272,5 +240,10 @@ mod tests {
             247 + 271 + 296 + 321 + 345 + 370 + 395 + 419 + 444 + 469 + (2 * 494),
             new_state.quality
         );
+    }
+
+    #[test]
+    fn innovation_buffs_basic_touch() {
+        todo!();
     }
 }
