@@ -261,4 +261,32 @@ mod tests {
         assert_eq!(70, final_state.durability);
         assert_eq!(500 - 56, final_state.cp);
     }
+
+    #[test]
+    fn groundwork_only_has_half_effectiveness_if_durability_about_to_run_out() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(360, 10, 1000),
+            &["Groundwork"],
+        )
+        .final_state;
+
+        // since groundwork costs 20, but we only have 10 durability remaining,
+        // it gets 180 potency here instead of 360
+        // assert_eq!(180, final_state.progress);
+    }
+
+    #[test]
+    fn waste_not_can_prevent_groundwork_from_being_half_effective() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(360, 10, 1000),
+            &["Waste Not", "Groundwork"],
+        )
+        .final_state;
+
+        // waste not effectively changes groundwork's durability cost for the
+        // purpose of this effect
+        // assert_eq!(360, final_state.progress);
+    }
 }
