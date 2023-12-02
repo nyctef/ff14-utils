@@ -124,6 +124,7 @@ impl CraftingStep for ByregotsBlessing {
             inner_quiet_stacks: 0,
             quality: state.quality + calc_quality_increase(stats, recipe, state, potency),
             touch_combo_stage: 0,
+            great_strides_stacks: 0,
             ..*state
         })
     }
@@ -160,6 +161,7 @@ impl InfallibleStep for ComboTouch {
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             touch_combo_stage: new_touch_combo_stage,
+            great_strides_stacks: 0,
             ..*state
         }
     }
