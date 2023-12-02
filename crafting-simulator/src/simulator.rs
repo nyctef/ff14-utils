@@ -53,6 +53,10 @@ impl Simulator {
                     ));
                 }
 
+                if next.cp < 0 {
+                    next_issues.push(CraftingIssue::new(CraftingIssueType::OutOfCP, next.steps));
+                }
+
                 if next.manipulation_stacks > 0 && next.manipulation_delay == 0 {
                     next.durability = i16::min(next.durability + 5, recipe.durability as i16);
                 }
@@ -93,7 +97,7 @@ impl Simulator {
 mod tests {
     use itertools::Itertools;
 
-    use crate::model::{CraftStatus, CraftingIssueType};
+    use crate::model::{CraftStatus, CraftingIssueType, PlayerStats};
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -187,7 +191,37 @@ mod tests {
 
     #[test]
     fn craft_fails_if_cp_runs_out() {
-        todo!()
+        let report = s::run_steps(
+            // very little CP available
+            PlayerStats::level_90(4000, 4000, 10),
+            p::baseline_recipe(1000, 40, 1000),
+            &["Groundwork"],
+        );
+
+        // technically not having enough CP just results in one action failing
+        // and the rest of the craft macro continuing, but it's almost always
+        // fatal in practice.
+
+        assert_eq!(CraftStatus::Failure, report.state);
+        let single_issue = report.issues.into_iter().exactly_one().unwrap();
+        assert_eq!(CraftingIssueType::OutOfCP, single_issue.issue_type);
+        assert_eq!(0, single_issue.step_index);
+    }
+
+    #[test]
+    fn reaching_zero_cp_does_not_fail_the_craft() {
+        // it just prevents you from using any cp-consuming actions
+        // (at least according to teamcraft - haven't tested this one personally)
+        let report = s::run_steps(
+            // very little CP available
+            PlayerStats::level_90(4000, 4000, 18),
+            p::baseline_recipe(480, 40, 1000),
+            // this is just enough to exactly hit 480 potency
+            &["Groundwork", "Basic Synthesis"],
+        );
+
+        assert_eq!(CraftStatus::Success, report.state);
+        assert!(report.issues.is_empty());
     }
 
     #[test]
@@ -198,6 +232,11 @@ mod tests {
     #[test]
     fn cp_and_durability_can_end_up_negative() {
         // since we potentially want to give some preference to sequences that almost don't run out of cp
+        todo!()
+    }
+
+    #[test]
+    fn quality_increases_after_craft_complete_do_not_count() {
         todo!()
     }
 }
