@@ -110,6 +110,7 @@ pub enum CraftingIssue {
     DurabilityFailed { step_index: u8 },
 }
 
+#[derive(Debug)]
 pub struct CraftingReport {
     pub final_state: CraftingState,
     pub issues: Vec<CraftingIssue>,

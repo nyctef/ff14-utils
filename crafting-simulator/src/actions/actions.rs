@@ -43,11 +43,11 @@ impl Actions {
     // TODO: standard and advanced touch (probably easiest to implement these as combo steps?)
 
     fn prudent_touch() -> impl CraftingStep {
-        BasicTouch::new(100, 25, 5, true)
+        BasicTouch::new(100, 25, 5, 1, true)
     }
 
     fn preparatory_touch() -> impl CraftingStep {
-        BasicTouch::new(200, 40, 20, false)
+        BasicTouch::new(200, 40, 20, 2, false)
     }
 
     fn innovation() -> impl CraftingStep {
@@ -71,7 +71,7 @@ impl Actions {
     }
 
     fn focused_touch() -> impl CraftingStep {
-        FocusedStep::new(Box::new(BasicTouch::new(150, 18, 10, false)))
+        FocusedStep::new(Box::new(BasicTouch::new(150, 18, 10, 1, false)))
     }
 
     fn muscle_memory() -> impl CraftingStep {

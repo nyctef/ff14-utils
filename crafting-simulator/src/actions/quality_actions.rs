@@ -6,6 +6,7 @@ pub struct BasicTouch {
     potency: u16,
     cp_cost: u8,
     durability_cost: u8,
+    inner_quiet_stacks: u8,
     prevented_by_waste_not: bool,
 }
 
@@ -17,7 +18,7 @@ fn calc_quality_increase(
 ) -> u16 {
     let base_quality = (stats.control * 10) / recipe.rlvl.quality_divider as u16 + 35;
     let base_quality_modified_by_level =
-        (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u16;
+        (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u32;
 
     let mut buff_modifier: f32 = 1.0;
     buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
@@ -32,7 +33,7 @@ fn calc_quality_increase(
     buff_modifier *= buff_modifier_multiplier;
 
     let total_quality_increase =
-        buff_modifier * (base_quality_modified_by_level * potency) as f32 / 100.;
+        buff_modifier * (base_quality_modified_by_level * potency as u32) as f32 / 100.;
     total_quality_increase as u16
 }
 
@@ -45,7 +46,7 @@ impl CraftingStep for BasicTouch {
 
         CraftingState {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
-            inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + 1),
+            inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + self.inner_quiet_stacks),
             great_strides_stacks: 0,
             touch_combo_stage: 0,
             ..*state
@@ -431,5 +432,17 @@ mod tests {
 
         // assert_eq!(70, final_state.durability);
         //assert_eq!(500 - 56, final_state.cp);
+    }
+
+    #[test]
+    fn preparatory_touch_increases_inner_quiet_by_2() {
+        let final_state = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &["Preparatory Touch", "Preparatory Touch"],
+        )
+        .final_state;
+
+        assert_eq!(4, final_state.inner_quiet_stacks);
     }
 }
