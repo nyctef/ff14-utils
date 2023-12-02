@@ -38,7 +38,7 @@ impl RandomGenerator {
             vec!["Manipulation"],
             vec!["Waste Not"],
             vec!["Waste Not II"],
-            vec!["Master's Mend"],
+            // vec!["Master's Mend"],
         ];
         let rng = &mut thread_rng();
         let length = rng.gen_range(self.min_length..=self.max_length);
