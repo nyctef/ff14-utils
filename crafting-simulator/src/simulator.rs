@@ -78,7 +78,7 @@ impl Simulator {
 
         let state = match (
             final_state.progress >= recipe.difficulty,
-            !issues.is_empty(),
+            issues.iter().any(|i| i.issue_type.is_fatal()),
         ) {
             (true, false) => CraftStatus::Success,
             (_, true) => CraftStatus::Failure,
@@ -226,7 +226,19 @@ mod tests {
 
     #[test]
     fn other_issues_reported_by_actions_are_listed_but_are_not_fatal() {
-        todo!()
+        let report = s::run_steps(
+            PlayerStats::level_90(4000, 4000, 100),
+            p::baseline_recipe(480, 40, 1000),
+            // this is just enough to exactly hit 480 potency
+            &["Groundwork", "Byregot's Blessing", "Basic Synthesis"],
+        );
+
+        assert_eq!(CraftStatus::Success, report.state);
+        let single_issue = report.issues.into_iter().exactly_one().unwrap();
+        assert_eq!(
+            CraftingIssueType::LackingInnerQuiet,
+            single_issue.issue_type
+        );
     }
 
     #[test]

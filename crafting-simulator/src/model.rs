@@ -147,7 +147,7 @@ pub enum CraftingIssueType {
 
 impl CraftingIssueType {
     /// whether a particular issue ends the craft, or just causes one action to fail
-    fn is_fatal(&self) -> bool {
+    pub fn is_fatal(&self) -> bool {
         match self {
             CraftingIssueType::DurabilityFailed => true,
             CraftingIssueType::OutOfCP => true,
