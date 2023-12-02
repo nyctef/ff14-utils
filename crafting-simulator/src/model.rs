@@ -35,6 +35,7 @@ pub struct CraftingState {
     pub manipulation_stacks: u8,
     pub manipulation_delay: u8,
     pub waste_not_stacks: u8,
+    // TODO: this doesn't currently get unset anywhere
     pub prev_step_was_observe: bool,
     pub touch_combo_stage: u8,
 }
