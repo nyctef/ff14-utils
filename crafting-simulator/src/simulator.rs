@@ -28,7 +28,7 @@ impl Simulator {
                 let durability_cost_divider = if next.waste_not_stacks > 0 { 2 } else { 1 };
                 let durability_cost = (step.durability_cost() / durability_cost_divider) as i16;
 
-                match dbg!(step.apply(&next, &player, &recipe)) {
+                match step.apply(&next, &player, &recipe) {
                     Ok(step_result) => {
                         // step applied correctly, so we take its updated state and pay its cp/durability cost
                         next = step_result;
