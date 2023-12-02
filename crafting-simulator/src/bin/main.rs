@@ -21,7 +21,6 @@ struct CraftingScore {
 #[derive(Debug, Constructor, Clone)]
 struct Candidate {
     steps: Vec<&'static str>,
-    report: CraftingReport,
     score: CraftingScore,
 }
 
@@ -70,7 +69,7 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
 fn score_steps(player: PlayerStats, recipe: Recipe, steps: Vec<&'static str>) -> Candidate {
     let report = sim::run_steps(player, recipe, &steps);
     let score = score_report(&recipe, &report);
-    Candidate::new(steps, report, score)
+    Candidate::new(steps, score)
 }
 
 fn main() {
