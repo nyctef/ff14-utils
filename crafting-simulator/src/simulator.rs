@@ -28,12 +28,16 @@ impl Simulator {
                     .durability
                     .saturating_sub((step.durability_cost() / durability_cost_divider) as i16);
 
-                next = step.apply(&next, &player, &recipe);
+                match step.apply(&next, &player, &recipe) {
+                    Ok(step_result) => next = step_result,
+                    Err(issue) => next_issues.push(CraftingIssue::new(issue, next.steps)),
+                }
 
                 if next.durability <= 0 && next.progress < recipe.difficulty {
-                    next_issues.push(CraftingIssue::DurabilityFailed {
-                        step_index: next.steps,
-                    });
+                    next_issues.push(CraftingIssue::new(
+                        CraftingIssueType::DurabilityFailed,
+                        next.steps,
+                    ));
                 }
 
                 if next.manipulation_stacks > 0 && next.manipulation_delay == 0 {
@@ -76,7 +80,7 @@ impl Simulator {
 mod tests {
     use itertools::Itertools;
 
-    use crate::model::{CraftStatus, CraftingIssue};
+    use crate::model::{CraftStatus, CraftingIssueType};
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -150,11 +154,10 @@ mod tests {
         );
 
         assert_eq!(CraftStatus::Failure, report.state);
-        assert_eq!(
-            // step indexes here are 0-indexed
-            CraftingIssue::DurabilityFailed { step_index: 3 },
-            report.issues.into_iter().exactly_one().unwrap()
-        );
+        let single_issue = report.issues.into_iter().exactly_one().unwrap();
+        assert_eq!(CraftingIssueType::DurabilityFailed, single_issue.issue_type);
+        // step indexes here are 0-indexed
+        assert_eq!(3, single_issue.step_index);
     }
 
     #[test]

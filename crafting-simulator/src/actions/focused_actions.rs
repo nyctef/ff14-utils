@@ -1,9 +1,11 @@
-use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use crate::model::{
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
+};
 use derive_more::Constructor;
 
 #[derive(Constructor)]
 pub struct Observe {}
-impl CraftingStep for Observe {
+impl InfallibleStep for Observe {
     fn apply(
         &self,
         state: &CraftingState,
@@ -31,15 +33,9 @@ pub struct FocusedStep {
     underlying: Box<dyn CraftingStep>,
 }
 impl CraftingStep for FocusedStep {
-    fn apply(
-        &self,
-        state: &CraftingState,
-        _stats: &PlayerStats,
-        _recipe: &Recipe,
-    ) -> CraftingState {
+    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> StepResult {
         if !state.prev_step_was_observe {
-            // TODO output some  kind of warning or error
-            return state.clone();
+            return Err(CraftingIssueType::FocusedStepWithoutObserve);
         }
 
         self.underlying.apply(state, _stats, _recipe)

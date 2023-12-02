@@ -1,8 +1,8 @@
-use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use crate::model::{CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe};
 use derive_more::Constructor;
 
 pub struct Manipulation {}
-impl CraftingStep for Manipulation {
+impl InfallibleStep for Manipulation {
     fn apply(
         &self,
         state: &CraftingState,
@@ -30,7 +30,7 @@ pub struct WasteNot {
     length: u8,
     cp_cost: u8,
 }
-impl CraftingStep for WasteNot {
+impl InfallibleStep for WasteNot {
     fn apply(
         &self,
         state: &CraftingState,
@@ -53,7 +53,7 @@ impl CraftingStep for WasteNot {
 }
 
 pub struct MastersMend {}
-impl CraftingStep for MastersMend {
+impl InfallibleStep for MastersMend {
     fn apply(&self, state: &CraftingState, _stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
         CraftingState {
             durability: i16::min(recipe.durability as i16, state.durability + 30),

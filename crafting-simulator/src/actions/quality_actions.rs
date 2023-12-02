@@ -1,4 +1,7 @@
-use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use crate::model::{
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats,
+    Recipe, StepResult,
+};
 use derive_more::Constructor;
 
 #[derive(Constructor)]
@@ -38,19 +41,18 @@ fn calc_quality_increase(
 }
 
 impl CraftingStep for BasicTouch {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
         if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
-            // TODO: warning or error
-            return state.clone();
+            return Err(CraftingIssueType::PreventedByWasteNot);
         }
 
-        CraftingState {
+        Ok(CraftingState {
             quality: state.quality + calc_quality_increase(stats, recipe, state, self.potency),
             inner_quiet_stacks: u8::min(10, state.inner_quiet_stacks + self.inner_quiet_stacks),
             great_strides_stacks: 0,
             touch_combo_stage: 0,
             ..*state
-        }
+        })
     }
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
@@ -64,7 +66,7 @@ impl CraftingStep for BasicTouch {
 
 pub struct Innovation {}
 
-impl CraftingStep for Innovation {
+impl InfallibleStep for Innovation {
     fn apply(
         &self,
         state: &CraftingState,
@@ -89,7 +91,7 @@ impl CraftingStep for Innovation {
 }
 
 pub struct GreatStrides {}
-impl CraftingStep for GreatStrides {
+impl InfallibleStep for GreatStrides {
     fn apply(
         &self,
         state: &CraftingState,
@@ -114,18 +116,17 @@ impl CraftingStep for GreatStrides {
 
 pub struct ByregotsBlessing {}
 impl CraftingStep for ByregotsBlessing {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
         if state.inner_quiet_stacks == 0 {
-            // TODO: emit a warning or an error somehow?
-            return state.clone();
+            return Err(CraftingIssueType::LackingInnerQuiet);
         }
         let potency = 100 + (state.inner_quiet_stacks as u16 * 20);
-        CraftingState {
+        Ok(CraftingState {
             inner_quiet_stacks: 0,
             quality: state.quality + calc_quality_increase(stats, recipe, state, potency),
             touch_combo_stage: 0,
             ..*state
-        }
+        })
     }
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
@@ -146,7 +147,7 @@ pub struct ComboTouch {
     touch_combo_stage_applied: u8,
     durability_cost: u8,
 }
-impl CraftingStep for ComboTouch {
+impl InfallibleStep for ComboTouch {
     fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
         let new_touch_combo_stage = if self.touch_combo_stage_required.is_none()
             || self.touch_combo_stage_required == Some(state.touch_combo_stage)

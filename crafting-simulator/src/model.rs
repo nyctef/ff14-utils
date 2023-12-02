@@ -1,3 +1,5 @@
+use derive_more::Constructor;
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct PlayerStats {
     /* Not the player's visible level, but the internal level that gets checked against the recipe's rlvl */
@@ -80,8 +82,10 @@ pub struct RecipeLevel {
     pub quality_modifier: u8,
 }
 
+pub type StepResult = Result<CraftingState, CraftingIssueType>;
+
 pub trait CraftingStep {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult;
 
     fn cp_cost(&self, state: &CraftingState) -> u8;
 
@@ -97,6 +101,33 @@ pub trait CraftingStep {
     }
 }
 
+/** InfallibleStep is very similar to CraftingStep, except it always returns a CraftingState instead of a result type. This just makes the common case require a bit less typing. */
+pub trait InfallibleStep {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
+
+    fn cp_cost(&self, state: &CraftingState) -> u8;
+
+    fn durability_cost(&self) -> u8;
+
+    fn num_steps(&self) -> u8 {
+        1
+    }
+}
+
+impl<T: InfallibleStep> CraftingStep for T {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+        Ok(T::apply(self, state, stats, recipe))
+    }
+
+    fn cp_cost(&self, state: &CraftingState) -> u8 {
+        T::cp_cost(self, state)
+    }
+
+    fn durability_cost(&self) -> u8 {
+        T::durability_cost(self)
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CraftStatus {
     Success,
@@ -105,8 +136,30 @@ pub enum CraftStatus {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum CraftingIssue {
-    DurabilityFailed { step_index: u8 },
+pub enum CraftingIssueType {
+    OutOfCP,
+    DurabilityFailed,
+    LackingInnerQuiet,
+    PreventedByWasteNot,
+    NotOnFirstStep,
+    FocusedStepWithoutObserve,
+}
+
+impl CraftingIssueType {
+    /// whether a particular issue ends the craft, or just causes one action to fail
+    fn is_fatal(&self) -> bool {
+        match self {
+            CraftingIssueType::DurabilityFailed => true,
+            CraftingIssueType::OutOfCP => true,
+            _ => false,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Constructor)]
+pub struct CraftingIssue {
+    pub issue_type: CraftingIssueType,
+    pub step_index: u8,
 }
 
 #[derive(Debug)]

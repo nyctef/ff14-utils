@@ -1,4 +1,6 @@
-use crate::model::{CraftingState, CraftingStep, PlayerStats, Recipe};
+use crate::model::{
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
+};
 use derive_more::Constructor;
 
 #[derive(Constructor)]
@@ -34,20 +36,19 @@ fn calculate_progress_increase(
 }
 
 impl CraftingStep for BasicSynthesis {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
         if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
-            // TODO: warning or error
-            return state.clone();
+            return Err(CraftingIssueType::PreventedByWasteNot);
         }
 
         let total_increase = calculate_progress_increase(state, stats, recipe, self.potency);
 
-        CraftingState {
+        Ok(CraftingState {
             progress: state.progress + total_increase,
             touch_combo_stage: 0,
             muscle_memory_stacks: 0,
             ..*state
-        }
+        })
     }
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
@@ -62,7 +63,7 @@ impl CraftingStep for BasicSynthesis {
 #[derive(Constructor)]
 pub struct Veneration {}
 
-impl CraftingStep for Veneration {
+impl InfallibleStep for Veneration {
     fn apply(
         &self,
         state: &CraftingState,
@@ -91,17 +92,16 @@ impl CraftingStep for Veneration {
 #[derive(Constructor)]
 pub struct MuscleMemory {}
 impl CraftingStep for MuscleMemory {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
         if state.steps > 0 {
-            // TODO: output some kind of warning or error
-            return state.clone();
+            return Err(CraftingIssueType::NotOnFirstStep);
         }
 
-        CraftingState {
+        Ok(CraftingState {
             progress: state.progress + calculate_progress_increase(state, stats, recipe, 300),
             muscle_memory_stacks: 6,
             ..*state
-        }
+        })
     }
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
