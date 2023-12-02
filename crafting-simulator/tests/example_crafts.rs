@@ -92,5 +92,7 @@ fn why_doesnt_this_work() {
     );
 
     dbg!(&report);
+    assert_eq!(5519, report.final_state.quality);
+    assert_eq!(6247, report.final_state.progress);
     assert_eq!(CraftStatus::Failure, report.status);
 }
