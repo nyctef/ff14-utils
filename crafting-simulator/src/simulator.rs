@@ -1,3 +1,5 @@
+use std::ops::ControlFlow;
+
 use crate::{actions::Actions, model::*};
 use itertools::Itertools;
 
@@ -16,7 +18,7 @@ impl Simulator {
             })
             .try_collect()
             .unwrap();
-        let (issues, final_state) = steps.iter().fold(
+        let fold_result = steps.iter().try_fold(
             (Vec::<CraftingIssue>::new(), initial_state),
             |(prev_issues, prev_state), step| {
                 let mut next = prev_state;
@@ -47,14 +49,25 @@ impl Simulator {
                 }
 
                 if next.durability <= 0 && next.progress < recipe.difficulty {
+                    // craft failed
                     next_issues.push(CraftingIssue::new(
                         CraftingIssueType::DurabilityFailed,
                         next.steps,
                     ));
+                    return ControlFlow::Break((next_issues, next));
                 }
 
                 if next.cp < 0 {
+                    // this isn't technically an outright error, but the sequence is unlikely to work any more.
+                    // TODO: prevent the previous step which didn't have enough CP from running
+                    // TODO: try continuing the craft and just prevent any future steps with insufficient CP
                     next_issues.push(CraftingIssue::new(CraftingIssueType::OutOfCP, next.steps));
+                    return ControlFlow::Break((next_issues, next));
+                }
+
+                if next.progress >= recipe.difficulty {
+                    // craft succeeded
+                    return ControlFlow::Break((next_issues, next));
                 }
 
                 if next.manipulation_stacks > 0 && next.manipulation_delay == 0 {
@@ -72,11 +85,14 @@ impl Simulator {
                 next.manipulation_delay = next.manipulation_delay.saturating_sub(step.num_steps());
                 next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
                 next.steps += step.num_steps();
-                (next_issues, next)
+
+                return ControlFlow::Continue((next_issues, next));
             },
         );
 
-        let state = match (
+        let (issues, final_state) = either_controlflow(fold_result);
+
+        let status = match (
             final_state.progress >= recipe.difficulty,
             issues.iter().any(|i| i.issue_type.is_fatal()),
         ) {
@@ -88,8 +104,16 @@ impl Simulator {
         CraftingReport {
             final_state,
             issues,
-            state,
+            status,
         }
+    }
+}
+
+fn either_controlflow<T>(input: ControlFlow<T, T>) -> T {
+    // TODO: is there a builtin method for this?
+    match input {
+        ControlFlow::Continue(c) => c,
+        ControlFlow::Break(b) => b,
     }
 }
 
@@ -140,7 +164,7 @@ mod tests {
 
         assert_eq!(360, report.final_state.progress);
         assert_eq!(40, report.final_state.durability);
-        assert_eq!(CraftStatus::Success, report.state);
+        assert_eq!(CraftStatus::Success, report.status);
     }
 
     #[test]
@@ -153,7 +177,7 @@ mod tests {
             &["Basic Synthesis"],
         );
 
-        assert_eq!(CraftStatus::Incomplete, report.state);
+        assert_eq!(CraftStatus::Incomplete, report.status);
     }
 
     #[test]
@@ -170,7 +194,7 @@ mod tests {
             ],
         );
 
-        assert_eq!(CraftStatus::Failure, report.state);
+        assert_eq!(CraftStatus::Failure, report.status);
         let single_issue = report.issues.into_iter().exactly_one().unwrap();
         assert_eq!(CraftingIssueType::DurabilityFailed, single_issue.issue_type);
         // step indexes here are 0-indexed
@@ -186,7 +210,7 @@ mod tests {
             &["Basic Synthesis"],
         );
 
-        assert_eq!(CraftStatus::Success, report.state);
+        assert_eq!(CraftStatus::Success, report.status);
     }
 
     #[test]
@@ -202,7 +226,7 @@ mod tests {
         // and the rest of the craft macro continuing, but it's almost always
         // fatal in practice.
 
-        assert_eq!(CraftStatus::Failure, report.state);
+        assert_eq!(CraftStatus::Failure, report.status);
         let single_issue = report.issues.into_iter().exactly_one().unwrap();
         assert_eq!(CraftingIssueType::OutOfCP, single_issue.issue_type);
         assert_eq!(0, single_issue.step_index);
@@ -220,20 +244,19 @@ mod tests {
             &["Groundwork", "Basic Synthesis"],
         );
 
-        assert_eq!(CraftStatus::Success, report.state);
+        assert_eq!(CraftStatus::Success, report.status);
         assert!(report.issues.is_empty());
     }
 
     #[test]
     fn other_issues_reported_by_actions_are_listed_but_are_not_fatal() {
         let report = s::run_steps(
-            PlayerStats::level_90(4000, 4000, 100),
-            p::baseline_recipe(480, 40, 1000),
-            // this is just enough to exactly hit 480 potency
+            p::baseline_player(),
+            p::baseline_recipe(480, 70, 1000),
             &["Groundwork", "Byregot's Blessing", "Basic Synthesis"],
         );
 
-        assert_eq!(CraftStatus::Success, report.state);
+        assert_eq!(CraftStatus::Success, report.status);
         let single_issue = report.issues.into_iter().exactly_one().unwrap();
         assert_eq!(
             CraftingIssueType::LackingInnerQuiet,
@@ -257,6 +280,28 @@ mod tests {
 
     #[test]
     fn quality_increases_after_craft_complete_do_not_count() {
-        todo!()
+        let report = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(360, 100, 1000),
+            // the first Groundwork completes the crafts, so the extra Basic Touchs don't apply
+            &["Groundwork", "Basic Touch", "Basic Touch"],
+        );
+
+        assert_eq!(CraftStatus::Success, report.status);
+        assert_eq!(360, report.final_state.progress);
+        assert_eq!(0, report.final_state.quality);
+    }
+
+    #[test]
+    fn progress_increases_after_craft_failure_do_not_count() {
+        let report = s::run_steps(
+            p::baseline_player(),
+            p::baseline_recipe(500, 10, 1000),
+            // We run out of durability after the first Groundwork - the second would complete the craft, but it doesn't get to run
+            &["Groundwork", "Groundwork"],
+        );
+
+        assert_eq!(CraftStatus::Failure, report.status);
+        assert_eq!(360, report.final_state.progress);
     }
 }

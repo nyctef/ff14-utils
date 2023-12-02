@@ -36,6 +36,6 @@ fn can_craft_garnet_cotton_with_100_percent_quality() {
     );
 
     dbg!(&report);
-    assert_eq!(CraftStatus::Success, report.state);
+    assert_eq!(CraftStatus::Success, report.status);
     assert!(report.final_state.quality >= recipe.quality_target);
 }

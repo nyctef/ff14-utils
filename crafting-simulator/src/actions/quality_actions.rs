@@ -179,6 +179,7 @@ impl InfallibleStep for ComboTouch {
 
 #[cfg(test)]
 mod tests {
+    use crate::model::Recipe;
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -214,7 +215,11 @@ mod tests {
     fn basic_touch_caps_at_10_inner_quiet_stacks() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            Recipe {
+                // we wouldn't normally be able to run 12 basic touches in a row >.>
+                durability: 200,
+                ..p::rlvl640_gear()
+            },
             &["Basic Touch"; 12],
         )
         .final_state;

@@ -149,7 +149,7 @@ mod tests {
             ],
         );
 
-        assert_eq!(CraftStatus::Failure, just_too_late.state);
+        assert_eq!(CraftStatus::Failure, just_too_late.status);
     }
 
     #[test]

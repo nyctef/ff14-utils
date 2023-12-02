@@ -166,5 +166,5 @@ pub struct CraftingIssue {
 pub struct CraftingReport {
     pub final_state: CraftingState,
     pub issues: Vec<CraftingIssue>,
-    pub state: CraftStatus,
+    pub status: CraftStatus,
 }
