@@ -74,7 +74,9 @@ impl Simulator {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::CraftStatus;
+    use itertools::Itertools;
+
+    use crate::model::{CraftStatus, CraftingIssue};
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -148,6 +150,11 @@ mod tests {
         );
 
         assert_eq!(CraftStatus::Failure, report.state);
+        assert_eq!(
+            // step indexes here are 0-indexed
+            CraftingIssue::DurabilityFailed { step_index: 3 },
+            report.issues.into_iter().exactly_one().unwrap()
+        );
     }
 
     #[test]
