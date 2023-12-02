@@ -142,7 +142,7 @@ pub enum CraftingIssueType {
     LackingInnerQuiet,
     PreventedByWasteNot,
     NotOnFirstStep,
-    FocusedStepWithoutObserve,
+    ChanceBasedAction,
 }
 
 impl CraftingIssueType {

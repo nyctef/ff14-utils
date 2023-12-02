@@ -1,6 +1,5 @@
 use crate::model::{
-    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats,
-    Recipe, StepResult,
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
 };
 use derive_more::Constructor;
 
@@ -428,11 +427,8 @@ mod tests {
         .final_state;
 
         assert_eq!(0, final_state.quality);
-        // TODO: we don't actually have a good way of preventing the durability cost from triggering here
-        // maybe we need to bring back the Result<,> return type from applying crafting steps?
-
-        // assert_eq!(70, final_state.durability);
-        //assert_eq!(500 - 56, final_state.cp);
+        assert_eq!(70, final_state.durability);
+        assert_eq!(500 - 56, final_state.cp);
     }
 
     #[test]

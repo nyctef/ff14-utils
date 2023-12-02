@@ -181,8 +181,8 @@ mod tests {
         .final_state;
 
         assert_eq!(0, final_state.progress);
-        assert_eq!(60, final_state.durability);
-        assert_eq!(500 - 18 - 6, final_state.cp);
+        assert_eq!(70, final_state.durability);
+        assert_eq!(500 - 18, final_state.cp);
     }
 
     #[test]
@@ -258,10 +258,7 @@ mod tests {
         .final_state;
 
         assert_eq!(0, final_state.progress);
-        // TODO: we don't actually have a good way of preventing the durability cost from triggering here
-        // maybe we need to bring back the Result<,> return type from applying crafting steps?
-
-        // assert_eq!(70, final_state.durability);
-        //assert_eq!(500 - 56, final_state.cp);
+        assert_eq!(70, final_state.durability);
+        assert_eq!(500 - 56, final_state.cp);
     }
 }

@@ -35,7 +35,7 @@ pub struct FocusedStep {
 impl CraftingStep for FocusedStep {
     fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> StepResult {
         if !state.prev_step_was_observe {
-            return Err(CraftingIssueType::FocusedStepWithoutObserve);
+            return Err(CraftingIssueType::ChanceBasedAction);
         }
 
         self.underlying.apply(state, _stats, _recipe)

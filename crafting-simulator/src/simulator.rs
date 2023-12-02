@@ -22,15 +22,28 @@ impl Simulator {
                 let mut next = prev_state;
                 let mut next_issues = prev_issues;
 
-                next.cp = next.cp.saturating_sub(step.cp_cost(&next) as i16);
+                let cp_cost = step.cp_cost(&next) as i16;
                 let durability_cost_divider = if next.waste_not_stacks > 0 { 2 } else { 1 };
-                next.durability = next
-                    .durability
-                    .saturating_sub((step.durability_cost() / durability_cost_divider) as i16);
+                let durability_cost = (step.durability_cost() / durability_cost_divider) as i16;
 
-                match step.apply(&next, &player, &recipe) {
-                    Ok(step_result) => next = step_result,
-                    Err(issue) => next_issues.push(CraftingIssue::new(issue, next.steps)),
+                match dbg!(step.apply(&next, &player, &recipe)) {
+                    Ok(step_result) => {
+                        // step applied correctly, so we take its updated state and pay its cp/durability cost
+                        next = step_result;
+                        next.cp = next.cp.saturating_sub(cp_cost);
+                        next.durability = next.durability.saturating_sub(durability_cost);
+                    }
+                    Err(issue) if issue == CraftingIssueType::ChanceBasedAction => {
+                        // we assume chance based actions fail, but we still pay the durability/cp cost
+                        next.cp = next.cp.saturating_sub(cp_cost);
+                        next.durability = next.durability.saturating_sub(durability_cost);
+                        next_issues.push(CraftingIssue::new(issue, next.steps))
+                    }
+                    Err(other_issue) => {
+                        // step errored, but didn't break the whole craft
+                        // (are there any cases here where we need to check issue.is_fatal()?)
+                        next_issues.push(CraftingIssue::new(other_issue, next.steps))
+                    }
                 }
 
                 if next.durability <= 0 && next.progress < recipe.difficulty {
@@ -179,6 +192,12 @@ mod tests {
 
     #[test]
     fn other_issues_reported_by_actions_are_listed_but_are_not_fatal() {
+        todo!()
+    }
+
+    #[test]
+    fn cp_and_durability_can_end_up_negative() {
+        // since we potentially want to give some preference to sequences that almost don't run out of cp
         todo!()
     }
 }
