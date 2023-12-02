@@ -30,13 +30,13 @@ impl Simulator {
                     Ok(step_result) => {
                         // step applied correctly, so we take its updated state and pay its cp/durability cost
                         next = step_result;
-                        next.cp = next.cp.saturating_sub(cp_cost);
-                        next.durability = next.durability.saturating_sub(durability_cost);
+                        next.cp = next.cp - cp_cost;
+                        next.durability = next.durability - durability_cost;
                     }
                     Err(issue) if issue == CraftingIssueType::ChanceBasedAction => {
                         // we assume chance based actions fail, but we still pay the durability/cp cost
-                        next.cp = next.cp.saturating_sub(cp_cost);
-                        next.durability = next.durability.saturating_sub(durability_cost);
+                        next.cp = next.cp - cp_cost;
+                        next.durability = next.durability - durability_cost;
                         next_issues.push(CraftingIssue::new(issue, next.steps))
                     }
                     Err(other_issue) => {
@@ -232,7 +232,15 @@ mod tests {
     #[test]
     fn cp_and_durability_can_end_up_negative() {
         // since we potentially want to give some preference to sequences that almost don't run out of cp
-        todo!()
+        let report = s::run_steps(
+            // very little CP available
+            PlayerStats::level_90(4000, 4000, 10),
+            p::baseline_recipe(480, 10, 1000),
+            &["Groundwork"],
+        );
+
+        assert_eq!(-10, report.final_state.durability);
+        assert_eq!(-8, report.final_state.cp);
     }
 
     #[test]
