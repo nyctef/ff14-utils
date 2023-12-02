@@ -69,7 +69,6 @@ pub struct Recipe {
     pub difficulty: u16,
     pub durability: u16,
     pub quality_target: u16,
-    // TODO: is it worth tracking if the recipe accepts HQ mats?
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

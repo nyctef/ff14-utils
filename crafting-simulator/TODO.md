@@ -19,3 +19,4 @@ things that we aren't considering (yet?)
 - crafting state procs (excellent/poor/good/etc)
 - specialist actions
 - expert recipes
+- track if hq mats help with the recipe quality or not

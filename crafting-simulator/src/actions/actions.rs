@@ -40,8 +40,6 @@ impl Actions {
         ComboTouch::new(150, 46, 18, Some(2), 0, 10)
     }
 
-    // TODO: standard and advanced touch (probably easiest to implement these as combo steps?)
-
     fn prudent_touch() -> impl CraftingStep {
         BasicTouch::new(100, 25, 5, 1, true)
     }

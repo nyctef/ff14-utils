@@ -21,8 +21,6 @@ fn calculate_progress_increase(
     let progression_modified_by_level =
         (base_progression as f32 * recipe.rlvl.progress_modifier as f32 * 0.01f32) as u32;
 
-    // todo: muscle memory, veneration
-
     let mut buffed_potency = potency as u32;
     if state.veneration_stacks > 0 {
         buffed_potency += potency as u32 / 2;
