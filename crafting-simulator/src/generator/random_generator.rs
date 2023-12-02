@@ -15,30 +15,36 @@ impl RandomGenerator {
 
     pub fn generate(&mut self) -> Vec<&'static str> {
         let choices = vec![
-            "Basic Synthesis",
-            "Careful Synthesis",
-            "Prudent Synthesis",
-            "Groundwork",
-            "Veneration",
-            "Basic Touch",
-            "Prudent Touch",
-            "Preparatory Touch",
-            "Innovation",
-            "Great Strides",
-            "Byregot's Blessing",
-            // "Observe",
-            // "Focused Synthesis",
-            "Focused Touch",
-            // "Standard Touch",
-            // "Advanced Touch",
-            "Muscle Memory",
-            "Manipulation",
-            // "Waste Not",
-            "Waste Not II",
-            // "Master's Mend",
+            vec!["Basic Synthesis"],
+            vec!["Careful Synthesis"],
+            vec!["Prudent Synthesis"],
+            vec!["Groundwork"],
+            vec!["Veneration"],
+            vec!["Basic Touch"],
+            vec!["Prudent Touch"],
+            vec!["Preparatory Touch"],
+            vec!["Innovation"],
+            vec!["Great Strides"],
+            vec!["Byregot's Blessing"],
+            // vec!["Observe"],
+            // vec!["Focused Synthesis"],
+            vec!["Observe", "Focused Synthesis"],
+            vec!["Focused Touch"],
+            // vec!["Standard Touch"],
+            // vec!["Advanced Touch"],
+            vec!["Basic Touch", "Standard Touch"],
+            vec!["Basic Touch", "Standard Touch", "Advanced Touch"],
+            vec!["Muscle Memory"],
+            vec!["Manipulation"],
+            vec!["Waste Not"],
+            vec!["Waste Not II"],
+            vec!["Master's Mend"],
         ];
         let rng = &mut thread_rng();
         let length = rng.gen_range(self.min_length..=self.max_length);
-        (0..length).map(|_| *choices.choose(rng).unwrap()).collect()
+        (0..length)
+            .map(|_| choices.choose(rng).unwrap().clone())
+            .flatten()
+            .collect()
     }
 }
