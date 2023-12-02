@@ -25,8 +25,6 @@ impl CraftingStep for Manipulation {
     }
 }
 
-// TODO: Master's Mend
-
 #[derive(Constructor)]
 pub struct WasteNot {
     length: u8,
@@ -47,6 +45,24 @@ impl CraftingStep for WasteNot {
 
     fn cp_cost(&self, _state: &CraftingState) -> u8 {
         self.cp_cost
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
+    }
+}
+
+pub struct MastersMend {}
+impl CraftingStep for MastersMend {
+    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        CraftingState {
+            durability: i16::min(recipe.durability as i16, state.durability + 30),
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
+        88
     }
 
     fn durability_cost(&self) -> u8 {
@@ -153,5 +169,25 @@ mod tests {
         .final_state;
 
         assert_eq!(70 - (4 * 5) - 10, final_state.durability);
+    }
+
+    #[test]
+    fn masters_mend_restores_a_chunk_of_durability() {
+        let final_state = s::run_steps(
+            p::l90_player(),
+            p::rlvl640_gear(),
+            &["Groundwork", "Groundwork", "Master's Mend"],
+        )
+        .final_state;
+
+        assert_eq!(70 - 20 - 20 + 30, final_state.durability);
+    }
+
+    #[test]
+    fn masters_mend_cant_increase_durability_above_max() {
+        let final_state =
+            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Master's Mend"]).final_state;
+
+        assert_eq!(70, final_state.durability);
     }
 }
