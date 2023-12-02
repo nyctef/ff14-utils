@@ -1,5 +1,5 @@
 use crafting_simulator::{
-    generator::RandomGenerator,
+    generator::{RandomFlip, RandomGenerator},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
     presets::Presets as preset,
     simulator::Simulator as sim,
@@ -76,22 +76,30 @@ fn main() {
     let recipe = preset::rlvl640_gear();
     let player = preset::l90_player_with_jhinga_biryani_hq_and_draught();
 
-    let mut generator = RandomGenerator::from_lengths(10, 30);
+    let random_generator = RandomGenerator::from_lengths(10, 30);
+    let random_flip = RandomFlip::new();
     let mut best_per_generation: Vec<Candidate> = Vec::new();
     let mut candidates = (0..1000)
-        .map(|_| score_steps(player, recipe, generator.generate()))
+        .map(|_| score_steps(player, recipe, random_generator.generate()))
         .collect_vec();
 
-    for generation in 0..10 {
+    for _ in 0..500 {
         candidates.sort_by_key(|x| Reverse(x.score));
 
         best_per_generation.push(candidates[0].clone());
 
-        candidates.drain(500..);
-        candidates.extend((0..500).map(|_| score_steps(player, recipe, generator.generate())));
+        candidates.drain(300..);
+        let mutated_candidates = candidates
+            .iter()
+            .map(|c| random_flip.apply(&c.steps))
+            .map(|steps| score_steps(player, recipe, steps))
+            .collect_vec();
+        candidates.extend(mutated_candidates);
+        candidates
+            .extend((0..300).map(|_| score_steps(player, recipe, random_generator.generate())));
     }
 
-    dbg!(best_per_generation.iter().map(|x| x.score).collect_vec());
+    // dbg!(best_per_generation.iter().map(|x| x.score).collect_vec());
     let best_overall = best_per_generation.iter().sorted_by_key(|x| x.score).last();
     dbg!(best_overall);
 }

@@ -13,7 +13,7 @@ impl RandomGenerator {
         }
     }
 
-    pub fn generate(&mut self) -> Vec<&'static str> {
+    pub fn generate(&self) -> Vec<&'static str> {
         let choices = vec![
             vec!["Basic Synthesis"],
             vec!["Careful Synthesis"],
@@ -40,6 +40,7 @@ impl RandomGenerator {
             vec!["Waste Not II"],
             // vec!["Master's Mend"],
         ];
+        // TODO: extract range and make it seedable?
         let rng = &mut thread_rng();
         let length = rng.gen_range(self.min_length..=self.max_length);
         (0..length)
