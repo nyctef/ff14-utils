@@ -1,11 +1,12 @@
-use std::cmp::Ordering;
-
 use crafting_simulator::{
     generator::RandomGenerator,
-    model::{CraftStatus, CraftingReport, Recipe},
+    model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
     presets::Presets as preset,
     simulator::Simulator as sim,
 };
+use derive_more::Constructor;
+use itertools::Itertools;
+use std::cmp::{Ordering, Reverse};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 struct CraftingScore {
@@ -14,6 +15,13 @@ struct CraftingScore {
     progress_factor: u8,
     quality_factor: u8,
     cp: i16,
+}
+
+#[derive(Debug, Constructor, Clone)]
+struct Candidate {
+    steps: Vec<&'static str>,
+    report: CraftingReport,
+    score: CraftingScore,
 }
 
 impl PartialOrd for CraftingScore {
@@ -52,20 +60,32 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
     }
 }
 
+fn score_steps(player: PlayerStats, recipe: Recipe, steps: Vec<&'static str>) -> Candidate {
+    let report = sim::run_steps(player, recipe, &steps);
+    let score = score_report(&recipe, &report);
+    Candidate::new(steps, report, score)
+}
+
 fn main() {
-    let target_recipe = preset::rlvl640_gear();
+    let recipe = preset::rlvl640_gear();
     let player = preset::l90_player_with_jhinga_biryani_hq_and_draught();
 
     let mut generator = RandomGenerator::from_lengths(10, 30);
+    let mut best_per_generation: Vec<Candidate> = Vec::new();
+    let mut candidates = (0..1000)
+        .map(|_| score_steps(player, recipe, generator.generate()))
+        .collect_vec();
 
-    let best = (0..100_000)
-        .map(|_| {
-            let steps = generator.generate();
-            let report = sim::run_steps(player, target_recipe, &steps);
-            let score = score_report(&target_recipe, &report);
-            (steps, report, score)
-        })
-        .max_by_key(|x| x.2);
+    for generation in 0..10 {
+        candidates.sort_by_key(|x| Reverse(x.score));
 
-    dbg!(best);
+        best_per_generation.push(candidates[0].clone());
+
+        candidates.drain(500..);
+        candidates.extend((0..500).map(|_| score_steps(player, recipe, generator.generate())));
+    }
+
+    dbg!(best_per_generation.iter().map(|x| x.score).collect_vec());
+    let best_overall = best_per_generation.iter().sorted_by_key(|x| x.score).last();
+    dbg!(best_overall);
 }

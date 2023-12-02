@@ -163,7 +163,7 @@ pub struct CraftingIssue {
     pub step_index: u8,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct CraftingReport {
     pub final_state: CraftingState,
     pub issues: Vec<CraftingIssue>,
