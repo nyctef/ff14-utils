@@ -113,6 +113,36 @@ impl CraftingStep for MuscleMemory {
     }
 }
 
+pub struct Groundwork {}
+impl InfallibleStep for Groundwork {
+    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+        // todo: some duplication with the regular simulator logic here - not sure if there's a good way around this
+        let durability_cost = if state.waste_not_stacks > 0 { 10 } else { 20 };
+        let potency = if state.durability >= durability_cost {
+            360
+        } else {
+            180
+        };
+
+        let total_increase = calculate_progress_increase(state, stats, recipe, potency);
+
+        CraftingState {
+            progress: state.progress + total_increase,
+            touch_combo_stage: 0,
+            muscle_memory_stacks: 0,
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
+        18
+    }
+
+    fn durability_cost(&self) -> u8 {
+        20
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::presets::Presets as p;
@@ -273,7 +303,7 @@ mod tests {
 
         // since groundwork costs 20, but we only have 10 durability remaining,
         // it gets 180 potency here instead of 360
-        // assert_eq!(180, final_state.progress);
+        assert_eq!(180, final_state.progress);
     }
 
     #[test]
@@ -287,6 +317,6 @@ mod tests {
 
         // waste not effectively changes groundwork's durability cost for the
         // purpose of this effect
-        // assert_eq!(360, final_state.progress);
+        assert_eq!(360, final_state.progress);
     }
 }

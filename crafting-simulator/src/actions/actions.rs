@@ -21,7 +21,7 @@ impl Actions {
     }
 
     fn groundwork() -> impl CraftingStep {
-        BasicSynthesis::new(360, 18, 20, false)
+        Groundwork {}
     }
 
     fn veneration() -> impl CraftingStep {

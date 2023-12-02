@@ -302,6 +302,6 @@ mod tests {
         );
 
         assert_eq!(CraftStatus::Failure, report.status);
-        assert_eq!(360, report.final_state.progress);
+        assert_eq!(180, report.final_state.progress);
     }
 }
