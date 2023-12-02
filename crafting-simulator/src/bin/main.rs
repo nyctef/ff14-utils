@@ -14,6 +14,7 @@ struct CraftingScore {
     durability: i16,
     progress_factor: u8,
     quality_factor: u8,
+    steps: u8,
     cp: i16,
 }
 
@@ -38,6 +39,11 @@ impl PartialOrd for CraftingScore {
             return Some(quality_diff);
         }
 
+        let steps_diff = self.steps.cmp(&other.steps);
+        if steps_diff != Ordering::Equal {
+            return Some(steps_diff);
+        }
+
         return Some(Ordering::Equal);
     }
 }
@@ -57,6 +63,7 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
         quality_factor: (report.final_state.quality as u32 * 100 / recipe.quality_target as u32)
             as u8,
         cp: report.final_state.cp,
+        steps: report.final_state.steps,
     }
 }
 
