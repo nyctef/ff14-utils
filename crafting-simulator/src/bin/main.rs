@@ -100,6 +100,20 @@ fn main() {
     }
 
     // dbg!(best_per_generation.iter().map(|x| x.score).collect_vec());
-    let best_overall = best_per_generation.iter().sorted_by_key(|x| x.score).last();
-    dbg!(best_overall);
+    let best_overall = best_per_generation
+        .iter()
+        .sorted_by_key(|x| x.score)
+        .last()
+        .unwrap();
+    dbg!(&best_overall.score);
+
+    println!();
+    println!(
+        "{}",
+        best_overall
+            .steps
+            .iter()
+            .map(|s| format!("/ac \"{}\"", s))
+            .join("\n")
+    )
 }
