@@ -1,4 +1,4 @@
-use crate::model::{CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe};
+use crate::model::{CraftingState, InfallibleStep, PlayerStats, Recipe};
 use derive_more::Constructor;
 
 pub struct Manipulation {}

@@ -171,4 +171,14 @@ mod tests {
 
         assert_eq!(CraftStatus::Success, report.state);
     }
+
+    #[test]
+    fn craft_fails_if_cp_runs_out() {
+        todo!()
+    }
+
+    #[test]
+    fn other_issues_reported_by_actions_are_listed_but_are_not_fatal() {
+        todo!()
+    }
 }
