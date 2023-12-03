@@ -2,11 +2,12 @@ use color_eyre::eyre::Result;
 use ff14_utils::{
     csv,
     lookup::{ItemLookup, RecipeLookup},
-    recipe_calculation::{process_recipe_item, print_line_item},
+    recipe_calculation::process_recipe_item,
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
 use std::path::PathBuf;
+use thousands::Separable;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -33,11 +34,22 @@ async fn main() -> Result<()> {
         .collect_vec();
     let market_data = get_market_data_lookup(&all_ids).await?;
 
-    for recipe in &recipes {
-        let (_, results) = process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);
+    let result_lines = recipes
+        .iter()
+        .map(|r| process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup).1)
+        .map(|r| r.into_iter().last().unwrap())
+        .sorted_by_key(|line| line.crafting_price);
+
+    for line in result_lines {
+        println!(
+            "{:<50}: {} or ~{} per scrip",
+            line.name_and_amount,
+            line.crafting_price
+                .expect("crafting price")
+                .separate_with_commas(),
+            (line.crafting_price.expect("crafting price") / 198).separate_with_commas()
+        );
         // TODO: maybe a --detailed option to print all results?
-        print_line_item(results.last().unwrap());
-        println!();
     }
 
     Ok(())
