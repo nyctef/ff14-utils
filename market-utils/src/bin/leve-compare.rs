@@ -20,7 +20,6 @@ struct Leve {
     item_name: String,
     item_count: u8,
     gil_reward: u32,
-    leve_id: u32,
     leve_name: String,
 }
 
@@ -60,7 +59,6 @@ async fn run() -> Result<()> {
                 .as_u64()
                 .unwrap_or(0) as u8,
             gil_reward: l.get("GilReward").unwrap().as_u64().unwrap() as u32,
-            leve_id: l.get("ID").unwrap().as_u64().unwrap() as u32,
             leve_name: l.get("Name").unwrap().as_str().unwrap().to_string(),
         })
         .filter(|l| {
@@ -83,13 +81,12 @@ async fn run() -> Result<()> {
         .map(|leve| -> Result<(u32, u32, &Leve)> {
             let hq_reward = leve.gil_reward * 2;
             let md = market_data.get(&leve.item_id).unwrap();
-            let market_price =
-                price_up_to(&md.listings, leve.item_count.into(), true).map_err(|e| eyre!(""))?;
+            let market_price = price_up_to(&md.listings, leve.item_count.into(), true)
+                .map_err(|e| eyre!("{}", e))?;
             Ok((hq_reward, market_price, leve))
         })
         .filter_map(|r| r.ok())
         .collect_vec();
-
 
     bottom_lines.sort_by_key(|l| l.0 as i32 - l.1 as i32);
 
