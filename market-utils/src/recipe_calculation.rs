@@ -12,6 +12,7 @@ use thousands::Separable;
 pub struct LineItem {
     indent: usize,
     pub name_and_amount: String,
+    pub amount: u32,
     pub market_price: Option<u32>,
     pub market_price_age: Option<DateTime<Utc>>,
     pub crafting_price: Option<u32>,
@@ -49,6 +50,7 @@ pub fn process_recipe_item(
         .map(|(mp, cp)| mp as i64 - cp as i64);
     crafting_lines.push(LineItem {
         indent,
+        amount: ri.amount,
         name_and_amount: format_recipe_item(ri, i),
         market_price,
         market_price_age: md.map(|md| md.last_upload_time),

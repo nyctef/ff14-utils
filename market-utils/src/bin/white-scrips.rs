@@ -47,7 +47,8 @@ async fn main() -> Result<()> {
             line.crafting_price
                 .expect("crafting price")
                 .separate_with_commas(),
-            (line.crafting_price.expect("crafting price") / 198).separate_with_commas()
+            (line.crafting_price.expect("crafting price") / line.amount / 198)
+                .separate_with_commas()
         );
         // TODO: maybe a --detailed option to print all results?
     }
