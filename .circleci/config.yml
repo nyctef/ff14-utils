@@ -1,0 +1,23 @@
+version: 2.1
+
+
+workflows:
+  build and test:
+    jobs:
+      - build and test
+
+jobs:
+  build and test:
+    docker:
+      - image: cimg/rust:1.74.0
+    steps:
+      - checkout
+      - run:
+          name: build
+          command: cargo build
+      - run:
+          name: test
+          command: cargo test
+      - run:
+          name: clippy
+          command: cargo clippy
