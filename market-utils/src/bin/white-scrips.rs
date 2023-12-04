@@ -1,9 +1,7 @@
 use color_eyre::eyre::Result;
+use ff14_data::lookup::{ItemLookup, RecipeLookup};
 use ff14_utils::{
-    csv,
-    lookup::{ItemLookup, RecipeLookup},
-    recipe_calculation::process_recipe_item,
-    universalis::get_market_data_lookup,
+    csv, recipe_calculation::process_recipe_item, universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
 use std::path::PathBuf;

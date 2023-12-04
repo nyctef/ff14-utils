@@ -1,7 +1,7 @@
-use crate::model::*;
 use chrono::{DateTime, TimeZone, Utc};
 use color_eyre::eyre::Result;
 use derive_more::Constructor;
+use ff14_data::model::*;
 use itertools::Itertools;
 use reqwest::Client;
 use serde::Deserialize;

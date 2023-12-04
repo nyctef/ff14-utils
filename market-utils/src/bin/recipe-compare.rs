@@ -1,8 +1,10 @@
 use color_eyre::eyre::{eyre, Result};
-use ff14_utils::{
-    csv,
+use ff14_data::{
     lookup::{ItemLookup, RecipeLookup},
     model::*,
+};
+use ff14_utils::{
+    csv,
     recipe_calculation::{print_line_item, process_recipe_item},
     universalis::get_market_data_lookup,
 };
@@ -25,11 +27,14 @@ async fn main() -> Result<()> {
         .collect_vec();
     let market_data = get_market_data_lookup(&all_ids).await?;
 
-    let mut bottom_lines = recipes.iter().map(|r| {
-        let (_, results) =
-            process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup);
-        results.into_iter().last().unwrap()
-    }).collect_vec();
+    let mut bottom_lines = recipes
+        .iter()
+        .map(|r| {
+            let (_, results) =
+                process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup);
+            results.into_iter().last().unwrap()
+        })
+        .collect_vec();
 
     bottom_lines.sort_by_key(|l| l.crafting_profit);
 

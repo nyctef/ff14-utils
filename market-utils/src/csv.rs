@@ -1,5 +1,5 @@
-use crate::model::*;
 use color_eyre::eyre::{eyre, Context, Result};
+use ff14_data::model::*;
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
 use std::path::Path;

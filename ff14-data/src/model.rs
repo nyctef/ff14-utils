@@ -27,6 +27,12 @@ macro_rules! id {
             #[allow(dead_code)]
             pub const ZERO: $a = $a(0);
         }
+
+        impl Into<i32> for $a {
+            fn into(self) -> i32 {
+                self.0
+            }
+        }
     };
 }
 

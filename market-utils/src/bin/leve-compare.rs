@@ -1,9 +1,7 @@
 use color_eyre::eyre::{eyre, Result};
 use ff14_data::leve::{get_endwalker_leves, Leve};
-use ff14_utils::{
-    model::ItemId,
-    universalis::{get_market_data_lookup, price_up_to},
-};
+use ff14_data::model::ItemId;
+use ff14_utils::universalis::{get_market_data_lookup, price_up_to};
 use itertools::Itertools;
 
 #[tokio::main]
@@ -19,11 +17,7 @@ async fn run() -> Result<()> {
     // dbg!(&leves);
     // dbg!(leves.len());
     //
-    let ids = leves
-        .iter()
-        // TODO: dedupe ItemId types
-        .map(|l| ff14_utils::model::ItemId::new(l.item_id.into()))
-        .collect_vec();
+    let ids = leves.iter().map(|l| l.item_id).collect_vec();
 
     let market_data = get_market_data_lookup(&ids).await?;
 
@@ -31,9 +25,7 @@ async fn run() -> Result<()> {
         .iter()
         .map(|leve| -> Result<(u32, u32, &Leve)> {
             let hq_reward = leve.gil_reward * 2;
-            let md = market_data
-                .get(&ff14_utils::model::ItemId::new(leve.item_id.into()))
-                .unwrap();
+            let md = market_data.get(&leve.item_id).unwrap();
             let market_price = price_up_to(&md.listings, leve.item_count.into(), true)
                 .map_err(|e| eyre!("{}", e))?;
             Ok((hq_reward, market_price, leve))

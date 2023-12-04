@@ -1,11 +1,10 @@
 use crate::{
-    lookup::{ItemLookup, RecipeLookup},
-    model::*,
     time_utils::hm_ago_from_now,
     universalis::{price_up_to, ItemMarketData},
 };
 use chrono::{DateTime, Utc};
 use colored::Colorize;
+use ff14_data::{lookup::*, model::*};
 use std::{cmp::min, collections::HashMap, fmt::Display};
 use thousands::Separable;
 

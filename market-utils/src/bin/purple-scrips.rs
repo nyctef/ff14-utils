@@ -1,8 +1,8 @@
 use color_eyre::eyre::Result;
+use ff14_data::lookup::{ItemLookup, RecipeLookup};
 use ff14_utils::{
     csv,
-    lookup::{ItemLookup, RecipeLookup},
-    recipe_calculation::{process_recipe_item, print_line_item},
+    recipe_calculation::{print_line_item, process_recipe_item},
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
@@ -34,7 +34,8 @@ async fn main() -> Result<()> {
     let market_data = get_market_data_lookup(&all_ids).await?;
 
     for recipe in &recipes {
-        let (_, result) = process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);
+        let (_, result) =
+            process_recipe_item(0, &recipe.result, &items, &market_data, &recipes_lookup);
         print_line_item(result.iter().last().unwrap());
     }
 

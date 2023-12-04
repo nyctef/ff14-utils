@@ -1,8 +1,6 @@
 use color_eyre::eyre::Result;
-use ff14_utils::{
-    csv,
-    lookup::{ItemLookup, RecipeLookup},
-};
+use ff14_data::lookup::{ItemLookup, RecipeLookup};
+use ff14_utils::csv;
 use std::path::PathBuf;
 
 #[tokio::main]

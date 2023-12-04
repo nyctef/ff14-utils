@@ -1,9 +1,13 @@
 use color_eyre::eyre::{eyre, Context, Result};
-use ff14_utils::{
-    csv,
+use ff14_data::{
     lookup::{ItemLookup, RecipeLookup},
     model::*,
-    recipe_calculation::{match_recipe_to_output_count, process_recipe_item, print_recipe_calculation},
+};
+use ff14_utils::{
+    csv,
+    recipe_calculation::{
+        match_recipe_to_output_count, print_recipe_calculation, process_recipe_item,
+    },
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
