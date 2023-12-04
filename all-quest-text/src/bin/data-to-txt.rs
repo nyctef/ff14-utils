@@ -2,10 +2,9 @@ use color_eyre::eyre::Result;
 use itertools::Itertools;
 use regex::Regex;
 use serde_json::{
-    map::Entry::Occupied,
     Value::{Array as JArray, Null as JNull, String as JString},
 };
-use std::{ffi::OsStr, ops::ControlFlow};
+use std::{ffi::OsStr};
 use tokio::fs;
 
 #[tokio::main]

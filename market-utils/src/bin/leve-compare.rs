@@ -1,6 +1,5 @@
 use color_eyre::eyre::{eyre, Result};
 use ff14_data::leve::{get_endwalker_leves, Leve};
-use ff14_data::model::ItemId;
 use ff14_utils::universalis::{get_market_data_lookup, price_up_to};
 use itertools::Itertools;
 
