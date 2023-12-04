@@ -33,7 +33,10 @@ impl PartialOrd for CraftingScore {
             return Some(Ordering::Less);
         }
 
-        let quality_diff = self.quality_factor.cmp(&other.quality_factor);
+        let quality_diff = self
+            .quality_factor
+            .min(100)
+            .cmp(&other.quality_factor.min(100));
         if quality_diff != Ordering::Equal {
             return Some(quality_diff);
         }
