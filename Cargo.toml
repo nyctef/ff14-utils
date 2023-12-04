@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "ff14-data",
     "all-quest-text",
     "crafting-simulator",
     "market-utils",

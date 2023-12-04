@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ff14-data = { path = "../ff14-data" }
 color-eyre = "0.6.2"
 csv-async = { version = "1.2.6", features = ["tokio"] }
 derive_more = "0.99.17"
