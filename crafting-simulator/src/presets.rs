@@ -33,8 +33,32 @@ impl Presets {
         }
     }
 
+    pub fn rlvl_555() -> RecipeLevel {
+        RecipeLevel {
+            rlvl: 555,
+            progress_divider: 129,
+            progress_modifier: 100,
+            quality_divider: 113,
+            quality_modifier: 100,
+        }
+    }
+
+    /// the max white scrip collectible
+    pub fn rlvl555_collectible() -> Recipe {
+        Recipe {
+            rlvl: Self::rlvl_555(),
+            difficulty: 3400,
+            durability: 80,
+            quality_target: 7100,
+        }
+    }
+
     pub fn l90_player() -> PlayerStats {
         PlayerStats::level_90(4014, 3574, 500)
+    }
+
+    pub fn l90_player_2() -> PlayerStats {
+        PlayerStats::level_90(3862, 3529, 576)
     }
 
     pub fn l90_player_with_jhinga_biryani_hq() -> PlayerStats {

@@ -73,8 +73,8 @@ fn score_steps(player: PlayerStats, recipe: Recipe, steps: Vec<&'static str>) ->
 }
 
 fn main() {
-    let recipe = preset::rlvl640_gear();
-    let player = preset::l90_player_with_jhinga_biryani_hq_and_draught();
+    let recipe = preset::rlvl555_collectible();
+    let player = preset::l90_player_2();
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
     let random_flip = RandomFlip::new();
