@@ -4,20 +4,18 @@ use ff14_data::{
     model::*,
 };
 use ff14_utils::{
-    csv,
     recipe_calculation::{print_line_item, process_recipe_item},
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
-use std::{env, path::PathBuf};
+use std::env;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let csv_base = PathBuf::from("../../ffxiv-datamining/csv");
-    let items = ItemLookup::new(csv::read_items(&csv_base).await?);
-    let recipes_lookup = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
+    let items = ItemLookup::from_datamining_csv().await?;
+    let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
 
     let recipes = choose_recipes_from_args(&items, &recipes_lookup)?;
 

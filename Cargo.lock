@@ -394,9 +394,13 @@ name = "ff14-data"
 version = "0.1.0"
 dependencies = [
  "color-eyre",
+ "csv-async",
  "derive_more",
  "itertools 0.10.5",
+ "rustc-hash",
  "serde_json",
+ "tokio",
+ "tokio-stream",
 ]
 
 [[package]]
@@ -406,17 +410,14 @@ dependencies = [
  "chrono",
  "color-eyre",
  "colored",
- "csv-async",
  "derive_more",
  "ff14-data",
  "itertools 0.10.5",
  "reqwest",
- "rustc-hash",
  "serde",
  "serde_json",
  "thousands",
  "tokio",
- "tokio-stream",
 ]
 
 [[package]]

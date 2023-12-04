@@ -6,7 +6,6 @@
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::module_name_repetitions)]
 
-pub mod csv;
 pub mod recipe_calculation;
 pub mod time_utils;
 pub mod universalis;

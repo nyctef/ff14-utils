@@ -1,20 +1,17 @@
 use color_eyre::eyre::Result;
 use ff14_data::lookup::{ItemLookup, RecipeLookup};
 use ff14_utils::{
-    csv,
     recipe_calculation::{print_line_item, process_recipe_item},
     universalis::get_market_data_lookup,
 };
 use itertools::Itertools;
-use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let csv_base = PathBuf::from("../../ffxiv-datamining/csv");
-    let items = ItemLookup::new(csv::read_items(&csv_base).await?);
-    let recipes_lookup = RecipeLookup::new(csv::read_recipes(&csv_base).await?);
+    let items = ItemLookup::from_datamining_csv().await?;
+    let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
 
     let l90_collectables = items
         .matching(|i| i.ilvl == 560 && i.name.starts_with("Rarefied"))
