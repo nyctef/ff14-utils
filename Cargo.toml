@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "all-quest-text",
+    "crafting-simulator",
+    "market-utils",
+    "quest-text-helper",
+]
+
+resolver = "2"
