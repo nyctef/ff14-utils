@@ -1,5 +1,5 @@
 use crafting_simulator::{
-    generator::{RandomFlip, RandomGenerator},
+    generator::{RandomFlip, RandomGenerator, RandomRemove},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
     presets::Presets as preset,
     simulator::Simulator as sim,
@@ -81,23 +81,30 @@ fn main() {
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
     let random_flip = RandomFlip::new();
+    let random_remove = RandomRemove {};
     let mut best_per_generation: Vec<Candidate> = Vec::new();
     let mut candidates = (0..1000)
         .map(|_| score_steps(player, recipe, random_generator.generate()))
         .collect_vec();
 
-    for _ in 0..500 {
+    for _ in 0..1000 {
         candidates.sort_by_key(|x| Reverse(x.score));
 
         best_per_generation.push(candidates[0].clone());
 
-        candidates.drain(300..);
+        candidates.drain(200..);
         let mutated_candidates = candidates
             .iter()
             .map(|c| random_flip.apply(&c.steps))
             .map(|steps| score_steps(player, recipe, steps))
             .collect_vec();
+        let simplified_candidates = candidates
+            .iter()
+            .map(|c| random_remove.apply(&c.steps))
+            .map(|steps| score_steps(player, recipe, steps))
+            .collect_vec();
         candidates.extend(mutated_candidates);
+        candidates.extend(simplified_candidates);
         candidates
             .extend((0..300).map(|_| score_steps(player, recipe, random_generator.generate())));
     }

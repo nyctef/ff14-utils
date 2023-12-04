@@ -29,3 +29,19 @@ impl RandomFlip {
         result
     }
 }
+
+pub struct RandomRemove {}
+
+impl RandomRemove {
+    pub fn apply<'a>(&self, input: &[&'a str]) -> Vec<&'a str> {
+        let mut result = input.to_vec();
+
+        let rng = &mut thread_rng();
+
+        let index = rng.gen_range(0..result.len() - 1);
+
+        result.splice(index..index + 1, []);
+
+        result
+    }
+}
