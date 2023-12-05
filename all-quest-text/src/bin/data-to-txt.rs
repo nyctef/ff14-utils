@@ -1,10 +1,8 @@
 use color_eyre::eyre::Result;
 use itertools::Itertools;
 use regex::Regex;
-use serde_json::{
-    Value::{Array as JArray, Null as JNull, String as JString},
-};
-use std::{ffi::OsStr};
+use serde_json::Value::{Array as JArray, Null as JNull, String as JString};
+use std::ffi::OsStr;
 use tokio::fs;
 
 #[tokio::main]
@@ -117,6 +115,7 @@ struct TextData {
     // todo: Vec<TextDataItem>,
 }
 
+#[allow(dead_code)]
 struct TextDataItem {
     key: String,
     // TODO: this is going to be duplicated a lot, but deduping makes for annoying lifetimes
@@ -141,12 +140,24 @@ fn process_ff14_text(text: &str) -> String {
     // (although it's probably not too bad on the short strings we
     // care about here)
     let mut text = text.replace(quest_sync_icon, unicode_down_arrow_in_circle);
-    text = text.replace("<Split(<Highlight>ObjectParameter(1)</Highlight>, ,1)/>", "[Firstname]");
-    text = text.replace("<Split(<Highlight>ObjectParameter(1)</Highlight>, ,2)/>", "[Lastname]");
+    text = text.replace(
+        "<Split(<Highlight>ObjectParameter(1)</Highlight>, ,1)/>",
+        "[Firstname]",
+    );
+    text = text.replace(
+        "<Split(<Highlight>ObjectParameter(1)</Highlight>, ,2)/>",
+        "[Lastname]",
+    );
     text = text.replace("<Highlight>ObjectParameter(1)</Highlight>", "[Fullname]");
-    text = text.replace("<Highlight>ObjectParameter(55)</Highlight>", "[Chocoboname]");
+    text = text.replace(
+        "<Highlight>ObjectParameter(55)</Highlight>",
+        "[Chocoboname]",
+    );
     text = text.replace("<If(LessThan(PlayerParameter(11),12))><If(LessThan(PlayerParameter(11),4))>evening<Else/>morning</If><Else/><If(LessThan(PlayerParameter(11),17))>afternoon<Else/>evening</If></If>", "[morning|afternoon|evening]");
-    text = text.replace("<If(PlayerParameter(4))>woman<Else/>man</If>", "[woman|man]");
+    text = text.replace(
+        "<If(PlayerParameter(4))>woman<Else/>man</If>",
+        "[woman|man]",
+    );
 
     // TODO:
     // <Emphasis>Very</Emphasis>
