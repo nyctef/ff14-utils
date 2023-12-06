@@ -1,2 +1,4 @@
 # get this file via https://xivapi.com/Leve?limit=2000&columns=ID,Name,GilReward,ClassJobLevel,CraftLeve.Item0.Name,CraftLeve.Item0.ID,CraftLeve.ItemCount0
 Leve.json
+# get this file via https://xivapi.com/RecipeLevelTable?limit=1000&columns=ID,ProgressDivider,ProgressModifier,QualityDivider,QualityModifier,Stars
+RecipeLevelTable.json

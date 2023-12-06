@@ -33,6 +33,12 @@ macro_rules! id {
                 self.0
             }
         }
+
+        impl Into<$a> for i32 {
+            fn into(self) -> $a {
+                $a::new(self)
+            }
+        }
     };
 }
 
@@ -124,4 +130,16 @@ pub struct MateriaLevel {
     pub item_id: ItemId,
     pub level: u8,
     pub bonus_value: i16,
+}
+
+id!(RecipeLevelId);
+
+#[derive(Debug, PartialEq, Eq, Constructor)]
+pub struct RecipeLevel {
+    pub rlvl: RecipeLevelId,
+    pub progress_divider: u8,
+    pub progress_modifier: u8,
+    pub quality_divider: u8,
+    pub quality_modifier: u8,
+    pub stars: u8,
 }
