@@ -1,1 +1,5 @@
+# build results
 /target/
+
+# list crafter stats here
+jobs.toml

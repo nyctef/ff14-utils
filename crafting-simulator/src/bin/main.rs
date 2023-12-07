@@ -1,4 +1,6 @@
+use color_eyre::Result;
 use crafting_simulator::{
+    config,
     generator::{RandomFlip, RandomGenerator, RandomRemove},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
     presets::Presets as preset,
@@ -6,7 +8,10 @@ use crafting_simulator::{
 };
 use derive_more::Constructor;
 use itertools::Itertools;
-use std::cmp::{Ordering, Reverse};
+use std::{
+    cmp::{Ordering, Reverse},
+    path::Path,
+};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 struct CraftingScore {
@@ -75,9 +80,16 @@ fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -
     Candidate::new(steps, score)
 }
 
-fn main() {
+fn main() -> Result<()> {
+    color_eyre::install()?;
     let recipe = preset::l89_collectible();
-    let player = preset::l90_player_2();
+    let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
+
+    let player = config
+        .iter()
+        .find(|(name, _)| name == "WVR")
+        .expect("expected a weaver job")
+        .1;
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
     let random_flip = RandomFlip::new();
@@ -125,5 +137,6 @@ fn main() {
             .iter()
             .map(|s| format!("/ac \"{}\"", s))
             .join("\n")
-    )
+    );
+    Ok(())
 }
