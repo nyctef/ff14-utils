@@ -82,13 +82,13 @@ fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -
 
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let recipe = preset::l89_collectible();
+    let recipe = preset::l90_4star_intermediate();
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
 
     let player = config
         .iter()
-        .find(|(name, _)| name == "WVR")
-        .expect("expected a weaver job")
+        .find(|(name, _)| name == "LTW")
+        .expect("expected a job")
         .1;
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
