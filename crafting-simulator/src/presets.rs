@@ -32,6 +32,26 @@ impl Presets {
         }
     }
 
+    /// eg Indagator's gear
+    pub fn l90_3star_gear() -> Recipe {
+        Recipe {
+            rlvl: RECIPE_LEVELS.rlvl(620).clone(),
+            difficulty: 5720,
+            durability: 70,
+            quality_target: 12900,
+        }
+    }
+
+    /// eg ilmenite ingot
+    pub fn l90_3star_intermediate() -> Recipe {
+        Recipe {
+            rlvl: RECIPE_LEVELS.rlvl(610).clone(),
+            difficulty: 3696,
+            durability: 35,
+            quality_target: 8200,
+        }
+    }
+
     /// the max white scrip collectible
     pub fn l89_collectible() -> Recipe {
         Recipe {
