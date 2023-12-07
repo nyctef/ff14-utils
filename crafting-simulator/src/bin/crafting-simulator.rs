@@ -1,4 +1,4 @@
-use color_eyre::Result;
+use color_eyre::{eyre::eyre, Result};
 use crafting_simulator::{
     config,
     generator::{RandomFlip, RandomGenerator, RandomRemove},
@@ -82,12 +82,24 @@ fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -
 
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let recipe = preset::l90_4star_intermediate();
+
+    let args = parse_args()?;
+
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
+
+    let recipe = match args.recipe.as_str() {
+        "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
+        "l90_4s_gear" => Ok(preset::l90_4star_gear()),
+        "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
+        "l90_3s_gear" => Ok(preset::l90_3star_gear()),
+        other => Err(eyre!("Unrecognised recipe type {}", other)),
+    }?;
+
+    preset::l90_4star_intermediate();
 
     let player = config
         .iter()
-        .find(|(name, _)| name == "LTW")
+        .find(|(name, _)| *name == args.job_name)
         .expect("expected a job")
         .1;
 
@@ -99,7 +111,8 @@ fn main() -> Result<()> {
         .map(|_| score_steps(player, &recipe, random_generator.generate()))
         .collect_vec();
 
-    for _ in 0..1000 {
+    let generations = args.generations.unwrap_or(1000);
+    for _ in 0..generations {
         candidates.sort_by_key(|x| Reverse(x.score));
 
         best_per_generation.push(candidates[0].clone());
@@ -139,4 +152,46 @@ fn main() -> Result<()> {
             .join("\n")
     );
     Ok(())
+}
+
+struct Args {
+    job_name: String,
+    recipe: String,
+    generations: Option<u32>,
+}
+
+fn parse_args() -> Result<Args> {
+    let mut pargs = pico_args::Arguments::from_env();
+
+    if pargs.contains(["-h", "--help"]) {
+        print!(
+            r"
+USAGE: crafting-simulator --job WVR --recipe l90_4s_mat
+
+FLAGS:
+    -j, --job           references a job listed in jobs.toml
+    -r, --recipe        one of:
+                            l90_4s_mat
+                            l90_4s_gear
+                            l90_3s_mat
+                            l90_3s_gear
+    -g, --generations   number of generations to search through
+    -h, --help          show this message
+    "
+        );
+        return Err(eyre!(""));
+    }
+
+    let args = Args {
+        job_name: pargs.value_from_str(["-j", "--job"])?,
+        recipe: pargs.value_from_str(["-r", "--recipe"])?,
+        generations: pargs.opt_value_from_str(["-g", "--generations"])?,
+    };
+
+    let remaining = pargs.finish();
+    if !remaining.is_empty() {
+        return Err(eyre!("Unrecognised arguments: {:?}", remaining));
+    }
+
+    Ok(args)
 }
