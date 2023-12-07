@@ -1,4 +1,5 @@
 use derive_more::Constructor;
+use ff14_data::model::RecipeLevel;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct PlayerStats {
@@ -66,21 +67,12 @@ impl CraftingState {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Recipe {
     pub rlvl: RecipeLevel,
     pub difficulty: u16,
     pub durability: u16,
     pub quality_target: u16,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub struct RecipeLevel {
-    pub rlvl: u16,
-    pub progress_divider: u8,
-    pub progress_modifier: u8,
-    pub quality_divider: u8,
-    pub quality_modifier: u8,
 }
 
 pub type StepResult = Result<CraftingState, CraftingIssueType>;

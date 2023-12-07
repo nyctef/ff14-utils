@@ -80,7 +80,7 @@ mod tests {
     fn manipulation_restores_5_durability_after_some_step() {
         let after_one_step = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Manipulation", "Basic Synthesis"],
         )
         .final_state;
@@ -89,7 +89,7 @@ mod tests {
 
         let after_two_steps = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Manipulation", "Basic Synthesis", "Observe"],
         )
         .final_state;
@@ -101,7 +101,7 @@ mod tests {
     fn manipulation_doesnt_start_working_until_after_the_next_step() {
         let after_one_step = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Synthesis", "Manipulation"],
         )
         .final_state;
@@ -109,7 +109,7 @@ mod tests {
 
         let after_two_steps = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Synthesis", "Manipulation", "Observe"],
         )
         .final_state;
@@ -120,7 +120,7 @@ mod tests {
     fn manipulation_cant_increase_durability_above_max() {
         let after_waiting_a_while = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Basic Synthesis",
                 "Manipulation",
@@ -137,7 +137,7 @@ mod tests {
     fn manipulation_cant_recover_a_craft_if_it_hit_zero_in_the_previous_step() {
         let just_too_late = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Groundwork",
                 "Groundwork",
@@ -156,7 +156,7 @@ mod tests {
     fn waste_not_reduces_durability_cost_of_next_four_steps_by_50_percent() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Waste Not",
                 "Basic Synthesis",
@@ -175,7 +175,7 @@ mod tests {
     fn masters_mend_restores_a_chunk_of_durability() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Groundwork", "Groundwork", "Master's Mend"],
         )
         .final_state;
@@ -186,7 +186,7 @@ mod tests {
     #[test]
     fn masters_mend_cant_increase_durability_above_max() {
         let final_state =
-            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Master's Mend"]).final_state;
+            s::run_steps(p::l90_player(), &p::rlvl640_gear(), &["Master's Mend"]).final_state;
 
         assert_eq!(70, final_state.durability);
     }

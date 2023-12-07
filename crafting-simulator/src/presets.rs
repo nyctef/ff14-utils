@@ -1,22 +1,21 @@
 use crate::model::*;
+use ff14_data::{
+    model::{RecipeLevel, RecipeLevelId},
+    rlvl::RlvlLookup,
+};
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref RECIPE_LEVELS: RlvlLookup = RlvlLookup::get_rlvl_lookup().unwrap();
+}
 
 pub struct Presets;
 
 impl Presets {
-    pub fn rlvl_640() -> RecipeLevel {
-        RecipeLevel {
-            rlvl: 640,
-            progress_divider: 130,
-            progress_modifier: 80,
-            quality_divider: 115,
-            quality_modifier: 70,
-        }
-    }
-
     pub fn rlvl640_gear() -> Recipe {
         // ie diadochos gear
         Recipe {
-            rlvl: Self::rlvl_640(),
+            rlvl: RECIPE_LEVELS.rlvl(640).clone(),
             difficulty: 6600,
             durability: 70,
             quality_target: 14040,
@@ -26,27 +25,17 @@ impl Presets {
     pub fn rlvl640_intermediate() -> Recipe {
         // ie diadochos gear
         Recipe {
-            rlvl: Self::rlvl_640(),
+            rlvl: RECIPE_LEVELS.rlvl(640).clone(),
             difficulty: 4488,
             durability: 35,
             quality_target: 9090,
         }
     }
 
-    pub fn rlvl_555() -> RecipeLevel {
-        RecipeLevel {
-            rlvl: 555,
-            progress_divider: 129,
-            progress_modifier: 100,
-            quality_divider: 113,
-            quality_modifier: 100,
-        }
-    }
-
     /// the max white scrip collectible
     pub fn rlvl555_collectible() -> Recipe {
         Recipe {
-            rlvl: Self::rlvl_555(),
+            rlvl: RECIPE_LEVELS.rlvl(555).clone(),
             difficulty: 3400,
             durability: 80,
             quality_target: 7100,
@@ -79,12 +68,13 @@ impl Presets {
         Recipe {
             rlvl: RecipeLevel {
                 // we assume the rlvl is always higher than the player's crafter level
-                rlvl: 999,
+                rlvl: RecipeLevelId::new(999),
                 // these values just cancel out in the progress/quality calculations
                 progress_divider: 100,
                 progress_modifier: 100,
                 quality_divider: 100,
                 quality_modifier: 100,
+                stars: 4,
             },
             difficulty,
             durability,

@@ -6,7 +6,7 @@ use itertools::Itertools;
 pub struct Simulator;
 
 impl Simulator {
-    pub fn run_steps(player: PlayerStats, recipe: Recipe, steps: &[&str]) -> CraftingReport {
+    pub fn run_steps(player: PlayerStats, recipe: &Recipe, steps: &[&str]) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, &recipe);
         let actions = Actions::make_action_lookup();
         let steps: Vec<_> = steps
@@ -133,7 +133,7 @@ mod tests {
     fn baseline_synthesis_is_potency() {
         let final_state = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(1000, 70, 1000),
+            &p::baseline_recipe(1000, 70, 1000),
             &["Basic Synthesis"],
         )
         .final_state;
@@ -145,7 +145,7 @@ mod tests {
     fn baseline_touch_is_potency() {
         let final_state = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(1000, 70, 1000),
+            &p::baseline_recipe(1000, 70, 1000),
             &["Basic Touch"],
         )
         .final_state;
@@ -158,7 +158,7 @@ mod tests {
         let report = s::run_steps(
             p::baseline_player(),
             // difficulty of 300 is easy to hit here
-            p::baseline_recipe(300, 70, 1000),
+            &p::baseline_recipe(300, 70, 1000),
             &["Basic Synthesis", "Basic Synthesis", "Basic Synthesis"],
         );
 
@@ -172,7 +172,7 @@ mod tests {
     {
         let report = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(300, 70, 1000),
+            &p::baseline_recipe(300, 70, 1000),
             // just a single synthesis is insufficient to succeed or fail the craft
             &["Basic Synthesis"],
         );
@@ -185,7 +185,7 @@ mod tests {
         let report = s::run_steps(
             p::baseline_player(),
             // difficulty of 1000 is hard to hit here
-            p::baseline_recipe(1000, 40, 1000),
+            &p::baseline_recipe(1000, 40, 1000),
             &[
                 "Basic Synthesis",
                 "Basic Synthesis",
@@ -206,7 +206,7 @@ mod tests {
         let report = s::run_steps(
             p::baseline_player(),
             // 10 durability and 120 progress means one basic synth triggers both conditions
-            p::baseline_recipe(120, 10, 1000),
+            &p::baseline_recipe(120, 10, 1000),
             &["Basic Synthesis"],
         );
 
@@ -218,7 +218,7 @@ mod tests {
         let report = s::run_steps(
             // very little CP available
             PlayerStats::level_90(4000, 4000, 10),
-            p::baseline_recipe(1000, 40, 1000),
+            &p::baseline_recipe(1000, 40, 1000),
             &["Groundwork"],
         );
 
@@ -239,7 +239,7 @@ mod tests {
         let report = s::run_steps(
             // very little CP available
             PlayerStats::level_90(4000, 4000, 18),
-            p::baseline_recipe(480, 40, 1000),
+            &p::baseline_recipe(480, 40, 1000),
             // this is just enough to exactly hit 480 potency
             &["Groundwork", "Basic Synthesis"],
         );
@@ -252,7 +252,7 @@ mod tests {
     fn other_issues_reported_by_actions_are_listed_but_are_not_fatal() {
         let report = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(480, 70, 1000),
+            &p::baseline_recipe(480, 70, 1000),
             &["Groundwork", "Byregot's Blessing", "Basic Synthesis"],
         );
 
@@ -270,7 +270,7 @@ mod tests {
         let report = s::run_steps(
             // very little CP available
             PlayerStats::level_90(4000, 4000, 10),
-            p::baseline_recipe(480, 10, 1000),
+            &p::baseline_recipe(480, 10, 1000),
             &["Groundwork"],
         );
 
@@ -282,7 +282,7 @@ mod tests {
     fn quality_increases_after_craft_complete_do_not_count() {
         let report = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(360, 100, 1000),
+            &p::baseline_recipe(360, 100, 1000),
             // the first Groundwork completes the crafts, so the extra Basic Touchs don't apply
             &["Groundwork", "Basic Touch", "Basic Touch"],
         );
@@ -296,7 +296,7 @@ mod tests {
     fn progress_increases_after_craft_failure_do_not_count() {
         let report = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(500, 10, 1000),
+            &p::baseline_recipe(500, 10, 1000),
             // We run out of durability after the first Groundwork - the second would complete the craft, but it doesn't get to run
             &["Groundwork", "Groundwork"],
         );

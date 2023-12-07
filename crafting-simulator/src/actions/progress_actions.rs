@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn basic_synthesis_1() {
         let final_state =
-            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Basic Synthesis"]).final_state;
+            s::run_steps(p::l90_player(), &p::rlvl640_gear(), &["Basic Synthesis"]).final_state;
 
         assert_eq!(297, final_state.progress);
         assert_eq!(60, final_state.durability);
@@ -160,7 +160,7 @@ mod tests {
     #[test]
     fn careful_synthesis_1() {
         let final_state =
-            s::run_steps(p::l90_player(), p::rlvl640_gear(), &["Careful Synthesis"]).final_state;
+            s::run_steps(p::l90_player(), &p::rlvl640_gear(), &["Careful Synthesis"]).final_state;
 
         assert_eq!(446, final_state.progress);
         assert_eq!(60, final_state.durability);
@@ -171,7 +171,7 @@ mod tests {
     fn veneration_increases_next_synthesis_step_by_50_percent() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Veneration", "Basic Synthesis"],
         )
         .final_state;
@@ -184,7 +184,7 @@ mod tests {
     fn veneration_runs_out_after_four_steps() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Veneration",
                 "Basic Synthesis",
@@ -205,7 +205,7 @@ mod tests {
     fn muscle_memory_fails_if_not_the_first_step() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Veneration", "Muscle Memory"],
         )
         .final_state;
@@ -219,7 +219,7 @@ mod tests {
     fn muscle_memory_buffs_next_progress_action_within_5_steps() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Muscle Memory", "Basic Synthesis"],
         )
         .final_state;
@@ -231,7 +231,7 @@ mod tests {
     fn muscle_memory_buff_lasts_up_to_5_steps() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Muscle Memory",
                 "Observe",
@@ -250,7 +250,7 @@ mod tests {
     fn muscle_memory_buff_runs_out_if_not_used_in_5_steps() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Muscle Memory",
                 "Observe",
@@ -270,7 +270,7 @@ mod tests {
     fn muscle_memory_buff_only_applies_once() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Muscle Memory", "Basic Synthesis", "Basic Synthesis"],
         )
         .final_state;
@@ -282,7 +282,7 @@ mod tests {
     fn prudent_synthesis_not_allowed_during_waste_not() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Waste Not", "Prudent Synthesis"],
         )
         .final_state;
@@ -296,7 +296,7 @@ mod tests {
     fn groundwork_only_has_half_effectiveness_if_durability_about_to_run_out() {
         let final_state = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(360, 10, 1000),
+            &p::baseline_recipe(360, 10, 1000),
             &["Groundwork"],
         )
         .final_state;
@@ -310,7 +310,7 @@ mod tests {
     fn waste_not_can_prevent_groundwork_from_being_half_effective() {
         let final_state = s::run_steps(
             p::baseline_player(),
-            p::baseline_recipe(360, 10, 1000),
+            &p::baseline_recipe(360, 10, 1000),
             &["Waste Not", "Groundwork"],
         )
         .final_state;

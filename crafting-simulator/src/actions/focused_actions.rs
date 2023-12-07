@@ -60,7 +60,7 @@ mod tests {
         // technically it has a 50% success rate, but we don't want to rely on that in a simulator
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Focused Synthesis"],
         )
         .final_state;
@@ -73,7 +73,7 @@ mod tests {
     fn focused_synthesis_succeeds_if_preceded_by_observe() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Observe", "Focused Synthesis"],
         )
         .final_state;
@@ -88,7 +88,7 @@ mod tests {
     fn focused_touch_succeeds_if_preceded_by_observe() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Observe", "Focused Touch"],
         )
         .final_state;

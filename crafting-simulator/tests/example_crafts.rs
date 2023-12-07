@@ -7,7 +7,7 @@ fn can_craft_garnet_cotton_with_100_percent_quality() {
     let recipe = p::rlvl640_intermediate();
     let report = s::run_steps(
         p::l90_player_with_jhinga_biryani_hq_and_draught(),
-        recipe,
+        &recipe,
         &[
             "Muscle Memory",
             "Manipulation",
@@ -46,7 +46,7 @@ fn why_doesnt_this_work() {
     let player = p::l90_player_with_jhinga_biryani_hq_and_draught();
     let report = s::run_steps(
         player,
-        recipe,
+        &recipe,
         &[
             "Prudent Touch",
             "Basic Touch",

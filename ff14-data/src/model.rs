@@ -33,6 +33,11 @@ macro_rules! id {
                 self.0
             }
         }
+        impl Into<usize> for $a {
+            fn into(self) -> usize {
+                usize::try_from(self.0).expect("id into usize")
+            }
+        }
 
         impl Into<$a> for i32 {
             fn into(self) -> $a {
@@ -134,7 +139,7 @@ pub struct MateriaLevel {
 
 id!(RecipeLevelId);
 
-#[derive(Debug, PartialEq, Eq, Constructor)]
+#[derive(Debug, PartialEq, Eq, Constructor, Clone)]
 pub struct RecipeLevel {
     pub rlvl: RecipeLevelId,
     pub progress_divider: u8,

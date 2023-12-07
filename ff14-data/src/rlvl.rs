@@ -11,7 +11,7 @@ fn unwrap_u8(property_name: &'static str, value: &serde_json::value::Value) -> u
     value.get(property_name).unwrap().as_u64().unwrap() as u8
 }
 
-pub fn get_rlvl_lookup() -> Result<Vec<RecipeLevel>> {
+fn get_rlvls() -> Result<Vec<RecipeLevel>> {
     let leve_data: Value = serde_json::from_str(include_str!("../data/RecipeLevelTable.json"))?;
     let leve_data = leve_data.as_object().unwrap();
     let rlvls = leve_data.get("Results").unwrap().as_array().unwrap();
@@ -29,4 +29,31 @@ pub fn get_rlvl_lookup() -> Result<Vec<RecipeLevel>> {
         .collect_vec();
 
     Ok(rlvls)
+}
+
+pub struct RlvlLookup {
+    rlvls: Vec<RecipeLevel>,
+}
+
+impl RlvlLookup {
+    fn new(rlvls: Vec<RecipeLevel>) -> RlvlLookup {
+        assert!(rlvls
+            .iter()
+            .enumerate()
+            // TODO: can we get these .into()s to not require the fully qualified syntax?
+            .all(|(i, r)| i + 1 == <RecipeLevelId as Into<usize>>::into(r.rlvl)));
+        RlvlLookup { rlvls }
+    }
+
+    pub fn by_id(&self, id: RecipeLevelId) -> &RecipeLevel {
+        &self.rlvls[<RecipeLevelId as Into<usize>>::into(id) - 1]
+    }
+
+    pub fn rlvl(&self, id: usize) -> &RecipeLevel {
+        &self.rlvls[id - 1]
+    }
+
+    pub fn get_rlvl_lookup() -> Result<RlvlLookup> {
+        Ok(RlvlLookup::new(get_rlvls()?))
+    }
 }

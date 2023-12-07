@@ -189,7 +189,7 @@ mod tests {
     fn basic_touch_1() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Touch"],
         )
         .final_state;
@@ -204,7 +204,7 @@ mod tests {
     fn basic_touch_2() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Touch", "Basic Touch"],
         )
         .final_state;
@@ -217,7 +217,7 @@ mod tests {
     fn basic_touch_caps_at_10_inner_quiet_stacks() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            Recipe {
+            &Recipe {
                 // we wouldn't normally be able to run 12 basic touches in a row >.>
                 durability: 200,
                 ..p::rlvl640_gear()
@@ -237,7 +237,7 @@ mod tests {
     fn innovation_buffs_basic_touch() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Innovation",
                 "Basic Touch",
@@ -262,7 +262,7 @@ mod tests {
     fn great_strides_buffs_basic_touch() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Great Strides", "Basic Touch"],
         )
         .final_state;
@@ -274,7 +274,7 @@ mod tests {
     fn great_strides_buff_expires_after_3_turns() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Great Strides",
                 "Observe",
@@ -292,7 +292,7 @@ mod tests {
     fn byregots_blessing() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Touch", "Great Strides", "Byregot's Blessing"],
         )
         .final_state;
@@ -306,7 +306,7 @@ mod tests {
     fn advanced_touch_costs_46_cp_if_not_comboed() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Advanced Touch"],
         )
         .final_state;
@@ -318,7 +318,7 @@ mod tests {
     fn standard_touch_costs_32_cp_if_not_comboed() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Standard Touch"],
         )
         .final_state;
@@ -330,7 +330,7 @@ mod tests {
     fn standard_touch_by_itself_isnt_enough_to_combo_advanced_touch() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Standard Touch", "Advanced Touch"],
         )
         .final_state;
@@ -344,7 +344,7 @@ mod tests {
     fn basic_standard_advanced_touch_combo_works() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Basic Touch", "Standard Touch", "Advanced Touch"],
         )
         .final_state;
@@ -356,7 +356,7 @@ mod tests {
     fn multiple_standard_touches_break_the_combo() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Basic Touch",
                 "Standard Touch",
@@ -373,7 +373,7 @@ mod tests {
     fn further_advanced_touches_dont_combo() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Basic Touch",
                 "Standard Touch",
@@ -390,7 +390,7 @@ mod tests {
     fn other_touches_break_the_combo() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Basic Touch",
                 "Standard Touch",
@@ -407,7 +407,7 @@ mod tests {
     fn buff_actions_break_the_combo() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &[
                 "Basic Touch",
                 "Standard Touch",
@@ -428,7 +428,7 @@ mod tests {
     fn prudent_touch_not_allowed_during_waste_not() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Waste Not", "Prudent Touch"],
         )
         .final_state;
@@ -442,7 +442,7 @@ mod tests {
     fn preparatory_touch_increases_inner_quiet_by_2() {
         let final_state = s::run_steps(
             p::l90_player(),
-            p::rlvl640_gear(),
+            &p::rlvl640_gear(),
             &["Preparatory Touch", "Preparatory Touch"],
         )
         .final_state;

@@ -69,7 +69,7 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
     }
 }
 
-fn score_steps(player: PlayerStats, recipe: Recipe, steps: Vec<&'static str>) -> Candidate {
+fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -> Candidate {
     let report = sim::run_steps(player, recipe, &steps);
     let score = score_report(&recipe, &report);
     Candidate::new(steps, score)
@@ -84,7 +84,7 @@ fn main() {
     let random_remove = RandomRemove {};
     let mut best_per_generation: Vec<Candidate> = Vec::new();
     let mut candidates = (0..1000)
-        .map(|_| score_steps(player, recipe, random_generator.generate()))
+        .map(|_| score_steps(player, &recipe, random_generator.generate()))
         .collect_vec();
 
     for _ in 0..1000 {
@@ -96,17 +96,17 @@ fn main() {
         let mutated_candidates = candidates
             .iter()
             .map(|c| random_flip.apply(&c.steps))
-            .map(|steps| score_steps(player, recipe, steps))
+            .map(|steps| score_steps(player, &recipe, steps))
             .collect_vec();
         let simplified_candidates = candidates
             .iter()
             .map(|c| random_remove.apply(&c.steps))
-            .map(|steps| score_steps(player, recipe, steps))
+            .map(|steps| score_steps(player, &recipe, steps))
             .collect_vec();
         candidates.extend(mutated_candidates);
         candidates.extend(simplified_candidates);
         candidates
-            .extend((0..300).map(|_| score_steps(player, recipe, random_generator.generate())));
+            .extend((0..300).map(|_| score_steps(player, &recipe, random_generator.generate())));
     }
 
     // dbg!(best_per_generation.iter().map(|x| x.score).collect_vec());
