@@ -12,8 +12,8 @@ lazy_static! {
 pub struct Presets;
 
 impl Presets {
-    pub fn rlvl640_gear() -> Recipe {
-        // ie diadochos gear
+    /// ie diadochos gear
+    pub fn l90_4star_gear() -> Recipe {
         Recipe {
             rlvl: RECIPE_LEVELS.rlvl(640).clone(),
             difficulty: 6600,
@@ -22,8 +22,8 @@ impl Presets {
         }
     }
 
-    pub fn rlvl640_intermediate() -> Recipe {
-        // ie diadochos gear
+    /// eg garnet cotton
+    pub fn l90_4star_intermediate() -> Recipe {
         Recipe {
             rlvl: RECIPE_LEVELS.rlvl(640).clone(),
             difficulty: 4488,
@@ -33,7 +33,7 @@ impl Presets {
     }
 
     /// the max white scrip collectible
-    pub fn rlvl555_collectible() -> Recipe {
+    pub fn l89_collectible() -> Recipe {
         Recipe {
             rlvl: RECIPE_LEVELS.rlvl(555).clone(),
             difficulty: 3400,

@@ -76,7 +76,7 @@ fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -
 }
 
 fn main() {
-    let recipe = preset::rlvl555_collectible();
+    let recipe = preset::l89_collectible();
     let player = preset::l90_player_2();
 
     let random_generator = RandomGenerator::from_lengths(10, 30);

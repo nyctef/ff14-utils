@@ -4,7 +4,7 @@ use crafting_simulator::simulator::Simulator as s;
 
 #[test]
 fn can_craft_garnet_cotton_with_100_percent_quality() {
-    let recipe = p::rlvl640_intermediate();
+    let recipe = p::l90_4star_intermediate();
     let report = s::run_steps(
         p::l90_player_with_jhinga_biryani_hq_and_draught(),
         &recipe,
@@ -42,7 +42,7 @@ fn can_craft_garnet_cotton_with_100_percent_quality() {
 
 #[test]
 fn why_doesnt_this_work() {
-    let recipe = p::rlvl640_gear();
+    let recipe = p::l90_4star_gear();
     let player = p::l90_player_with_jhinga_biryani_hq_and_draught();
     let report = s::run_steps(
         player,
