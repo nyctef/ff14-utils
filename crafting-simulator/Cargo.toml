@@ -12,3 +12,4 @@ itertools = "0.12.0"
 rand = "0.8.5"
 ff14-data = { path = "../ff14-data" }
 lazy_static = "1.4.0"
+toml = "0.8.8"
