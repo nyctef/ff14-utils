@@ -148,3 +148,24 @@ pub struct RecipeLevel {
     pub quality_modifier: u8,
     pub stars: u8,
 }
+
+id!(BonusStatId);
+
+#[derive(Debug, PartialEq, Eq, Constructor, Clone)]
+pub struct FoodBonus {
+    pub bonus_id: BonusStatId,
+    pub max: u8,
+    pub max_hq: u8,
+    pub value: u8,
+    pub value_hq: u8,
+}
+
+id!(FoodId);
+#[derive(Debug, PartialEq, Eq, Constructor, Clone)]
+pub struct Food {
+    pub food_id: FoodId,
+    // TODO: since there's only two possible values here, it'd be nice to intern these strings
+    pub item_ui_category_name: String,
+    pub name: String,
+    pub bonuses: Vec<FoodBonus>,
+}

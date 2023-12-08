@@ -5,8 +5,7 @@ use serde_json::Value;
 
 fn get_rlvls() -> Result<Vec<RecipeLevel>> {
     let leve_data: Value = serde_json::from_str(include_str!("../data/RecipeLevelTable.json"))?;
-    let leve_data = leve_data.as_object().unwrap();
-    let rlvls = leve_data.get("Results").unwrap().as_array().unwrap();
+    let rlvls = leve_data.unwrap_array("Results");
 
     let rlvls = rlvls
         .iter()
