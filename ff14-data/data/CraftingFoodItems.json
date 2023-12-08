@@ -1,0 +1,71 @@
+{
+    "Pagination": {
+        "Page": 1,
+        "PageNext": null,
+        "PagePrev": null,
+        "PageTotal": 1,
+        "Results": 3,
+        "ResultsPerPage": 100,
+        "ResultsTotal": 3
+    },
+    "Results": [
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 62,
+                    "MaxHQ": 78,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 61,
+                    "MaxHQ": 76,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 36060,
+            "Name": "Tsai tou Vounou"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 17,
+                    "MaxHQ": 21,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 36116,
+            "Name": "Cunning Craftsman's Draught"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 69,
+                    "MaxHQ": 86,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 72,
+                    "MaxHQ": 90,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 38929,
+            "Name": "Jhinga Biryani"
+        }
+    ]
+}

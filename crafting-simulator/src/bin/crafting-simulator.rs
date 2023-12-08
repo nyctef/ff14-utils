@@ -87,6 +87,7 @@ fn main() -> Result<()> {
 
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
 
+    // TODO: make these pattern matches part of the argument parsing itself?
     let recipe = match args.recipe.as_str() {
         "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
         "l90_4s_gear" => Ok(preset::l90_4star_gear()),
@@ -94,6 +95,17 @@ fn main() -> Result<()> {
         "l90_3s_gear" => Ok(preset::l90_3star_gear()),
         other => Err(eyre!("Unrecognised recipe type {}", other)),
     }?;
+    /*
+
+    let food = args.food.map(|f| match f.as_str() {
+        "tsai_tou" => Ok(preset::tsai_tou_vounou()),
+        "jhinga_biryani" => Ok(preset::jhinga_biryani()),
+    });
+    let potion = args.potion.map(|f| match f.as_str() {
+        "cunning_draught" => Ok(preset::cunning_draught()),
+    });
+
+    */
 
     preset::l90_4star_intermediate();
 
@@ -157,6 +169,8 @@ fn main() -> Result<()> {
 struct Args {
     job_name: String,
     recipe: String,
+    food: Option<String>,
+    potion: Option<String>,
     generations: Option<u32>,
 }
 
@@ -170,13 +184,23 @@ USAGE: crafting-simulator --job WVR --recipe l90_4s_mat
 
 FLAGS:
     -j, --job           references a job listed in jobs.toml
+
     -r, --recipe        one of:
                             l90_4s_mat
                             l90_4s_gear
                             l90_3s_mat
                             l90_3s_gear
-    -g, --generations   number of generations to search through
-    -h, --help          show this message
+
+    -f, --food          (optional, assumes HQ) one of:
+                            tsai_tou
+                            jhinga_biryani
+
+    -p, --potion        (optional, assumes HQ) one of:
+                            cunning_draught
+
+    -g, --generations   (optional) number of generations to search through
+
+    -h, --help          (optional) show this message
     "
         );
         return Err(eyre!(""));
@@ -186,6 +210,8 @@ FLAGS:
         job_name: pargs.value_from_str(["-j", "--job"])?,
         recipe: pargs.value_from_str(["-r", "--recipe"])?,
         generations: pargs.opt_value_from_str(["-g", "--generations"])?,
+        food: pargs.opt_value_from_str(["-f", "--food"])?,
+        potion: pargs.opt_value_from_str(["-p", "--potion"])?,
     };
 
     let remaining = pargs.finish();
