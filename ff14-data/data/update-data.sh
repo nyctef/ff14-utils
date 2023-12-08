@@ -11,6 +11,4 @@ curl 'https://xivapi.com/Leve?pretty=1&limit=2000&columns=ID,Name,GilReward,Clas
 
 curl 'https://xivapi.com/RecipeLevelTable?pretty=1&limit=1000&columns=ID,ProgressDivider,ProgressModifier,QualityDivider,QualityModifier,Stars' -o "$root/RecipeLevelTable.json"
 
-# TODO: is there some nicer way to automatically find crafting-related food items
-# without hardcoding the IDs here?
-curl 'https://xivapi.com/item?pretty=1&columns=ID,Name,Bonuses&ids=38929,36060,36116' -o "$root/CraftingFoodItems.json"
+curl 'https://xivapi.com/search?pretty=1&filters=Bonuses.CP.Max%3E0&columns=ID,Name,Bonuses,ItemUICategory.Name' -o "$root/CraftingFoodItems.json"

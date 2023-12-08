@@ -4,11 +4,530 @@
         "PageNext": null,
         "PagePrev": null,
         "PageTotal": 1,
-        "Results": 3,
+        "Results": 27,
         "ResultsPerPage": 100,
-        "ResultsTotal": 3
+        "ResultsTotal": 27
     },
     "Results": [
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 10,
+                    "MaxHQ": 12,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4716,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Frumenty"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 17,
+                    "MaxHQ": 21,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4717,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Stone Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 21,
+                    "MaxHQ": 26,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4718,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Pea Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 24,
+                    "MaxHQ": 30,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4719,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Cawl Cennin"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 26,
+                    "MaxHQ": 33,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4720,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Fish Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 34,
+                    "MaxHQ": 43,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                }
+            },
+            "ID": 4721,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Bouillabaisse"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 14,
+                    "MaxHQ": 17,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 38,
+                    "MaxHQ": 47,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 12
+                }
+            },
+            "ID": 7574,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Chilled Popoto Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 14,
+                    "MaxHQ": 18,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 49,
+                    "MaxHQ": 61,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 12
+                }
+            },
+            "ID": 9333,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Shark Fin Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 38,
+                    "MaxHQ": 48,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 13
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 22,
+                    "MaxHQ": 28,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 12861,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Baked Onion Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 15,
+                    "MaxHQ": 19,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 60,
+                    "MaxHQ": 75,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 12
+                }
+            },
+            "ID": 12863,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Emerald Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 15,
+                    "MaxHQ": 19,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 58,
+                    "MaxHQ": 73,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 12
+                }
+            },
+            "ID": 12864,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Clam Chowder"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 40,
+                    "MaxHQ": 50,
+                    "Relative": true,
+                    "Value": 12,
+                    "ValueHQ": 15
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 25,
+                    "MaxHQ": 31,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 12865,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Seafood Stew"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 8,
+                    "MaxHQ": 10,
+                    "Relative": true,
+                    "Value": 3,
+                    "ValueHQ": 4
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 62,
+                    "MaxHQ": 77,
+                    "Relative": true,
+                    "Value": 7,
+                    "ValueHQ": 9
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 42,
+                    "MaxHQ": 53,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 15650,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Heavensegg Soup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 16,
+                    "MaxHQ": 20,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 109,
+                    "MaxHQ": 136,
+                    "Relative": true,
+                    "Value": 10,
+                    "ValueHQ": 12
+                }
+            },
+            "ID": 19824,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Steamed Grouper"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 43,
+                    "MaxHQ": 54,
+                    "Relative": true,
+                    "Value": 12,
+                    "ValueHQ": 15
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 42,
+                    "MaxHQ": 53,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 19826,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Tempura Platter"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 10,
+                    "MaxHQ": 13,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 19884,
+            "ItemUICategory": {
+                "Name": "Medicine"
+            },
+            "Name": "Cunning Craftsman's Tea"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 45,
+                    "MaxHQ": 56,
+                    "Relative": true,
+                    "Value": 12,
+                    "ValueHQ": 15
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 49,
+                    "MaxHQ": 61,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 23187,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Matcha"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 22,
+                    "MaxHQ": 27,
+                    "Relative": true,
+                    "Value": 8,
+                    "ValueHQ": 10
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 122,
+                    "MaxHQ": 153,
+                    "Relative": true,
+                    "Value": 7,
+                    "ValueHQ": 9
+                }
+            },
+            "ID": 27864,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Blood Tomato Salad"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 53,
+                    "MaxHQ": 66,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 51,
+                    "MaxHQ": 64,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 27876,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Blood Bouillabaisse"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 13,
+                    "MaxHQ": 16,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 27959,
+            "ItemUICategory": {
+                "Name": "Medicine"
+            },
+            "Name": "Cunning Craftsman's Syrup"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 56,
+                    "MaxHQ": 70,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 84,
+                    "MaxHQ": 105,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 28720,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Mejillones al Ajillo"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 57,
+                    "MaxHQ": 72,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 56,
+                    "MaxHQ": 70,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 30482,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Chili Crab"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 26,
+                    "MaxHQ": 32,
+                    "Relative": true,
+                    "Value": 8,
+                    "ValueHQ": 10
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 146,
+                    "MaxHQ": 183,
+                    "Relative": true,
+                    "Value": 7,
+                    "ValueHQ": 9
+                }
+            },
+            "ID": 36046,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Happiness Juice"
+        },
         {
             "Bonuses": {
                 "CP": {
@@ -29,6 +548,9 @@
                 }
             },
             "ID": 36060,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
             "Name": "Tsai tou Vounou"
         },
         {
@@ -43,7 +565,35 @@
                 }
             },
             "ID": 36116,
+            "ItemUICategory": {
+                "Name": "Medicine"
+            },
             "Name": "Cunning Craftsman's Draught"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 66,
+                    "MaxHQ": 82,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 96,
+                    "MaxHQ": 120,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 37282,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Calamari Ripieni"
         },
         {
             "Bonuses": {
@@ -65,7 +615,11 @@
                 }
             },
             "ID": 38929,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
             "Name": "Jhinga Biryani"
         }
-    ]
+    ],
+    "SpeedMs": 2
 }
