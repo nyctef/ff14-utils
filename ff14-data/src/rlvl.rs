@@ -1,15 +1,7 @@
-use crate::model::*;
+use crate::{jsonext::JsonValueExt, model::*};
 use color_eyre::eyre::Result;
 use itertools::Itertools;
 use serde_json::Value;
-
-fn unwrap_i32(property_name: &'static str, value: &serde_json::value::Value) -> i32 {
-    value.get(property_name).unwrap().as_i64().unwrap() as i32
-}
-
-fn unwrap_u8(property_name: &'static str, value: &serde_json::value::Value) -> u8 {
-    value.get(property_name).unwrap().as_u64().unwrap() as u8
-}
 
 fn get_rlvls() -> Result<Vec<RecipeLevel>> {
     let leve_data: Value = serde_json::from_str(include_str!("../data/RecipeLevelTable.json"))?;
@@ -19,12 +11,12 @@ fn get_rlvls() -> Result<Vec<RecipeLevel>> {
     let rlvls = rlvls
         .iter()
         .map(|r| RecipeLevel {
-            rlvl: unwrap_i32("ID", r).into(),
-            progress_divider: unwrap_u8("ProgressDivider", r),
-            progress_modifier: unwrap_u8("ProgressModifier", r),
-            quality_divider: unwrap_u8("QualityDivider", r),
-            quality_modifier: unwrap_u8("QualityModifier", r),
-            stars: unwrap_u8("Stars", r),
+            rlvl: r.unwrap_i32("ID").into(),
+            progress_divider: r.unwrap_u8("ProgressDivider"),
+            progress_modifier: r.unwrap_u8("ProgressModifier"),
+            quality_divider: r.unwrap_u8("QualityDivider"),
+            quality_modifier: r.unwrap_u8("QualityModifier"),
+            stars: r.unwrap_u8("Stars"),
         })
         .collect_vec();
 
