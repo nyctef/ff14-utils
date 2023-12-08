@@ -1,5 +1,6 @@
 use color_eyre::{eyre::eyre, Result};
 use crafting_simulator::{
+    buffs::apply_buff_hq,
     config,
     generator::{RandomFlip, RandomGenerator, RandomRemove},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
@@ -7,6 +8,7 @@ use crafting_simulator::{
     simulator::Simulator as sim,
 };
 use derive_more::Constructor;
+use ff14_data::model::Food;
 use itertools::Itertools;
 use std::{
     cmp::{Ordering, Reverse},
@@ -95,25 +97,31 @@ fn main() -> Result<()> {
         "l90_3s_gear" => Ok(preset::l90_3star_gear()),
         other => Err(eyre!("Unrecognised recipe type {}", other)),
     }?;
-    /*
-
     let food = args.food.map(|f| match f.as_str() {
         "tsai_tou" => Ok(preset::tsai_tou_vounou()),
         "jhinga_biryani" => Ok(preset::jhinga_biryani()),
+        other => Err(eyre!("Unrecognised food type {}", other)),
     });
     let potion = args.potion.map(|f| match f.as_str() {
         "cunning_draught" => Ok(preset::cunning_draught()),
+        other => Err(eyre!("Unrecognised potion type {}", other)),
     });
 
-    */
-
-    preset::l90_4star_intermediate();
-
-    let player = config
+    let mut player = config
         .iter()
         .find(|(name, _)| *name == args.job_name)
         .expect("expected a job")
         .1;
+
+    if let Some(food) = food {
+        // TODO: we'd like to properly validate these args,
+        // but not sure how to nicely handle Option<Result<_>>
+        // where we only care about errors when the Option is Some
+        player = apply_buff_hq(&player, food.unwrap());
+    }
+    if let Some(potion) = potion {
+        player = apply_buff_hq(&player, potion.unwrap());
+    }
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
     let random_flip = RandomFlip::new();

@@ -67,6 +67,7 @@ impl CraftingState {
     }
 }
 
+// TODO: merge with the recipe struct from the data crate
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Recipe {
     pub rlvl: RecipeLevel,

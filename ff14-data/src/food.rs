@@ -11,13 +11,14 @@ fn get_foods() -> Result<Vec<Food>> {
         .iter()
         .map(|f| Food {
             food_id: f.unwrap_i32("ID").into(),
-            item_ui_category_name: f.unwrap_object("ItemUICategory").unwrap_string("Name"),
+            item_ui_category_name: f.unwrap_value("ItemUICategory").unwrap_string("Name"),
             name: f.unwrap_string("Name"),
             bonuses: f
-                .unwrap_array("Bonuses")
+                .unwrap_object("Bonuses")
                 .iter()
-                .map(|b| FoodBonus {
+                .map(|(name, b)| FoodBonus {
                     bonus_id: b.unwrap_i32("ID").into(),
+                    name: name.to_owned(),
                     max: b.unwrap_u8("Max"),
                     max_hq: b.unwrap_u8("MaxHQ"),
                     value: b.unwrap_u8("Value"),

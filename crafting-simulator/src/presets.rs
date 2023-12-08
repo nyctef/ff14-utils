@@ -1,12 +1,14 @@
 use crate::model::*;
 use ff14_data::{
-    model::{RecipeLevel, RecipeLevelId},
+    food::FoodLookup,
+    model::{Food, RecipeLevel, RecipeLevelId},
     rlvl::RlvlLookup,
 };
 use lazy_static::lazy_static;
 
 lazy_static! {
     static ref RECIPE_LEVELS: RlvlLookup = RlvlLookup::get_rlvl_lookup().unwrap();
+    static ref FOODS: FoodLookup = FoodLookup::get_food_lookup().unwrap();
 }
 
 pub struct Presets;
@@ -100,5 +102,17 @@ impl Presets {
             durability,
             quality_target,
         }
+    }
+
+    pub fn tsai_tou_vounou() -> &'static Food {
+        FOODS.by_name("Tsai Tou Vounou").unwrap()
+    }
+
+    pub fn jhinga_biryani() -> &'static Food {
+        FOODS.by_name("Jhinga Biryani").unwrap()
+    }
+
+    pub fn cunning_draught() -> &'static Food {
+        FOODS.by_name("Cunning Craftsman's Draught").unwrap()
     }
 }

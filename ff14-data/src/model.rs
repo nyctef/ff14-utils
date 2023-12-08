@@ -154,6 +154,8 @@ id!(BonusStatId);
 #[derive(Debug, PartialEq, Eq, Constructor, Clone)]
 pub struct FoodBonus {
     pub bonus_id: BonusStatId,
+    // TODO: intern?
+    pub name: String,
     pub max: u8,
     pub max_hq: u8,
     pub value: u8,
