@@ -36,8 +36,10 @@ pub struct CraftingState {
     pub manipulation_stacks: u8,
     pub manipulation_delay: u8,
     pub waste_not_stacks: u8,
-    // TODO: this doesn't currently get unset anywhere
-    pub prev_step_was_observe: bool,
+    // of course observe doesn't actually have stacks, but this
+    // is the easiest way we have to track "last step was observe"
+    // at the moment
+    pub observe_stacks: u8,
     pub touch_combo_stage: u8,
 }
 
@@ -57,7 +59,7 @@ impl CraftingState {
             manipulation_stacks: 0,
             manipulation_delay: 0,
             waste_not_stacks: 0,
-            prev_step_was_observe: false,
+            observe_stacks: 0,
             touch_combo_stage: 0,
         }
     }

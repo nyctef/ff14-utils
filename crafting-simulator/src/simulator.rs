@@ -91,6 +91,7 @@ impl Simulator {
                     next.manipulation_stacks.saturating_sub(step.num_steps());
                 next.manipulation_delay = next.manipulation_delay.saturating_sub(step.num_steps());
                 next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
+                next.observe_stacks = next.observe_stacks.saturating_sub(step.num_steps());
                 next.steps += step.num_steps();
 
                 ControlFlow::Continue((step_log, next_issues, next))

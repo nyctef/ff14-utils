@@ -13,7 +13,7 @@ impl InfallibleStep for Observe {
         _recipe: &Recipe,
     ) -> CraftingState {
         CraftingState {
-            prev_step_was_observe: true,
+            observe_stacks: 2,
             touch_combo_stage: 0,
             ..*state
         }
@@ -34,7 +34,7 @@ pub struct FocusedStep {
 }
 impl CraftingStep for FocusedStep {
     fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> StepResult {
-        if !state.prev_step_was_observe {
+        if state.observe_stacks <= 0 {
             return Err(CraftingIssueType::ChanceBasedAction);
         }
 
@@ -82,6 +82,20 @@ mod tests {
         assert_eq!(60, final_state.durability);
         assert_eq!(622 - 7 - 5, final_state.cp);
         assert_eq!(2, final_state.steps);
+    }
+
+    #[test]
+    fn focused_synthesis_fails_if_another_step_comes_between_observe_and_it() {
+        // technically it has a 50% success rate, but we don't want to rely on that in a simulator
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe(1000, 70, 1000),
+            &["Observe", "Veneration", "Focused Synthesis"],
+        )
+        .final_state;
+
+        assert_eq!(0, final_state.progress);
+        assert_eq!(60, final_state.durability);
     }
 
     #[test]
