@@ -11,6 +11,7 @@ use crafting_simulator::{
 use derive_more::Constructor;
 
 use itertools::Itertools;
+use rand::{thread_rng, Rng};
 use std::{
     cmp::{Ordering, Reverse},
     fmt::Display,
@@ -69,9 +70,17 @@ impl PartialOrd for CraftingScore {
             return Some(quality_diff);
         }
 
+        // if progress and quality are satisfied, try improving some other aspect
+        // to provide more room for future improvements
+
         let steps_diff = Reverse(self.step_count).cmp(&Reverse(other.step_count));
         if steps_diff != Ordering::Equal {
             return Some(steps_diff);
+        }
+
+        let cp_diff = self.cp.cmp(&other.cp);
+        if cp_diff != Ordering::Equal {
+            return Some(cp_diff);
         }
 
         Some(Ordering::Equal)
@@ -162,6 +171,7 @@ fn main() -> Result<()> {
         .collect_vec();
 
     let generations = args.generations.unwrap_or(1000);
+    let mut rng = thread_rng();
     for g in 0..generations {
         if ctrlc_pressed.load(SeqCst) {
             break;
@@ -169,8 +179,9 @@ fn main() -> Result<()> {
 
         candidates.sort_by_key(|x| Reverse(x.score));
 
+        let candidates_count = candidates.len();
         if g % 100 == 0 {
-            println!("g{} | {} | {}", g, candidates[0].score, candidates.len());
+            println!("g{} | {} | {}", g, candidates[0].score, candidates_count);
         }
 
         best_per_generation.push(candidates[0].clone());
@@ -178,7 +189,17 @@ fn main() -> Result<()> {
         // TODO: maybe detect if the score hasn't changed in some number
         // of generations, and throw away the current best cohort to reset
         // the simulation and try for another optimum
-        candidates.drain(200..);
+
+        // higher scoring candidates have lower indexes, so they should have
+        // a lower chance of "dying" this generation
+        candidates = candidates
+            .into_iter()
+            .enumerate()
+            .filter(|(i, _c)| (*i < 10) || (rng.gen_range(0..candidates_count) < *i))
+            .map(|(_, c)| c)
+            .collect_vec();
+        // make sure that we don't get unlucky and just allow a whole ton of candidates
+        candidates.drain(500..);
         let mutated_candidates = candidates
             .iter()
             .map(|c| random_flip.apply(&c.steps))
