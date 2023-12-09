@@ -7,13 +7,19 @@ use crafting_simulator::{
     presets::Presets as preset,
     simulator::Simulator as sim,
 };
+use ctrlc;
 use derive_more::Constructor;
 use ff14_data::model::Food;
 use itertools::Itertools;
 use std::{
+    borrow::BorrowMut,
     cmp::{Ordering, Reverse},
     fmt::{Display, Write},
     path::Path,
+    sync::{
+        atomic::{AtomicBool, Ordering::SeqCst},
+        Arc,
+    },
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -101,6 +107,10 @@ fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -
 fn main() -> Result<()> {
     color_eyre::install()?;
 
+    let ctrlc_pressed = Arc::new(AtomicBool::new(false));
+    let ctrlc_sender = ctrlc_pressed.clone();
+    ctrlc::set_handler(move || ctrlc_sender.store(true, SeqCst))?;
+
     let args = parse_args()?;
 
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
@@ -149,10 +159,14 @@ fn main() -> Result<()> {
 
     let generations = args.generations.unwrap_or(1000);
     for g in 0..generations {
+        if ctrlc_pressed.load(SeqCst) {
+            break;
+        }
+
         candidates.sort_by_key(|x| Reverse(x.score));
 
         if g % 100 == 0 {
-            println!("g{} | {}", g, candidates[0].score);
+            println!("g{} | {} | {}", g, candidates[0].score, candidates.len());
         }
 
         best_per_generation.push(candidates[0].clone());
