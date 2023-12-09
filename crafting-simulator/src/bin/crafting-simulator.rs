@@ -152,6 +152,11 @@ fn main() -> Result<()> {
     let random_generator = RandomGenerator::from_lengths(10, 30);
     let random_flip = RandomFlip::new();
     let random_remove = RandomRemove {};
+    // TODO: this'd probably be nicer as a BinaryHeap or something
+    // maybe a more custom struct with BinaryHeap + HashSet to eliminate
+    // duplicates and track recent scores over time?
+    // it's just a bit annoying since we'd have to manually implement
+    // PartialEq/Eq/PartialOrd/Ord for Candidate to delegate to the score
     let mut best_per_generation: Vec<Candidate> = Vec::new();
     let mut candidates = (0..1000)
         .map(|_| score_steps(player, &recipe, random_generator.generate()))
@@ -171,6 +176,9 @@ fn main() -> Result<()> {
 
         best_per_generation.push(candidates[0].clone());
 
+        // TODO: maybe detect if the score hasn't changed in some number
+        // of generations, and throw away the current best cohort to reset
+        // the simulation and try for another optimum
         candidates.drain(200..);
         let mutated_candidates = candidates
             .iter()
