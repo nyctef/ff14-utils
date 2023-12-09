@@ -158,6 +158,9 @@ pub struct CraftingIssue {
 
 #[derive(Debug, Clone)]
 pub struct CraftingReport {
+    /// The list of steps actually run. Differs from the input list of steps
+    /// since some steps might fail to trigger or cause the craft to end
+    pub step_log: Vec<&'static str>,
     pub final_state: CraftingState,
     pub issues: Vec<CraftingIssue>,
     pub status: CraftStatus,

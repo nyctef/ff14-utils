@@ -1,28 +1,34 @@
-use std::ops::ControlFlow;
-
 use crate::{actions::Actions, model::*};
+use color_eyre::eyre::{eyre, Report};
 use itertools::Itertools;
+use std::ops::ControlFlow;
 
 pub struct Simulator;
 
 impl Simulator {
-    pub fn run_steps(player: PlayerStats, recipe: &Recipe, steps: &[&str]) -> CraftingReport {
+    pub fn run_steps(player: PlayerStats, recipe: &Recipe, steps: &[&'static str]) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, &recipe);
         let actions = Actions::make_action_lookup();
         let steps: Vec<_> = steps
             .iter()
             .map(|name| {
-                actions
+                let action = actions
                     .get(name)
-                    .ok_or_else(|| format!("Unknown action: {}", name))
+                    .ok_or_else(|| eyre!("Unknown action: {}", name))?;
+                Ok::<_, Report>((name, action))
             })
             .try_collect()
             .unwrap();
         let fold_result = steps.iter().try_fold(
-            (Vec::<CraftingIssue>::new(), initial_state),
-            |(prev_issues, prev_state), step| {
+            (
+                Vec::<&'static str>::new(),
+                Vec::<CraftingIssue>::new(),
+                initial_state,
+            ),
+            |(step_log, prev_issues, prev_state), (name, step)| {
                 let mut next = prev_state;
                 let mut next_issues = prev_issues;
+                let mut step_log = step_log;
 
                 let cp_cost = step.cp_cost(&next) as i16;
                 let durability_cost_divider = if next.waste_not_stacks > 0 { 2 } else { 1 };
@@ -34,6 +40,7 @@ impl Simulator {
                         next = step_result;
                         next.cp = next.cp - cp_cost;
                         next.durability = next.durability - durability_cost;
+                        step_log.push(name);
                     }
                     Err(issue) if issue == CraftingIssueType::ChanceBasedAction => {
                         // we assume chance based actions fail, but we still pay the durability/cp cost
@@ -54,7 +61,7 @@ impl Simulator {
                         CraftingIssueType::DurabilityFailed,
                         next.steps,
                     ));
-                    return ControlFlow::Break((next_issues, next));
+                    return ControlFlow::Break((step_log, next_issues, next));
                 }
 
                 if next.cp < 0 {
@@ -62,12 +69,12 @@ impl Simulator {
                     // TODO: prevent the previous step which didn't have enough CP from running
                     // TODO: try continuing the craft and just prevent any future steps with insufficient CP
                     next_issues.push(CraftingIssue::new(CraftingIssueType::OutOfCP, next.steps));
-                    return ControlFlow::Break((next_issues, next));
+                    return ControlFlow::Break((step_log, next_issues, next));
                 }
 
                 if next.progress >= recipe.difficulty {
                     // craft succeeded
-                    return ControlFlow::Break((next_issues, next));
+                    return ControlFlow::Break((step_log, next_issues, next));
                 }
 
                 if next.manipulation_stacks > 0 && next.manipulation_delay == 0 {
@@ -86,11 +93,11 @@ impl Simulator {
                 next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
                 next.steps += step.num_steps();
 
-                return ControlFlow::Continue((next_issues, next));
+                return ControlFlow::Continue((step_log, next_issues, next));
             },
         );
 
-        let (issues, final_state) = either_controlflow(fold_result);
+        let (step_log, issues, final_state) = either_controlflow(fold_result);
 
         let status = match (
             final_state.progress >= recipe.difficulty,
@@ -102,6 +109,7 @@ impl Simulator {
         };
 
         CraftingReport {
+            step_log,
             final_state,
             issues,
             status,
