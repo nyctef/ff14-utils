@@ -69,7 +69,7 @@ impl PartialOrd for CraftingScore {
             return Some(quality_diff);
         }
 
-        let steps_diff = self.step_count.cmp(&other.step_count);
+        let steps_diff = Reverse(self.step_count).cmp(&Reverse(other.step_count));
         if steps_diff != Ordering::Equal {
             return Some(steps_diff);
         }
