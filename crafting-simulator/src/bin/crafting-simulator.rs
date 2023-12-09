@@ -12,6 +12,7 @@ use ff14_data::model::Food;
 use itertools::Itertools;
 use std::{
     cmp::{Ordering, Reverse},
+    fmt::{Display, Write},
     path::Path,
 };
 
@@ -23,6 +24,20 @@ struct CraftingScore {
     quality_factor: u8,
     step_count: u8,
     cp: i16,
+}
+
+impl Display for CraftingScore {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "{:?}: {}dur {}prog {}q {}steps {}cp",
+            self.status,
+            self.durability,
+            self.progress_factor,
+            self.quality_factor,
+            self.step_count,
+            self.cp
+        ))
+    }
 }
 
 #[derive(Debug, Constructor, Clone)]
@@ -49,7 +64,7 @@ impl PartialOrd for CraftingScore {
             return Some(quality_diff);
         }
 
-        let steps_diff = self.steps.cmp(&other.steps);
+        let steps_diff = self.step_count.cmp(&other.step_count);
         if steps_diff != Ordering::Equal {
             return Some(steps_diff);
         }
@@ -133,8 +148,12 @@ fn main() -> Result<()> {
         .collect_vec();
 
     let generations = args.generations.unwrap_or(1000);
-    for _ in 0..generations {
+    for g in 0..generations {
         candidates.sort_by_key(|x| Reverse(x.score));
+
+        if g % 100 == 0 {
+            println!("g{} | {}", g, candidates[0].score);
+        }
 
         best_per_generation.push(candidates[0].clone());
 
