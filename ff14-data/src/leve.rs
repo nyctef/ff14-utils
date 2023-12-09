@@ -55,7 +55,7 @@ pub fn get_endwalker_leves() -> Result<Vec<Leve>> {
             l.gil_reward > 0
                 && l.quest_level >= 80
                 && l.item_count > 0
-                && l.item_name != ""
+                && !l.item_name.is_empty()
                 && l.item_id != ItemId::ZERO
         })
         .collect_vec();

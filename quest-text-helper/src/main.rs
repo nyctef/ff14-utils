@@ -62,11 +62,11 @@ fn get_folder_to_watch_from_args() -> Result<String> {
     let mut cli_args = env::args().skip(1).collect::<Vec<_>>();
     let err = Err(eyre!("Usage: quest-text-helper [path to ACT logs folder]"));
 
-    return if cli_args.len() != 1 {
+    if cli_args.len() != 1 {
         err
     } else {
         Ok(cli_args.pop().unwrap())
-    };
+    }
 }
 
 #[derive(Serialize)]

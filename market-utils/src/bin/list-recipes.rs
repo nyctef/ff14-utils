@@ -9,7 +9,7 @@ async fn main() -> Result<()> {
     let recipes = RecipeLookup::from_datamining_csv().await?;
 
     for item in items.all() {
-        if let Some(_) = recipes.recipe_for_item(item.id) {
+        if recipes.recipe_for_item(item.id).is_some() {
             println!("{}", item.name);
         }
     }

@@ -7,14 +7,13 @@ use crafting_simulator::{
     presets::Presets as preset,
     simulator::Simulator as sim,
 };
-use ctrlc;
+
 use derive_more::Constructor;
-use ff14_data::model::Food;
+
 use itertools::Itertools;
 use std::{
-    borrow::BorrowMut,
     cmp::{Ordering, Reverse},
-    fmt::{Display, Write},
+    fmt::Display,
     path::Path,
     sync::{
         atomic::{AtomicBool, Ordering::SeqCst},
@@ -75,13 +74,13 @@ impl PartialOrd for CraftingScore {
             return Some(steps_diff);
         }
 
-        return Some(Ordering::Equal);
+        Some(Ordering::Equal)
     }
 }
 
 impl Ord for CraftingScore {
     fn cmp(&self, other: &Self) -> Ordering {
-        Self::partial_cmp(&self, other).unwrap()
+        Self::partial_cmp(self, other).unwrap()
     }
 }
 
@@ -100,7 +99,7 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
 
 fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -> Candidate {
     let report = sim::run_steps(player, recipe, &steps);
-    let score = score_report(&recipe, &report);
+    let score = score_report(recipe, &report);
     Candidate::new(steps, score, report.step_log)
 }
 

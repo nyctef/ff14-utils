@@ -45,8 +45,7 @@ impl RandomGenerator {
         let rng = &mut thread_rng();
         let length = rng.gen_range(self.min_length..=self.max_length);
         (0..length)
-            .map(|_| choices.choose(rng).unwrap().clone())
-            .flatten()
+            .flat_map(|_| choices.choose(rng).unwrap().clone())
             .collect()
     }
 }

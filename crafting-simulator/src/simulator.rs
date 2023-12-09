@@ -7,7 +7,7 @@ pub struct Simulator;
 
 impl Simulator {
     pub fn run_steps(player: PlayerStats, recipe: &Recipe, steps: &[&'static str]) -> CraftingReport {
-        let initial_state = CraftingState::initial(&player, &recipe);
+        let initial_state = CraftingState::initial(&player, recipe);
         let actions = Actions::make_action_lookup();
         let steps: Vec<_> = steps
             .iter()
@@ -34,18 +34,18 @@ impl Simulator {
                 let durability_cost_divider = if next.waste_not_stacks > 0 { 2 } else { 1 };
                 let durability_cost = (step.durability_cost() / durability_cost_divider) as i16;
 
-                match step.apply(&next, &player, &recipe) {
+                match step.apply(&next, &player, recipe) {
                     Ok(step_result) => {
                         // step applied correctly, so we take its updated state and pay its cp/durability cost
                         next = step_result;
-                        next.cp = next.cp - cp_cost;
-                        next.durability = next.durability - durability_cost;
+                        next.cp -= cp_cost;
+                        next.durability -= durability_cost;
                         step_log.push(name);
                     }
                     Err(issue) if issue == CraftingIssueType::ChanceBasedAction => {
                         // we assume chance based actions fail, but we still pay the durability/cp cost
-                        next.cp = next.cp - cp_cost;
-                        next.durability = next.durability - durability_cost;
+                        next.cp -= cp_cost;
+                        next.durability -= durability_cost;
                         next_issues.push(CraftingIssue::new(issue, next.steps))
                     }
                     Err(other_issue) => {
@@ -93,7 +93,7 @@ impl Simulator {
                 next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
                 next.steps += step.num_steps();
 
-                return ControlFlow::Continue((step_log, next_issues, next));
+                ControlFlow::Continue((step_log, next_issues, next))
             },
         );
 
