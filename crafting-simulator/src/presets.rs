@@ -54,6 +54,16 @@ impl Presets {
         }
     }
 
+    /// for customized components
+    pub fn l90_relic_tier3() -> Recipe {
+        Recipe {
+            rlvl: RECIPE_LEVELS.rlvl(620).clone(),
+            difficulty: 4620,
+            durability: 60,
+            quality_target: 12040,
+        }
+    }
+
     /// the max white scrip collectible
     pub fn l89_collectible() -> Recipe {
         Recipe {

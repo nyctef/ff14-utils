@@ -129,6 +129,7 @@ fn main() -> Result<()> {
         "l90_4s_gear" => Ok(preset::l90_4star_gear()),
         "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
         "l90_3s_gear" => Ok(preset::l90_3star_gear()),
+        "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
         other => Err(eyre!("Unrecognised recipe type {}", other)),
     }?;
     let food = args.food.map(|f| match f.as_str() {
