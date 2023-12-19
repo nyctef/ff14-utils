@@ -3,3 +3,6 @@
 
 # list crafter stats here
 jobs.toml
+
+# temporary working files
+scratch/
