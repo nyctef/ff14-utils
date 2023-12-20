@@ -223,7 +223,9 @@ fn main() -> Result<()> {
             .map(|(_, c)| c)
             .collect_vec();
         // make sure that we don't get unlucky and just allow a whole ton of candidates
-        candidates.drain(500..);
+        if candidates.len() > 500 {
+            candidates.drain(500..);
+        }
         let mutated_candidates = candidates
             .iter()
             .map(|c| random_flip.apply(&c.steps))
