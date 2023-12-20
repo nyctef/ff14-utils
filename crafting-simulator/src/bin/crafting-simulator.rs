@@ -180,16 +180,32 @@ fn main() -> Result<()> {
 
     let generations = args.generations.unwrap_or(1000);
     let mut rng = thread_rng();
+    if args.log_stats {
+        eprintln!("generation,p100,p99,p95,p90,p50,p25,p5");
+    }
     for g in 0..generations {
         if ctrlc_pressed.load(SeqCst) {
             break;
         }
 
         candidates.sort_by_key(|x| Reverse(x.score));
+        if args.log_stats {
+            eprintln!(
+                "{},{},{},{},{},{},{},{}",
+                g + 1,
+                candidates[0].score.as_num(),
+                candidates[candidates.len() * 95 / 100].score.as_num(),
+                candidates[candidates.len() * 99 / 100].score.as_num(),
+                candidates[candidates.len() * 90 / 100].score.as_num(),
+                candidates[candidates.len() * 50 / 100].score.as_num(),
+                candidates[candidates.len() * 25 / 100].score.as_num(),
+                candidates[candidates.len() * 5 / 100].score.as_num(),
+            )
+        };
 
         let candidates_count = candidates.len();
-        if g % 100 == 0 {
-            println!("g{} | {} | {}", g, candidates[0].score, candidates_count);
+        if !args.log_stats && g % 100 == 0 {
+            eprintln!("g{} | {} | {}", g, candidates[0].score, candidates_count);
         }
 
         best_per_generation.push(candidates[0].clone());
@@ -230,7 +246,7 @@ fn main() -> Result<()> {
         .sorted_by_key(|x| x.score)
         .last()
         .unwrap();
-    dbg!(&best_overall.score);
+    println!("final score: {}", &best_overall.score);
 
     println!();
     println!(
