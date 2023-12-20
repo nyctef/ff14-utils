@@ -213,6 +213,9 @@ fn main() -> Result<()> {
         // TODO: maybe detect if the score hasn't changed in some number
         // of generations, and throw away the current best cohort to reset
         // the simulation and try for another optimum
+        // (maybe save a bunch of candidates each time we do this, then
+        // start a new round of evolution using those candidates competing
+        // against each other?)
 
         // higher scoring candidates have lower indexes, so they should have
         // a lower chance of "dying" this generation
