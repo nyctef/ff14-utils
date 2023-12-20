@@ -47,7 +47,7 @@ impl Display for CraftingScore {
 }
 
 impl CraftingScore {
-    fn as_num(&self) -> f64{
+    fn as_num(&self) -> f64 {
         let mut score = 0_f64;
 
         // we build up `score` using various orders of magnitude
@@ -56,8 +56,8 @@ impl CraftingScore {
         // will be necessary to make the chart look reasonable.
 
         // 0_000_000_xxx: cp diff
-        // 0_000_0xx_000: steps diff
-        // 0_0xx_000_000: quality diff
+        // 0_000_xxx_000: steps diff
+        // 0_xxx_000_000: quality diff
         // x_000_000_000: was crafting a success
 
         if self.status == CraftStatus::Success {
@@ -69,7 +69,7 @@ impl CraftingScore {
         // if progress and quality are satisfied, try improving some other aspect
         // to provide more room for future improvements
 
-        let steps_score = (100. - self.step_count as f64).max(0.);
+        let steps_score = (1000. - self.step_count as f64).max(0.);
         score += steps_score * 1_000.;
 
         let cp_remaining_score = (1000. - self.cp as f64).max(0.);
