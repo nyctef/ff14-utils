@@ -46,6 +46,39 @@ impl Display for CraftingScore {
     }
 }
 
+impl CraftingScore {
+    fn as_num(&self) -> f64{
+        let mut score = 0_f64;
+
+        // we build up `score` using various orders of magnitude
+        // to ensure that some factors dominate others. When
+        // plotting the score, taking the log of the score
+        // will be necessary to make the chart look reasonable.
+
+        // 0_000_000_xxx: cp diff
+        // 0_000_0xx_000: steps diff
+        // 0_0xx_000_000: quality diff
+        // x_000_000_000: was crafting a success
+
+        if self.status == CraftStatus::Success {
+            score += 1_000_000_000.;
+        }
+
+        score += (self.quality_factor.min(100) as f64) * 1_000_000.;
+
+        // if progress and quality are satisfied, try improving some other aspect
+        // to provide more room for future improvements
+
+        let steps_score = (100. - self.step_count as f64).max(0.);
+        score += steps_score * 1_000.;
+
+        let cp_remaining_score = (1000. - self.cp as f64).max(0.);
+        score += cp_remaining_score;
+
+        score
+    }
+}
+
 #[derive(Debug, Constructor, Clone)]
 struct Candidate {
     steps: Vec<&'static str>,
@@ -55,40 +88,14 @@ struct Candidate {
 
 impl PartialOrd for CraftingScore {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        if self.status == CraftStatus::Success && other.status != CraftStatus::Success {
-            return Some(Ordering::Greater);
-        }
-        if self.status != CraftStatus::Success && other.status == CraftStatus::Success {
-            return Some(Ordering::Less);
-        }
-
-        let quality_diff = self
-            .quality_factor
-            .min(100)
-            .cmp(&other.quality_factor.min(100));
-        if quality_diff != Ordering::Equal {
-            return Some(quality_diff);
-        }
-
-        // if progress and quality are satisfied, try improving some other aspect
-        // to provide more room for future improvements
-
-        let steps_diff = Reverse(self.step_count).cmp(&Reverse(other.step_count));
-        if steps_diff != Ordering::Equal {
-            return Some(steps_diff);
-        }
-
-        let cp_diff = self.cp.cmp(&other.cp);
-        if cp_diff != Ordering::Equal {
-            return Some(cp_diff);
-        }
-
-        Some(Ordering::Equal)
+        self.as_num().partial_cmp(&other.as_num())
     }
 }
 
 impl Ord for CraftingScore {
     fn cmp(&self, other: &Self) -> Ordering {
+        // technically we're comparing floats so this could actually panic in theory,
+        // but that should only happen on NaNs
         Self::partial_cmp(self, other).unwrap()
     }
 }
