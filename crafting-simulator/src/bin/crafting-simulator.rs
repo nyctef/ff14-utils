@@ -238,6 +238,7 @@ fn main() -> Result<()> {
 }
 
 struct Args {
+    log_stats: bool,
     job_name: String,
     recipe: String,
     food: Option<String>,
@@ -271,6 +272,8 @@ FLAGS:
 
     -g, --generations   (optional) number of generations to search through
 
+    -l, --log-stats     (optional) (very verbose) print csv stats per generation
+
     -h, --help          (optional) show this message
     "
         );
@@ -278,6 +281,7 @@ FLAGS:
     }
 
     let args = Args {
+        log_stats: pargs.contains(["-l", "--log-stats"]),
         job_name: pargs.value_from_str(["-j", "--job"])?,
         recipe: pargs.value_from_str(["-r", "--recipe"])?,
         generations: pargs.opt_value_from_str(["-g", "--generations"])?,
