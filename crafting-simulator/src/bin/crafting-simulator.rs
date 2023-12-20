@@ -194,12 +194,12 @@ fn main() -> Result<()> {
                 "{},{},{},{},{},{},{},{}",
                 g + 1,
                 candidates[0].score.as_num(),
-                candidates[candidates.len() * 95 / 100].score.as_num(),
-                candidates[candidates.len() * 99 / 100].score.as_num(),
-                candidates[candidates.len() * 90 / 100].score.as_num(),
-                candidates[candidates.len() * 50 / 100].score.as_num(),
-                candidates[candidates.len() * 25 / 100].score.as_num(),
+                candidates[candidates.len() * 1 / 100].score.as_num(),
                 candidates[candidates.len() * 5 / 100].score.as_num(),
+                candidates[candidates.len() * 10 / 100].score.as_num(),
+                candidates[candidates.len() * 50 / 100].score.as_num(),
+                candidates[candidates.len() * 75 / 100].score.as_num(),
+                candidates[candidates.len() * 95 / 100].score.as_num(),
             )
         };
 
