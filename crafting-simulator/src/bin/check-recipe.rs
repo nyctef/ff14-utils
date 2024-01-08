@@ -72,8 +72,8 @@ fn main() -> Result<()> {
             }
         );
         println!(
-            "status: {:?} progress: {} quality: {}",
-            report.status, report.final_state.progress, report.final_state.quality
+            "status: {:?} progress: {} quality: {} ({:.2}%)",
+            report.status, report.final_state.progress, report.final_state.quality, quality_factor * 100.0
         );
         // reset color
         print!("\x1b[0m");
