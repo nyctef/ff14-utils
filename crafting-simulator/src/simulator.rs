@@ -1,6 +1,6 @@
 use crate::{actions::Actions, model::*};
-use color_eyre::eyre::{eyre, Report, Result};
-use itertools::Itertools;
+use color_eyre::eyre::{eyre, Result};
+
 use lazy_static::lazy_static;
 use regex::{Regex, RegexBuilder};
 use std::{collections::HashMap, ops::ControlFlow};
