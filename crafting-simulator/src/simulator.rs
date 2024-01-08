@@ -1,25 +1,20 @@
 use crate::{actions::Actions, model::*};
 use color_eyre::eyre::{eyre, Report};
 use itertools::Itertools;
-use std::ops::ControlFlow;
+use std::{collections::HashMap, ops::ControlFlow};
 
 pub struct Simulator;
 
 impl Simulator {
-    pub fn run_steps(player: PlayerStats, recipe: &Recipe, steps: &[&'static str]) -> CraftingReport {
+    pub fn run_steps(
+        player: PlayerStats,
+        recipe: &Recipe,
+        steps: &[&'static str],
+    ) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, recipe);
         let actions = Actions::make_action_lookup();
-        let steps: Vec<_> = steps
-            .iter()
-            .map(|name| {
-                let action = actions
-                    .get(name)
-                    .ok_or_else(|| eyre!("Unknown action: {}", name))?;
-                Ok::<_, Report>((name, action))
-            })
-            .try_collect()
-            .unwrap();
-        let fold_result = steps.iter().try_fold(
+        let steps = parse_steps(steps, &actions);
+        let fold_result = steps.into_iter().try_fold(
             (
                 Vec::<&'static str>::new(),
                 Vec::<CraftingIssue>::new(),
@@ -116,6 +111,22 @@ impl Simulator {
             status,
         }
     }
+}
+
+fn parse_steps<'a>(
+    steps: &[&'static str],
+    actions: &'a HashMap<&str, Box<dyn CraftingStep>>,
+) -> Vec<(&'static str, &'a Box<dyn CraftingStep>)> {
+    steps
+        .iter()
+        .map(|&name| {
+            let action = actions
+                .get(name)
+                .ok_or_else(|| eyre!("Unknown action: {}", name))?;
+            Ok::<_, Report>((name, action))
+        })
+        .try_collect()
+        .unwrap()
 }
 
 fn either_controlflow<T>(input: ControlFlow<T, T>) -> T {
