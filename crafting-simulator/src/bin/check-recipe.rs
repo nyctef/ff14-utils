@@ -1,4 +1,5 @@
 use color_eyre::{eyre::eyre, Result};
+use crafting_simulator::model::CraftStatus;
 use crafting_simulator::presets::Presets as preset;
 use crafting_simulator::simulator::Simulator as sim;
 use crafting_simulator::{buffs::apply_buff_hq, config};
@@ -53,10 +54,23 @@ fn main() -> Result<()> {
         }
         println!("testing steps for {}", job);
         let report = sim::run_steps(player, &recipe, &steps);
+        print!(
+            "{}",
+            if report.status == CraftStatus::Success {
+                // green
+                "\x1b[32m"
+            } else {
+                // red
+                "\x1b[31m"
+            }
+        );
         println!(
             "status: {:?} final progress: {} final quality: {}",
             report.status, report.final_state.progress, report.final_state.quality
         );
+        // reset color
+        print!("\x1b[0m");
+
         println!();
     }
 
