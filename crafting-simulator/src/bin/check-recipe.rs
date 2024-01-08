@@ -54,18 +54,25 @@ fn main() -> Result<()> {
         }
         println!("testing steps for {}", job);
         let report = sim::run_steps(player, &recipe, &steps);
+        let quality_factor = report.final_state.quality as f64 / recipe.quality_target as f64;
         print!(
             "{}",
-            if report.status == CraftStatus::Success {
-                // green
+            if report.status != CraftStatus::Success {
+                // red: craft failed
+                "\x1b[31m"
+            } else if quality_factor >= 1.0 {
+                // cyan: craft succeded with no need for hq mats
+                "\x1b[36m"
+            } else if quality_factor >= 0.5 {
+                // green: craft succeeded but needs hq mats
                 "\x1b[32m"
             } else {
-                // red
-                "\x1b[31m"
+                // yellow: quality too low
+                "\x1b[33m"
             }
         );
         println!(
-            "status: {:?} final progress: {} final quality: {}",
+            "status: {:?} progress: {} quality: {}",
             report.status, report.final_state.progress, report.final_state.quality
         );
         // reset color
