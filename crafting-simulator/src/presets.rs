@@ -115,7 +115,7 @@ impl Presets {
     }
 
     pub fn tsai_tou_vounou() -> &'static Food {
-        FOODS.by_name("Tsai Tou Vounou").unwrap()
+        FOODS.by_name("Tsai tou Vounou").unwrap()
     }
 
     pub fn jhinga_biryani() -> &'static Food {
