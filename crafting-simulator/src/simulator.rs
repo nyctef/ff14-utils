@@ -1,6 +1,8 @@
 use crate::{actions::Actions, model::*};
-use color_eyre::eyre::{eyre, Report};
+use color_eyre::eyre::{eyre, Report, Result};
 use itertools::Itertools;
+use lazy_static::lazy_static;
+use regex::{Regex, RegexBuilder};
 use std::{collections::HashMap, ops::ControlFlow};
 
 pub struct Simulator;
@@ -13,7 +15,7 @@ impl Simulator {
     ) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, recipe);
         let actions = Actions::make_action_lookup();
-        let steps = parse_steps(steps, &actions);
+        let steps = parse_steps(steps, &actions).expect("steps should be valid");
         let fold_result = steps.into_iter().try_fold(
             (
                 Vec::<&'static str>::new(),
@@ -113,20 +115,61 @@ impl Simulator {
     }
 }
 
+lazy_static! {
+    static ref MACRO_AC_LINE: Regex =
+        RegexBuilder::new(r#"
+
+                          # option /act
+                          (/ac)?
+                          # any leading whitespace
+                          \s*
+                          # optional starting quote
+                          "?
+                          # word boundary
+                          \b
+                          # the name itself
+                          (?P<name>[a-z'\ ]+)
+                          # word boundary
+                          \b
+                          # optional closing quote
+                          "?
+                          # any number of <wait.2> or <se.3> etc
+                          (\s*<.*>)*
+
+                          "#)
+            .case_insensitive(true)
+            .ignore_whitespace(true)
+            .build()
+            .unwrap();
+}
+
 fn parse_steps<'a>(
     steps: &[&'static str],
     actions: &'a HashMap<&str, Box<dyn CraftingStep>>,
-) -> Vec<(&'static str, &'a Box<dyn CraftingStep>)> {
-    steps
-        .iter()
-        .map(|&name| {
+) -> Result<Vec<(&'static str, &'a Box<dyn CraftingStep>)>> {
+    let mut result = vec![];
+    for &step in steps {
+        if step.starts_with("/echo") {
+            // /echo lines don't cause a step to happen
+            continue;
+        }
+        if step.trim().is_empty() {
+            // empty lines don't cause a step to happen
+            continue;
+        }
+
+        if let Some(captures) = MACRO_AC_LINE.captures(step) {
+            let step_name = captures.name("name").unwrap().as_str();
             let action = actions
-                .get(name)
-                .ok_or_else(|| eyre!("Unknown action: {}", name))?;
-            Ok::<_, Report>((name, action))
-        })
-        .try_collect()
-        .unwrap()
+                .get(step_name)
+                .ok_or_else(|| eyre!("Couldn't find action named: <{}>", step_name))?;
+            result.push((step_name, action));
+            continue;
+        } else {
+            return Err(eyre!("Failed to parse step: {}", step));
+        }
+    }
+    Ok(result)
 }
 
 fn either_controlflow<T>(input: ControlFlow<T, T>) -> T {
@@ -139,11 +182,11 @@ fn either_controlflow<T>(input: ControlFlow<T, T>) -> T {
 
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools;
-
+    use super::*;
     use crate::model::{CraftStatus, CraftingIssueType, PlayerStats};
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
+    use itertools::Itertools;
 
     // for simplicity we'll create a few baseline setups which should mean
     // that the actual progress/quality numbers are just equal to the potency
@@ -323,5 +366,26 @@ mod tests {
 
         assert_eq!(CraftStatus::Failure, report.status);
         assert_eq!(180, report.final_state.progress);
+    }
+
+    #[test]
+    fn test_parse_steps() {
+        let actions = crate::actions::Actions::make_action_lookup();
+        let steps = parse_steps(
+            &[
+                "Basic Synthesis",
+                r#"/ac "Byregot's Blessing""#,
+                r#"/ac "Basic Synthesis" <wait.3>"#,
+                r#"/ac Manipulation <wait.2>"#,
+            ],
+            &actions,
+        )
+        .unwrap();
+
+        assert_eq!(4, steps.len());
+        assert_eq!("Basic Synthesis", steps[0].0);
+        assert_eq!("Byregot's Blessing", steps[1].0);
+        assert_eq!("Basic Synthesis", steps[2].0);
+        assert_eq!("Manipulation", steps[3].0);
     }
 }
