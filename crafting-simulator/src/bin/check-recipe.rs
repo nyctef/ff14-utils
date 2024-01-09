@@ -1,6 +1,6 @@
 use color_eyre::{eyre::eyre, Result};
+use crafting_simulator::arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value};
 use crafting_simulator::model::CraftStatus;
-use crafting_simulator::presets::Presets as preset;
 use crafting_simulator::simulator::Simulator as sim;
 use crafting_simulator::{buffs::apply_buff_hq, config};
 use itertools::Itertools;
@@ -11,28 +11,11 @@ fn main() -> Result<()> {
 
     let args = parse_args()?;
 
-    // TODO: dedupe this lookup with crafting simulator
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
 
-    // TODO: make these pattern matches part of the argument parsing itself?
-    let recipe = match args.recipe.as_str() {
-        "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
-        "l90_4s_gear" => Ok(preset::l90_4star_gear()),
-        "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
-        "l90_3s_gear" => Ok(preset::l90_3star_gear()),
-        // TODO: list in help
-        "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
-        other => Err(eyre!("Unrecognised recipe type {}", other)),
-    }?;
-    let food = args.food.map(|f| match f.as_str() {
-        "tsai_tou" => Ok(preset::tsai_tou_vounou()),
-        "jhinga_biryani" => Ok(preset::jhinga_biryani()),
-        other => Err(eyre!("Unrecognised food type {}", other)),
-    });
-    let potion = args.potion.map(|f| match f.as_str() {
-        "cunning_draught" => Ok(preset::cunning_draught()),
-        other => Err(eyre!("Unrecognised potion type {}", other)),
-    });
+    let food = food_from_arg_value(args.food.as_deref())?;
+    let potion = potion_from_arg_value(args.potion.as_deref())?;
+    let recipe = recipe_from_arg_value(&args.recipe)?;
 
     // read list of crafting steps from stdin
     let mut steps = String::new();
@@ -44,13 +27,10 @@ fn main() -> Result<()> {
     for (job, mut player) in config {
         // TODO: more deduping with crafting-simulator bin
         if let Some(food) = &food {
-            // TODO: we'd like to properly validate these args,
-            // but not sure how to nicely handle Option<Result<_>>
-            // where we only care about errors when the Option is Some
-            player = apply_buff_hq(&player, food.as_ref().unwrap());
+            player = apply_buff_hq(&player, food);
         }
         if let Some(potion) = &potion {
-            player = apply_buff_hq(&player, potion.as_ref().unwrap());
+            player = apply_buff_hq(&player, potion);
         }
         println!("testing steps for {}", job);
         let report = sim::run_steps(player, &recipe, &steps);

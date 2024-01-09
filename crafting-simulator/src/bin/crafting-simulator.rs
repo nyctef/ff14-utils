@@ -5,7 +5,7 @@ use crafting_simulator::{
     generator::{RandomFlip, RandomGenerator, RandomRemove},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
     presets::Presets as preset,
-    simulator::Simulator as sim,
+    simulator::Simulator as sim, arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value},
 };
 
 use derive_more::Constructor;
@@ -130,39 +130,21 @@ fn main() -> Result<()> {
 
     let config = config::read_jobs_from_config(Path::new("./jobs.toml"))?;
 
-    // TODO: make these pattern matches part of the argument parsing itself?
-    let recipe = match args.recipe.as_str() {
-        "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
-        "l90_4s_gear" => Ok(preset::l90_4star_gear()),
-        "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
-        "l90_3s_gear" => Ok(preset::l90_3star_gear()),
-        "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
-        other => Err(eyre!("Unrecognised recipe type {}", other)),
-    }?;
-    let food = args.food.map(|f| match f.as_str() {
-        "tsai_tou" => Ok(preset::tsai_tou_vounou()),
-        "jhinga_biryani" => Ok(preset::jhinga_biryani()),
-        other => Err(eyre!("Unrecognised food type {}", other)),
-    });
-    let potion = args.potion.map(|f| match f.as_str() {
-        "cunning_draught" => Ok(preset::cunning_draught()),
-        other => Err(eyre!("Unrecognised potion type {}", other)),
-    });
-
     let mut player = config
         .iter()
         .find(|(name, _)| *name == args.job_name)
         .expect("expected a job")
         .1;
 
+    let food = food_from_arg_value(args.food.as_deref())?;
+    let potion = potion_from_arg_value(args.potion.as_deref())?;
+    let recipe = recipe_from_arg_value(&args.recipe)?;
+
     if let Some(food) = food {
-        // TODO: we'd like to properly validate these args,
-        // but not sure how to nicely handle Option<Result<_>>
-        // where we only care about errors when the Option is Some
-        player = apply_buff_hq(&player, food.unwrap());
+        player = apply_buff_hq(&player, food);
     }
     if let Some(potion) = potion {
-        player = apply_buff_hq(&player, potion.unwrap());
+        player = apply_buff_hq(&player, potion);
     }
 
     let random_generator = RandomGenerator::from_lengths(10, 30);
