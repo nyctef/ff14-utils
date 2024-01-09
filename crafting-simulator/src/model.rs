@@ -36,6 +36,7 @@ pub struct CraftingState {
     pub manipulation_stacks: u8,
     pub manipulation_delay: u8,
     pub waste_not_stacks: u8,
+    pub final_appraisal_stacks: u8,
     // of course observe doesn't actually have stacks, but this
     // is the easiest way we have to track "last step was observe"
     // at the moment
@@ -59,6 +60,7 @@ impl CraftingState {
             manipulation_stacks: 0,
             manipulation_delay: 0,
             waste_not_stacks: 0,
+            final_appraisal_stacks: 0,
             observe_stacks: 0,
             touch_combo_stage: 0,
         }
@@ -121,6 +123,10 @@ impl<T: InfallibleStep> CraftingStep for T {
 
     fn durability_cost(&self) -> u8 {
         T::durability_cost(self)
+    }
+
+    fn num_steps(&self) -> u8 {
+        T::num_steps(self)
     }
 }
 

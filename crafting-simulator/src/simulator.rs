@@ -69,6 +69,12 @@ impl Simulator {
                     return ControlFlow::Break((step_log, next_issues, next));
                 }
 
+                if next.progress >= recipe.difficulty && next.final_appraisal_stacks > 0 {
+                    // final appraisal gets consumed
+                    next.final_appraisal_stacks = 0;
+                    next.progress = recipe.difficulty - 1;
+                }
+
                 if next.progress >= recipe.difficulty {
                     // craft succeeded
                     return ControlFlow::Break((step_log, next_issues, next));
@@ -89,6 +95,7 @@ impl Simulator {
                 next.manipulation_delay = next.manipulation_delay.saturating_sub(step.num_steps());
                 next.waste_not_stacks = next.waste_not_stacks.saturating_sub(step.num_steps());
                 next.observe_stacks = next.observe_stacks.saturating_sub(step.num_steps());
+                next.final_appraisal_stacks = next.final_appraisal_stacks.saturating_sub(1);
                 next.steps += step.num_steps();
 
                 ControlFlow::Continue((step_log, next_issues, next))
@@ -116,8 +123,8 @@ impl Simulator {
 }
 
 lazy_static! {
-    static ref MACRO_AC_LINE: Regex =
-        RegexBuilder::new(r#"
+    static ref MACRO_AC_LINE: Regex = RegexBuilder::new(
+        r#"
 
                           # option /act
                           (/ac)?
@@ -136,11 +143,12 @@ lazy_static! {
                           # any number of <wait.2> or <se.3> etc
                           (\s*<.*>)*
 
-                          "#)
-            .case_insensitive(true)
-            .ignore_whitespace(true)
-            .build()
-            .unwrap();
+                          "#
+    )
+    .case_insensitive(true)
+    .ignore_whitespace(true)
+    .build()
+    .unwrap();
 }
 
 fn parse_steps<'a>(

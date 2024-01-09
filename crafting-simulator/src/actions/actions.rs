@@ -92,6 +92,10 @@ impl Actions {
         MastersMend {}
     }
 
+    fn final_appraisal() -> impl CraftingStep {
+        FinalAppraisal {}
+    }
+
     pub fn make_action_lookup() -> HashMap<&'static str, Box<dyn CraftingStep>> {
         let mut m: HashMap<&str, Box<dyn CraftingStep>> = HashMap::new();
         m.insert("Basic Synthesis", Box::new(Actions::basic_synthesis()));
@@ -115,6 +119,7 @@ impl Actions {
         m.insert("Waste Not", Box::new(Actions::waste_not()));
         m.insert("Waste Not II", Box::new(Actions::waste_not_2()));
         m.insert("Master's Mend", Box::new(Actions::masters_mend()));
+        m.insert("Final Appraisal", Box::new(Actions::final_appraisal()));
         m
     }
 }

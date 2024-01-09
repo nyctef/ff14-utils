@@ -143,6 +143,33 @@ impl InfallibleStep for Groundwork {
     }
 }
 
+pub struct FinalAppraisal {}
+impl InfallibleStep for FinalAppraisal {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
+        CraftingState {
+            final_appraisal_stacks: 6,
+            ..*state
+        }
+    }
+
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
+        1
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
+    }
+
+    fn num_steps(&self) -> u8 {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::presets::Presets as p;
@@ -322,5 +349,64 @@ mod tests {
         // waste not effectively changes groundwork's durability cost for the
         // purpose of this effect
         assert_eq!(360, final_state.progress);
+    }
+
+    #[test]
+    fn final_appraisal_prevents_one_progress_step_from_completing_the_craft() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe(360, 80, 1000),
+            &["Final Appraisal", "Groundwork"],
+        )
+        .final_state;
+
+        assert_eq!(
+            359, final_state.progress,
+            "craft should be 1 progress point away from completion"
+        );
+        assert_eq!(final_state.cp, 1000 - 18 - 1, "final appraisal costs 1 cp")
+    }
+
+    #[test]
+    fn final_appraisal_lasts_five_steps() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe(360, 80, 1000),
+            &[
+                "Final Appraisal",
+                "Observe",
+                "Observe",
+                "Observe",
+                "Observe",
+                "Observe",
+                "Groundwork",
+            ],
+        )
+        .final_state;
+
+        assert_eq!(
+            360, final_state.progress,
+            "craft should have completed since final appraisal buff expired"
+        );
+    }
+
+    #[test]
+    fn final_appraisal_doesnt_cost_a_step() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe(360, 80, 1000),
+            &[
+                "Innovation",
+                "Final Appraisal",
+                "Final Appraisal",
+                "Final Appraisal",
+            ],
+        )
+        .final_state;
+
+        assert_eq!(
+            4, final_state.innovation_stacks,
+            "final appraisal doesn't consume real steps"
+        );
     }
 }
