@@ -13,6 +13,7 @@ pub fn recipe_from_arg_value(value: &str) -> Result<Recipe> {
         "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
         "l90_3s_gear" => Ok(preset::l90_3star_gear()),
         "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
+        "l90_relic_tier4" => Ok(preset::l90_relic_tier3()),
         other => Err(eyre!("Unrecognised recipe type {}", other)),
     }
 }

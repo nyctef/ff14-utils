@@ -70,6 +70,27 @@ impl InfallibleStep for MastersMend {
     }
 }
 
+/// Tricks of the Trade gives 20 cp if current craft status is Good.
+/// It mostly gets used to block Poor procs from affecting Byregot's,
+/// so for the purpose of macro checking we'll just assume it always fails.
+pub struct TricksOfTheTrade {}
+impl InfallibleStep for TricksOfTheTrade {
+    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> CraftingState {
+        state.clone()
+    }
+
+    fn cp_cost(&self, _state: &CraftingState) -> u8 {
+        0
+    }
+
+    fn durability_cost(&self) -> u8 {
+        0
+    }
+    fn num_steps(&self) -> u8 {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::model::CraftStatus;
@@ -189,5 +210,17 @@ mod tests {
             s::run_steps(p::l90_player(), &p::l90_4star_gear(), &["Master's Mend"]).final_state;
 
         assert_eq!(70, final_state.durability);
+    }
+
+    #[test]
+    fn we_treat_tricks_of_the_trade_as_a_noop() {
+        let final_state = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe(100, 80, 100),
+            &["Tricks of the Trade"],
+        )
+        .final_state;
+
+        assert_eq!(1000, final_state.cp);
     }
 }
