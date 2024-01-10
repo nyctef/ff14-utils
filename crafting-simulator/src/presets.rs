@@ -21,6 +21,8 @@ impl Presets {
             difficulty: 6600,
             durability: 70,
             quality_target: 14040,
+            required_craftsmanship: 3950,
+            required_control: 3660,
         }
     }
 
@@ -31,6 +33,8 @@ impl Presets {
             difficulty: 4488,
             durability: 35,
             quality_target: 9090,
+            required_craftsmanship: 3950,
+            required_control: 3660,
         }
     }
 
@@ -41,6 +45,8 @@ impl Presets {
             difficulty: 5720,
             durability: 70,
             quality_target: 12900,
+            required_craftsmanship: 3700,
+            required_control: 3280,
         }
     }
 
@@ -51,6 +57,8 @@ impl Presets {
             difficulty: 3696,
             durability: 35,
             quality_target: 8200,
+            required_craftsmanship: 3700,
+            required_control: 3280,
         }
     }
 
@@ -61,6 +69,8 @@ impl Presets {
             difficulty: 4620,
             durability: 60,
             quality_target: 12040,
+            required_craftsmanship: 0,
+            required_control: 0,
         }
     }
 
@@ -71,6 +81,8 @@ impl Presets {
             difficulty: 5280,
             durability: 60,
             quality_target: 13050,
+            required_craftsmanship: 0,
+            required_control: 0,
         }
     }
 
@@ -81,6 +93,8 @@ impl Presets {
             difficulty: 3400,
             durability: 80,
             quality_target: 7100,
+            required_craftsmanship: 0,
+            required_control: 0,
         }
     }
 
@@ -107,6 +121,16 @@ impl Presets {
     }
 
     pub fn baseline_recipe(difficulty: u16, durability: u16, quality_target: u16) -> Recipe {
+        Self::baseline_recipe_with_required_stats(difficulty, durability, quality_target, 0, 0)
+    }
+
+    pub fn baseline_recipe_with_required_stats(
+        difficulty: u16,
+        durability: u16,
+        quality_target: u16,
+        required_craftsmanship: u16,
+        required_control: u16,
+    ) -> Recipe {
         Recipe {
             rlvl: RecipeLevel {
                 // we assume the rlvl is always higher than the player's crafter level
@@ -121,6 +145,8 @@ impl Presets {
             difficulty,
             durability,
             quality_target,
+            required_craftsmanship,
+            required_control,
         }
     }
 
@@ -134,5 +160,16 @@ impl Presets {
 
     pub fn cunning_draught() -> &'static Food {
         FOODS.by_name("Cunning Craftsman's Draught").unwrap()
+    }
+
+    /// quick workaround for tests using realistic data
+    /// that were passing before stat requirements were implemented
+    #[cfg(test)]
+    pub fn without_required_stats(recipe: Recipe) -> Recipe {
+        Recipe {
+            required_craftsmanship: 0,
+            required_control: 0,
+            ..recipe
+        }
     }
 }

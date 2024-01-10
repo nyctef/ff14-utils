@@ -14,6 +14,19 @@ impl Simulator {
         steps: &[&'static str],
     ) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, recipe);
+
+        // before simulating anything, check required stats
+        if player.craftsmanship < recipe.required_craftsmanship
+            || player.control < recipe.required_control
+        {
+            return CraftingReport {
+                step_log: vec![],
+                final_state: initial_state,
+                issues: vec![CraftingIssue::new(CraftingIssueType::InsufficientStats, 0)],
+                status: CraftStatus::Failure,
+            };
+        }
+
         let actions = Actions::make_action_lookup();
         let steps = parse_steps(steps, &actions).expect("steps should be valid");
         let fold_result = steps.into_iter().try_fold(
@@ -190,6 +203,7 @@ fn either_controlflow<T>(input: ControlFlow<T, T>) -> T {
 
 #[cfg(test)]
 mod tests {
+    use super::CraftingIssueType::*;
     use super::*;
     use crate::model::{CraftStatus, CraftingIssueType, PlayerStats};
     use crate::presets::Presets as p;
@@ -395,5 +409,20 @@ mod tests {
         assert_eq!("Byregot's Blessing", steps[1].0);
         assert_eq!("Basic Synthesis", steps[2].0);
         assert_eq!("Manipulation", steps[3].0);
+    }
+
+    #[test]
+    fn craft_fails_to_start_if_insufficient_stats() {
+        let report = s::run_steps(
+            p::baseline_player(),
+            &p::baseline_recipe_with_required_stats(10, 10, 10, 9999, 9999),
+            &["Groundwork"],
+        );
+
+        assert_eq!(CraftStatus::Failure, report.status);
+        assert_eq!(
+            vec![CraftingIssue::new(InsufficientStats, 0)],
+            report.issues
+        );
     }
 }

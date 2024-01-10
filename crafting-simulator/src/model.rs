@@ -78,6 +78,9 @@ pub struct Recipe {
     pub difficulty: u16,
     pub durability: u16,
     pub quality_target: u16,
+    // TODO: can these be determined from the rlvl, or are they always recipe-specific?
+    pub required_craftsmanship: u16,
+    pub required_control: u16,
 }
 
 pub type StepResult = Result<CraftingState, CraftingIssueType>;
@@ -139,6 +142,7 @@ pub enum CraftStatus {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CraftingIssueType {
+    InsufficientStats,
     OutOfCP,
     DurabilityFailed,
     LackingInnerQuiet,
@@ -151,6 +155,7 @@ impl CraftingIssueType {
     /// whether a particular issue ends the craft, or just causes one action to fail
     pub fn is_fatal(&self) -> bool {
         match self {
+            CraftingIssueType::InsufficientStats => true,
             CraftingIssueType::DurabilityFailed => true,
             CraftingIssueType::OutOfCP => true,
             _ => false,

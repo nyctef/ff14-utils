@@ -1,5 +1,7 @@
 use color_eyre::{eyre::eyre, Result};
-use crafting_simulator::arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value};
+use crafting_simulator::arg_utils::{
+    food_from_arg_value, potion_from_arg_value, recipe_from_arg_value,
+};
 use crafting_simulator::model::CraftStatus;
 use crafting_simulator::simulator::Simulator as sim;
 use crafting_simulator::{buffs::apply_buff_hq, config};
@@ -53,8 +55,14 @@ fn main() -> Result<()> {
         );
         println!(
             "status: {:?} progress: {} quality: {} ({:.2}%)",
-            report.status, report.final_state.progress, report.final_state.quality, quality_factor * 100.0
+            report.status,
+            report.final_state.progress,
+            report.final_state.quality,
+            quality_factor * 100.0
         );
+        for issue in report.issues {
+            println!("{:?}", issue.issue_type);
+        }
         // reset color
         print!("\x1b[0m");
 

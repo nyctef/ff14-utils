@@ -428,7 +428,7 @@ mod tests {
     fn prudent_touch_not_allowed_during_waste_not() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Waste Not", "Prudent Touch"],
         )
         .final_state;
@@ -442,7 +442,7 @@ mod tests {
     fn preparatory_touch_increases_inner_quiet_by_2() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Preparatory Touch", "Preparatory Touch"],
         )
         .final_state;

@@ -177,8 +177,12 @@ mod tests {
 
     #[test]
     fn basic_synthesis_1() {
-        let final_state =
-            s::run_steps(p::l90_player(), &p::l90_4star_gear(), &["Basic Synthesis"]).final_state;
+        let final_state = s::run_steps(
+            p::l90_player(),
+            &p::without_required_stats(p::l90_4star_gear()),
+            &["Basic Synthesis"],
+        )
+        .final_state;
 
         assert_eq!(297, final_state.progress);
         assert_eq!(60, final_state.durability);
@@ -188,7 +192,7 @@ mod tests {
     fn careful_synthesis_1() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Careful Synthesis"],
         )
         .final_state;
@@ -202,7 +206,7 @@ mod tests {
     fn veneration_increases_next_synthesis_step_by_50_percent() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Veneration", "Basic Synthesis"],
         )
         .final_state;
@@ -215,7 +219,7 @@ mod tests {
     fn veneration_runs_out_after_four_steps() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &[
                 "Veneration",
                 "Basic Synthesis",
@@ -236,7 +240,7 @@ mod tests {
     fn muscle_memory_fails_if_not_the_first_step() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Veneration", "Muscle Memory"],
         )
         .final_state;
@@ -313,7 +317,7 @@ mod tests {
     fn prudent_synthesis_not_allowed_during_waste_not() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Waste Not", "Prudent Synthesis"],
         )
         .final_state;

@@ -75,7 +75,12 @@ impl InfallibleStep for MastersMend {
 /// so for the purpose of macro checking we'll just assume it always fails.
 pub struct TricksOfTheTrade {}
 impl InfallibleStep for TricksOfTheTrade {
-    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> CraftingState {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &Recipe,
+    ) -> CraftingState {
         state.clone()
     }
 
@@ -101,7 +106,7 @@ mod tests {
     fn manipulation_restores_5_durability_after_some_step() {
         let after_one_step = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Manipulation", "Basic Synthesis"],
         )
         .final_state;
@@ -110,7 +115,7 @@ mod tests {
 
         let after_two_steps = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Manipulation", "Basic Synthesis", "Observe"],
         )
         .final_state;
@@ -122,7 +127,7 @@ mod tests {
     fn manipulation_doesnt_start_working_until_after_the_next_step() {
         let after_one_step = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Basic Synthesis", "Manipulation"],
         )
         .final_state;
@@ -130,7 +135,7 @@ mod tests {
 
         let after_two_steps = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Basic Synthesis", "Manipulation", "Observe"],
         )
         .final_state;
@@ -177,7 +182,7 @@ mod tests {
     fn waste_not_reduces_durability_cost_of_next_four_steps_by_50_percent() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &[
                 "Waste Not",
                 "Basic Synthesis",
@@ -196,7 +201,7 @@ mod tests {
     fn masters_mend_restores_a_chunk_of_durability() {
         let final_state = s::run_steps(
             p::l90_player(),
-            &p::l90_4star_gear(),
+            &p::without_required_stats(p::l90_4star_gear()),
             &["Groundwork", "Groundwork", "Master's Mend"],
         )
         .final_state;
