@@ -42,10 +42,8 @@ impl ItemLookup {
         self.items.iter().find(|i| i.name == name)
     }
 
-    pub fn name_containing(&self, name: &str) -> impl Iterator<Item = &Item> {
-        // TODO: is there a more correct way to do this without copying name?
-        let name = name.to_owned();
-        self.matching(move |i| i.name.contains(&name))
+    pub fn name_containing<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &Item> + 'a {
+        self.matching(move |i| i.name.contains(name))
     }
 }
 
