@@ -61,7 +61,7 @@ fn choose_recipes_from_args<'a>(
         [name] => {
             results = look_up_recipe(name);
         }
-        _ => return Err(eyre!("Usage: specific-recipe [substr]")),
+        _ => return Err(eyre!("Usage: recipe-compare [substr]")),
     }
 
     Ok(results)
