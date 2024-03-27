@@ -14,6 +14,7 @@ pub fn recipe_from_arg_value(value: &str) -> Result<Recipe> {
         "l90_3s_gear" => Ok(preset::l90_3star_gear()),
         "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
         "l90_relic_tier4" => Ok(preset::l90_relic_tier4()),
+        "l90_chocobo_glam" => Ok(preset::l90_chocobo_glam()),
         other => Err(eyre!("Unrecognised recipe type {}", other)),
     }
 }
@@ -36,4 +37,3 @@ pub fn potion_from_arg_value(value: Option<&str>) -> Result<Option<&'static Food
 
     potion.transpose()
 }
-

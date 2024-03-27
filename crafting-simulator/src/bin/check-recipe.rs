@@ -92,6 +92,7 @@ FLAGS:
                             l90_4s_gear
                             l90_3s_mat
                             l90_3s_gear
+                            l90_chocobo_glam
 
     -f, --food          (optional, assumes HQ) one of:
                             tsai_tou

@@ -14,6 +14,18 @@ lazy_static! {
 pub struct Presets;
 
 impl Presets {
+    /// pajamas!
+    pub fn l90_chocobo_glam() -> Recipe {
+        Recipe {
+            rlvl: RECIPE_LEVELS.rlvl(610).clone(),
+            difficulty: 4400,
+            durability: 70,
+            quality_target: 8200,
+            required_craftsmanship: 0,
+            required_control: 0,
+        }
+    }
+
     /// ie diadochos gear
     pub fn l90_4star_gear() -> Recipe {
         Recipe {
