@@ -88,12 +88,7 @@ fn parse_args() -> Result<Args> {
 USAGE: check-recipe --recipe <recipe>
 
 FLAGS:
-    -r, --recipe        one of:
-                            l90_4s_mat
-                            l90_4s_gear
-                            l90_3s_mat
-                            l90_3s_gear
-                            l90_chocobo_glam
+    -r, --recipe        item name for a recipe to simulate
 
     -f, --food          (optional, assumes HQ) one of:
                             tsai_tou

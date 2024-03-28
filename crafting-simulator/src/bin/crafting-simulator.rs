@@ -272,11 +272,7 @@ USAGE: crafting-simulator --job WVR --recipe l90_4s_mat
 FLAGS:
     -j, --job           references a job listed in jobs.toml
 
-    -r, --recipe        one of:
-                            l90_4s_mat
-                            l90_4s_gear
-                            l90_3s_mat
-                            l90_3s_gear
+    -r, --recipe        item name for a recipe to simulate
 
     -f, --food          (optional, assumes HQ) one of:
                             tsai_tou
