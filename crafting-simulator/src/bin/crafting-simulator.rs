@@ -4,7 +4,6 @@ use crafting_simulator::{
     config,
     generator::{RandomFlip, RandomGenerator, RandomRemove},
     model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
-    presets::Presets as preset,
     simulator::Simulator as sim, arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value},
 };
 
