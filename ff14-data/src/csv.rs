@@ -87,9 +87,9 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
             let quality_factor: u16 = record.get("QualityFactor").unwrap().parse().unwrap();
             let durability_factor: u16 = record.get("DurabilityFactor").unwrap().parse().unwrap();
 
-            let difficulty = (rlvl.base_difficulty * difficulty_factor) / 100;
-            let durability = (rlvl.base_durability * durability_factor) / 100;
-            let quality_target = (rlvl.base_quality_target * quality_factor) / 100;
+            let difficulty = modify_by_factor(rlvl.base_difficulty, difficulty_factor);
+            let durability = modify_by_factor(rlvl.base_durability, durability_factor);
+            let quality_target = modify_by_factor(rlvl.base_quality_target, quality_factor);
 
             let required_craftsmanship: u16 =
                 record.get("RequiredCraftsmanship").unwrap().parse()?;
@@ -108,6 +108,12 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
             ))
         })
         .collect()
+}
+
+/// where `factor` is an integer percentage (eg 100 = 100% = 1.0)
+fn modify_by_factor(base: u16, factor: u16) -> u16 {
+    // cast to u32 to avoid overflow
+    ((base as u32 * factor as u32) / 100) as u16
 }
 
 pub async fn read_rlvls(csv_base_path: &Path) -> Result<Vec<RecipeLevel>, color_eyre::eyre::Error> {
