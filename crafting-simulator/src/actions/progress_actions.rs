@@ -1,5 +1,6 @@
 use crate::model::{
-    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, SimulatorRecipe,
+    StepResult,
 };
 use derive_more::Constructor;
 
@@ -14,14 +15,14 @@ pub struct BasicSynthesis {
 fn calculate_progress_increase(
     state: &CraftingState,
     stats: &PlayerStats,
-    recipe: &Recipe,
+    recipe: &SimulatorRecipe,
     potency: u16,
 ) -> u16 {
     // based on some of the calculations in https://github.com/ffxiv-teamcraft/simulator/tree/dec02537f2ac0ec8c1bd61d85bc45f7b4b34e301/src/model/actions
-    let base_progression = (stats.craftsmanship * 10) / recipe.rlvl.progress_divider as u16 + 2;
+    let base_progression = (stats.craftsmanship * 10) / recipe.progress_divider as u16 + 2;
 
     let progression_modified_by_level =
-        (base_progression as f32 * recipe.rlvl.progress_modifier as f32 * 0.01f32) as u32;
+        (base_progression as f32 * recipe.progress_modifier as f32 * 0.01f32) as u32;
 
     let mut buffed_potency = potency as u32;
     if state.veneration_stacks > 0 {
@@ -36,7 +37,12 @@ fn calculate_progress_increase(
 }
 
 impl CraftingStep for BasicSynthesis {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult {
         if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
             return Err(CraftingIssueType::PreventedByWasteNot);
         }
@@ -68,7 +74,7 @@ impl InfallibleStep for Veneration {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             // note that we set the stack count here to 5 instead of 4,
@@ -92,7 +98,12 @@ impl InfallibleStep for Veneration {
 #[derive(Constructor)]
 pub struct MuscleMemory {}
 impl CraftingStep for MuscleMemory {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult {
         if state.steps > 0 {
             return Err(CraftingIssueType::NotOnFirstStep);
         }
@@ -115,7 +126,12 @@ impl CraftingStep for MuscleMemory {
 
 pub struct Groundwork {}
 impl InfallibleStep for Groundwork {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> CraftingState {
         // todo: some duplication with the regular simulator logic here - not sure if there's a good way around this
         let durability_cost = if state.waste_not_stacks > 0 { 10 } else { 20 };
         let potency = if state.durability >= durability_cost {
@@ -149,7 +165,7 @@ impl InfallibleStep for FinalAppraisal {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             final_appraisal_stacks: 6,

@@ -1,5 +1,19 @@
 use derive_more::Constructor;
-use ff14_data::model::RecipeLevel;
+
+/// A recipe struct with all the non-essential details (eg ingredients) stripped out.
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct SimulatorRecipe {
+    pub rlvl: u16,
+    pub progress_divider: u8,
+    pub progress_modifier: u8,
+    pub quality_divider: u8,
+    pub quality_modifier: u8,
+    pub difficulty: u16,
+    pub durability: u16,
+    pub quality_target: u16,
+    pub required_craftsmanship: u16,
+    pub required_control: u16,
+}
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct PlayerStats {
@@ -66,27 +80,20 @@ impl CraftingState {
         }
     }
 
-    pub fn initial(stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    pub fn initial(stats: &PlayerStats, recipe: &SimulatorRecipe) -> CraftingState {
         CraftingState::new(recipe.durability, stats.cp)
     }
-}
-
-// TODO: merge with the recipe struct from the data crate
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Recipe {
-    pub rlvl: RecipeLevel,
-    pub difficulty: u16,
-    pub durability: u16,
-    pub quality_target: u16,
-    // TODO: can these be determined from the rlvl, or are they always recipe-specific?
-    pub required_craftsmanship: u16,
-    pub required_control: u16,
 }
 
 pub type StepResult = Result<CraftingState, CraftingIssueType>;
 
 pub trait CraftingStep {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult;
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult;
 
     fn cp_cost(&self, state: &CraftingState) -> u8;
 
@@ -104,7 +111,12 @@ pub trait CraftingStep {
 
 /** InfallibleStep is very similar to CraftingStep, except it always returns a CraftingState instead of a result type. This just makes the common case require a bit less typing. */
 pub trait InfallibleStep {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState;
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> CraftingState;
 
     fn cp_cost(&self, state: &CraftingState) -> u8;
 
@@ -116,7 +128,12 @@ pub trait InfallibleStep {
 }
 
 impl<T: InfallibleStep> CraftingStep for T {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult {
         Ok(T::apply(self, state, stats, recipe))
     }
 

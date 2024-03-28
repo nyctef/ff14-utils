@@ -1,4 +1,4 @@
-use crate::model::{CraftingState, InfallibleStep, PlayerStats, Recipe};
+use crate::model::{CraftingState, InfallibleStep, PlayerStats, SimulatorRecipe};
 use derive_more::Constructor;
 
 pub struct Manipulation {}
@@ -7,7 +7,7 @@ impl InfallibleStep for Manipulation {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             manipulation_stacks: 9,
@@ -35,7 +35,7 @@ impl InfallibleStep for WasteNot {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             waste_not_stacks: self.length + 1,
@@ -54,7 +54,12 @@ impl InfallibleStep for WasteNot {
 
 pub struct MastersMend {}
 impl InfallibleStep for MastersMend {
-    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> CraftingState {
         CraftingState {
             durability: i16::min(recipe.durability as i16, state.durability + 30),
             ..*state
@@ -79,7 +84,7 @@ impl InfallibleStep for TricksOfTheTrade {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         state.clone()
     }

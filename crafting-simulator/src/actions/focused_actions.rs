@@ -1,5 +1,6 @@
 use crate::model::{
-    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, SimulatorRecipe,
+    StepResult,
 };
 use derive_more::Constructor;
 
@@ -10,7 +11,7 @@ impl InfallibleStep for Observe {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             observe_stacks: 2,
@@ -33,7 +34,12 @@ pub struct FocusedStep {
     underlying: Box<dyn CraftingStep>,
 }
 impl CraftingStep for FocusedStep {
-    fn apply(&self, state: &CraftingState, _stats: &PlayerStats, _recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        _stats: &PlayerStats,
+        _recipe: &SimulatorRecipe,
+    ) -> StepResult {
         if state.observe_stacks <= 0 {
             return Err(CraftingIssueType::ChanceBasedAction);
         }

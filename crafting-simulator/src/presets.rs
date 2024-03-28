@@ -1,13 +1,8 @@
 use crate::model::*;
-use ff14_data::{
-    food::FoodLookup,
-    model::{Food, RecipeLevel, RecipeLevelId},
-    rlvl::RlvlLookup,
-};
+use ff14_data::{food::FoodLookup, model::Food};
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref RECIPE_LEVELS: RlvlLookup = RlvlLookup::get_rlvl_lookup().unwrap();
     static ref FOODS: FoodLookup = FoodLookup::get_food_lookup().unwrap();
 }
 
@@ -15,9 +10,13 @@ pub struct Presets;
 
 impl Presets {
     /// pajamas!
-    pub fn l90_chocobo_glam() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(610).clone(),
+    pub fn l90_chocobo_glam() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 610,
+            progress_divider: 130,
+            progress_modifier: 80,
+            quality_divider: 115,
+            quality_modifier: 70,
             difficulty: 4400,
             durability: 70,
             quality_target: 8200,
@@ -27,9 +26,13 @@ impl Presets {
     }
 
     /// ie diadochos gear
-    pub fn l90_4star_gear() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(640).clone(),
+    pub fn l90_4star_gear() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 640,
+            progress_divider: 130,
+            quality_divider: 115,
+            progress_modifier: 80,
+            quality_modifier: 70,
             difficulty: 6600,
             durability: 70,
             quality_target: 14040,
@@ -39,9 +42,13 @@ impl Presets {
     }
 
     /// eg garnet cotton
-    pub fn l90_4star_intermediate() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(640).clone(),
+    pub fn l90_4star_intermediate() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 640,
+            progress_divider: 130,
+            quality_divider: 115,
+            progress_modifier: 80,
+            quality_modifier: 70,
             difficulty: 4488,
             durability: 35,
             quality_target: 9090,
@@ -51,9 +58,13 @@ impl Presets {
     }
 
     /// eg Indagator's gear
-    pub fn l90_3star_gear() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(620).clone(),
+    pub fn l90_3star_gear() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 620,
+            progress_divider: 130,
+            quality_divider: 115,
+            progress_modifier: 80,
+            quality_modifier: 70,
             difficulty: 5720,
             durability: 70,
             quality_target: 12900,
@@ -63,9 +74,13 @@ impl Presets {
     }
 
     /// eg ilmenite ingot
-    pub fn l90_3star_intermediate() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(610).clone(),
+    pub fn l90_3star_intermediate() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 610,
+            progress_divider: 130,
+            progress_modifier: 80,
+            quality_divider: 115,
+            quality_modifier: 70,
             difficulty: 3696,
             durability: 35,
             quality_target: 8200,
@@ -75,9 +90,13 @@ impl Presets {
     }
 
     /// for customized components
-    pub fn l90_relic_tier3() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(620).clone(),
+    pub fn l90_relic_tier3() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 620,
+            progress_divider: 130,
+            quality_divider: 115,
+            progress_modifier: 80,
+            quality_modifier: 70,
             difficulty: 4620,
             durability: 60,
             quality_target: 12040,
@@ -87,9 +106,13 @@ impl Presets {
     }
 
     /// for brilliant components
-    pub fn l90_relic_tier4() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(625).clone(),
+    pub fn l90_relic_tier4() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 625,
+            progress_divider: 130,
+            quality_divider: 115,
+            progress_modifier: 80,
+            quality_modifier: 70,
             difficulty: 5280,
             durability: 60,
             quality_target: 13050,
@@ -99,9 +122,13 @@ impl Presets {
     }
 
     /// the max white scrip collectible
-    pub fn l89_collectible() -> Recipe {
-        Recipe {
-            rlvl: RECIPE_LEVELS.rlvl(555).clone(),
+    pub fn l89_collectible() -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: 555,
+            progress_divider: 129,
+            progress_modifier: 100,
+            quality_divider: 113,
+            quality_modifier: 100,
             difficulty: 3400,
             durability: 80,
             quality_target: 7100,
@@ -132,7 +159,11 @@ impl Presets {
         PlayerStats::level_90(980, 650, 1000)
     }
 
-    pub fn baseline_recipe(difficulty: u16, durability: u16, quality_target: u16) -> Recipe {
+    pub fn baseline_recipe(
+        difficulty: u16,
+        durability: u16,
+        quality_target: u16,
+    ) -> SimulatorRecipe {
         Self::baseline_recipe_with_required_stats(difficulty, durability, quality_target, 0, 0)
     }
 
@@ -142,18 +173,15 @@ impl Presets {
         quality_target: u16,
         required_craftsmanship: u16,
         required_control: u16,
-    ) -> Recipe {
-        Recipe {
-            rlvl: RecipeLevel {
-                // we assume the rlvl is always higher than the player's crafter level
-                rlvl: RecipeLevelId::new(999),
-                // these values just cancel out in the progress/quality calculations
-                progress_divider: 100,
-                progress_modifier: 100,
-                quality_divider: 100,
-                quality_modifier: 100,
-                stars: 4,
-            },
+    ) -> SimulatorRecipe {
+        SimulatorRecipe {
+            // we assume the rlvl is always higher than the player's crafter level
+            rlvl: 999,
+            // these values just cancel out in the progress/quality calculations
+            progress_divider: 100,
+            progress_modifier: 100,
+            quality_divider: 100,
+            quality_modifier: 100,
             difficulty,
             durability,
             quality_target,
@@ -177,8 +205,8 @@ impl Presets {
     /// quick workaround for tests using realistic data
     /// that were passing before stat requirements were implemented
     #[cfg(test)]
-    pub fn without_required_stats(recipe: Recipe) -> Recipe {
-        Recipe {
+    pub fn without_required_stats(recipe: SimulatorRecipe) -> SimulatorRecipe {
+        SimulatorRecipe {
             required_craftsmanship: 0,
             required_control: 0,
             ..recipe

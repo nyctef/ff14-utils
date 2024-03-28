@@ -1,10 +1,11 @@
 use color_eyre::{eyre::eyre, Result};
 use crafting_simulator::{
+    arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value},
     buffs::apply_buff_hq,
     config,
     generator::{RandomFlip, RandomGenerator, RandomRemove},
-    model::{CraftStatus, CraftingReport, PlayerStats, Recipe},
-    simulator::Simulator as sim, arg_utils::{food_from_arg_value, potion_from_arg_value, recipe_from_arg_value},
+    model::{CraftStatus, CraftingReport, PlayerStats, SimulatorRecipe},
+    simulator::Simulator as sim,
 };
 
 use derive_more::Constructor;
@@ -99,7 +100,7 @@ impl Ord for CraftingScore {
     }
 }
 
-fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
+fn score_report(recipe: &SimulatorRecipe, report: &CraftingReport) -> CraftingScore {
     CraftingScore {
         status: report.status,
         durability: report.final_state.durability,
@@ -112,7 +113,11 @@ fn score_report(recipe: &Recipe, report: &CraftingReport) -> CraftingScore {
     }
 }
 
-fn score_steps(player: PlayerStats, recipe: &Recipe, steps: Vec<&'static str>) -> Candidate {
+fn score_steps(
+    player: PlayerStats,
+    recipe: &SimulatorRecipe,
+    steps: Vec<&'static str>,
+) -> Candidate {
     let report = sim::run_steps(player, recipe, &steps);
     let score = score_report(recipe, &report);
     Candidate::new(steps, score, report.step_log)

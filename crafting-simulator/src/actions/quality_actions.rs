@@ -1,5 +1,6 @@
 use crate::model::{
-    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, Recipe, StepResult,
+    CraftingIssueType, CraftingState, CraftingStep, InfallibleStep, PlayerStats, SimulatorRecipe,
+    StepResult,
 };
 use derive_more::Constructor;
 
@@ -14,13 +15,13 @@ pub struct BasicTouch {
 
 fn calc_quality_increase(
     stats: &PlayerStats,
-    recipe: &Recipe,
+    recipe: &SimulatorRecipe,
     state: &CraftingState,
     potency: u16,
 ) -> u16 {
-    let base_quality = (stats.control * 10) / recipe.rlvl.quality_divider as u16 + 35;
+    let base_quality = (stats.control * 10) / recipe.quality_divider as u16 + 35;
     let base_quality_modified_by_level =
-        (base_quality as f32 * recipe.rlvl.quality_modifier as f32 * 0.01f32) as u32;
+        (base_quality as f32 * recipe.quality_modifier as f32 * 0.01f32) as u32;
 
     let mut buff_modifier: f32 = 1.0;
     buff_modifier += 0.1 * state.inner_quiet_stacks as f32;
@@ -40,7 +41,12 @@ fn calc_quality_increase(
 }
 
 impl CraftingStep for BasicTouch {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult {
         if self.prevented_by_waste_not && state.waste_not_stacks > 0 {
             return Err(CraftingIssueType::PreventedByWasteNot);
         }
@@ -70,7 +76,7 @@ impl InfallibleStep for Innovation {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             // see above comment about veneration stacks being 5 instead of 4
@@ -95,7 +101,7 @@ impl InfallibleStep for GreatStrides {
         &self,
         state: &CraftingState,
         _stats: &PlayerStats,
-        _recipe: &Recipe,
+        _recipe: &SimulatorRecipe,
     ) -> CraftingState {
         CraftingState {
             great_strides_stacks: 4,
@@ -115,7 +121,12 @@ impl InfallibleStep for GreatStrides {
 
 pub struct ByregotsBlessing {}
 impl CraftingStep for ByregotsBlessing {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> StepResult {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> StepResult {
         if state.inner_quiet_stacks == 0 {
             return Err(CraftingIssueType::LackingInnerQuiet);
         }
@@ -148,7 +159,12 @@ pub struct ComboTouch {
     durability_cost: u8,
 }
 impl InfallibleStep for ComboTouch {
-    fn apply(&self, state: &CraftingState, stats: &PlayerStats, recipe: &Recipe) -> CraftingState {
+    fn apply(
+        &self,
+        state: &CraftingState,
+        stats: &PlayerStats,
+        recipe: &SimulatorRecipe,
+    ) -> CraftingState {
         let new_touch_combo_stage = if self.touch_combo_stage_required.is_none()
             || self.touch_combo_stage_required == Some(state.touch_combo_stage)
         {
@@ -181,7 +197,7 @@ impl InfallibleStep for ComboTouch {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::Recipe;
+    use crate::model::SimulatorRecipe;
     use crate::presets::Presets as p;
     use crate::simulator::Simulator as s;
 
@@ -217,7 +233,7 @@ mod tests {
     fn basic_touch_caps_at_10_inner_quiet_stacks() {
         let final_state = s::run_steps(
             p::l90_player_with_jhinga_biryani_hq(),
-            &Recipe {
+            &SimulatorRecipe {
                 // we wouldn't normally be able to run 12 basic touches in a row >.>
                 durability: 200,
                 ..p::l90_4star_gear()

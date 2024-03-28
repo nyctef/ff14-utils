@@ -1,4 +1,4 @@
-use crate::{model::Recipe, presets::Presets as preset};
+use crate::{model::SimulatorRecipe, presets::Presets as preset};
 use color_eyre::eyre::{eyre, Result};
 use ff14_data::model::Food;
 
@@ -6,7 +6,7 @@ use ff14_data::model::Food;
 // (eg help text with list of values, name of arg, etc)
 // but it's not super necessary.
 
-pub fn recipe_from_arg_value(value: &str) -> Result<Recipe> {
+pub fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
     match value {
         "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
         "l90_4s_gear" => Ok(preset::l90_4star_gear()),

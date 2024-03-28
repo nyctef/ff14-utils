@@ -10,7 +10,7 @@ pub struct Simulator;
 impl Simulator {
     pub fn run_steps(
         player: PlayerStats,
-        recipe: &Recipe,
+        recipe: &SimulatorRecipe,
         steps: &[&'static str],
     ) -> CraftingReport {
         let initial_state = CraftingState::initial(&player, recipe);
