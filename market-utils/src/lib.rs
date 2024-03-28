@@ -1,4 +1,3 @@
-#![warn(clippy::pedantic)]
 #![allow(clippy::wildcard_imports)]
 #![allow(clippy::must_use_candidate)]
 #![allow(clippy::implicit_hasher)]
