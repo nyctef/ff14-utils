@@ -66,17 +66,26 @@ pub struct Recipe {
     pub id: RecipeId,
     pub ingredients: Vec<RecipeItem>,
     pub result: RecipeItem,
+
+    pub rlvl: RecipeLevel,
+    pub difficulty: u16,
+    pub durability: u16,
+    pub quality_target: u16,
+    // TODO: can these be determined from the rlvl, or are they sometimes recipe-specific?
+    pub required_craftsmanship: u16,
+    pub required_control: u16,
 }
 
 impl Mul<u32> for &Recipe {
     type Output = Recipe;
 
     fn mul(self, rhs: u32) -> Self::Output {
-        Recipe::new(
-            self.id,
-            self.ingredients.iter().map(|i| i * rhs).collect_vec(),
-            &self.result * rhs,
-        )
+        Recipe {
+            ingredients: self.ingredients.iter().map(|i| i * rhs).collect_vec(),
+            result: &self.result * rhs,
+            rlvl: self.rlvl.clone(),
+            ..*self
+        }
     }
 }
 
@@ -146,6 +155,11 @@ pub struct RecipeLevel {
     pub progress_modifier: u8,
     pub quality_divider: u8,
     pub quality_modifier: u8,
+    // these base values can be modified by a corresponding _factor on individual recipes
+    pub base_difficulty: u16,
+    pub base_durability: u16,
+    pub base_quality_target: u16,
+    // a rough UI indicator of recipe difficulty
     pub stars: u8,
 }
 

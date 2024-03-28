@@ -56,6 +56,8 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
 }
 
 pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
+    let rlvls = read_rlvls(csv_base_path).await?;
+
     read_csv(&csv_base_path.join("Recipe.csv"))
         .await?
         .iter()
@@ -77,9 +79,69 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
                 }
             }
 
-            Ok(Recipe::new(recipe_id, ingredients, result))
+            let rlvl_id: RecipeLevelId =
+                record.get("RecipeLevelTable").unwrap().try_into().unwrap();
+            let rlvl = rlvls.iter().find(|rl| rl.rlvl == rlvl_id).unwrap().clone();
+
+            let difficulty_factor: u16 = record.get("DifficultyFactor").unwrap().parse().unwrap();
+            let quality_factor: u16 = record.get("QualityFactor").unwrap().parse().unwrap();
+            let durability_factor: u16 = record.get("DurabilityFactor").unwrap().parse().unwrap();
+
+            let difficulty = (rlvl.base_difficulty * difficulty_factor) / 100;
+            let durability = (rlvl.base_durability * durability_factor) / 100;
+            let quality_target = (rlvl.base_quality_target * quality_factor) / 100;
+
+            let required_craftsmanship: u16 =
+                record.get("RequiredCraftsmanship").unwrap().parse()?;
+            let required_control: u16 = record.get("RequiredControl").unwrap().parse()?;
+
+            Ok(Recipe::new(
+                recipe_id,
+                ingredients,
+                result,
+                rlvl,
+                difficulty,
+                durability,
+                quality_target,
+                required_craftsmanship,
+                required_control,
+            ))
         })
         .collect()
+}
+
+pub async fn read_rlvls(csv_base_path: &Path) -> Result<Vec<RecipeLevel>, color_eyre::eyre::Error> {
+    let rlvls: Vec<RecipeLevel> = read_csv(&csv_base_path.join("RecipeLevelTable.csv"))
+        .await?
+        .iter()
+        .map(|record| {
+            let rlvl = RecipeLevelId::try_from(record.get("#").unwrap()).unwrap();
+
+            let progress_divider: u8 = record.get("ProgressDivider").unwrap().parse().unwrap();
+            let progress_modifier: u8 = record.get("ProgressModifier").unwrap().parse().unwrap();
+            let quality_divider: u8 = record.get("QualityDivider").unwrap().parse().unwrap();
+            let quality_modifier: u8 = record.get("QualityModifier").unwrap().parse().unwrap();
+
+            let base_difficulty: u16 = record.get("Difficulty").unwrap().parse().unwrap();
+            let base_durability: u16 = record.get("Durability").unwrap().parse().unwrap();
+            let base_quality_target: u16 = record.get("Quality").unwrap().parse().unwrap();
+
+            let stars: u8 = record.get("Stars").unwrap().parse().unwrap();
+
+            Ok(RecipeLevel::new(
+                rlvl,
+                progress_divider,
+                progress_modifier,
+                quality_divider,
+                quality_modifier,
+                base_difficulty,
+                base_durability,
+                base_quality_target,
+                stars,
+            ))
+        })
+        .collect::<Result<Vec<_>>>()?;
+    Ok(rlvls)
 }
 
 pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
