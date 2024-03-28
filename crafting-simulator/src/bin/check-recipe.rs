@@ -8,7 +8,8 @@ use crafting_simulator::{buffs::apply_buff_hq, config};
 use itertools::Itertools;
 use std::{io::Read, path::Path};
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     color_eyre::install()?;
 
     let args = parse_args()?;
@@ -17,7 +18,7 @@ fn main() -> Result<()> {
 
     let food = food_from_arg_value(args.food.as_deref())?;
     let potion = potion_from_arg_value(args.potion.as_deref())?;
-    let recipe = recipe_from_arg_value(&args.recipe)?;
+    let recipe = recipe_from_arg_value(&args.recipe).await?;
 
     // read list of crafting steps from stdin
     let mut steps = String::new();

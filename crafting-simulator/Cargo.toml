@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 color-eyre = "0.6.2"
 derive_more = "0.99.17"
+tokio = { version = "1.26.0", features = ["fs", "macros", "rt-multi-thread"] }
 itertools = "0.12.0"
 rand = "0.8.5"
 ff14-data = { path = "../ff14-data" }

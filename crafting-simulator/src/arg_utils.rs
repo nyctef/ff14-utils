@@ -1,22 +1,26 @@
 use crate::{model::SimulatorRecipe, presets::Presets as preset};
 use color_eyre::eyre::{eyre, Result};
-use ff14_data::model::Food;
+use ff14_data::{
+    lookup::{ItemLookup, RecipeLookup},
+    model::Food,
+};
 
 // TODO: might be nice to dedupe more arg handling knowledge here
 // (eg help text with list of values, name of arg, etc)
 // but it's not super necessary.
 
-pub fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
-    match value {
-        "l90_4s_mat" => Ok(preset::l90_4star_intermediate()),
-        "l90_4s_gear" => Ok(preset::l90_4star_gear()),
-        "l90_3s_mat" => Ok(preset::l90_3star_intermediate()),
-        "l90_3s_gear" => Ok(preset::l90_3star_gear()),
-        "l90_relic_tier3" => Ok(preset::l90_relic_tier3()),
-        "l90_relic_tier4" => Ok(preset::l90_relic_tier4()),
-        "l90_chocobo_glam" => Ok(preset::l90_chocobo_glam()),
-        other => Err(eyre!("Unrecognised recipe type {}", other)),
-    }
+pub async fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
+    let item_lookup = &ItemLookup::from_datamining_csv().await?;
+    let item = item_lookup
+        .item_by_name_opt(value)
+        .ok_or_else(|| eyre!("No item found with name {}", value))?;
+
+    let recipe_lookup = &RecipeLookup::from_datamining_csv().await?;
+    let recipe = recipe_lookup
+        .recipe_for_item(item.id)
+        .ok_or_else(|| eyre!("No recipe found for item {}", item.name))?;
+
+    Ok(SimulatorRecipe::from_recipe(&recipe))
 }
 
 pub fn food_from_arg_value(value: Option<&str>) -> Result<Option<&'static Food>> {

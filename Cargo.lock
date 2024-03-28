@@ -297,6 +297,7 @@ dependencies = [
  "pico-args",
  "rand",
  "regex",
+ "tokio",
  "toml",
 ]
 

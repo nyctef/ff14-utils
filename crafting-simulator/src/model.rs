@@ -1,4 +1,5 @@
 use derive_more::Constructor;
+use ff14_data::model::Recipe;
 
 /// A recipe struct with all the non-essential details (eg ingredients) stripped out.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -13,6 +14,23 @@ pub struct SimulatorRecipe {
     pub quality_target: u16,
     pub required_craftsmanship: u16,
     pub required_control: u16,
+}
+
+impl SimulatorRecipe {
+    pub fn from_recipe(recipe: &Recipe) -> SimulatorRecipe {
+        SimulatorRecipe {
+            rlvl: recipe.rlvl.rlvl.into(),
+            progress_divider: recipe.rlvl.progress_divider,
+            progress_modifier: recipe.rlvl.progress_modifier,
+            quality_divider: recipe.rlvl.quality_divider,
+            quality_modifier: recipe.rlvl.quality_modifier,
+            difficulty: recipe.difficulty,
+            durability: recipe.durability,
+            quality_target: recipe.quality_target,
+            required_craftsmanship: recipe.required_craftsmanship,
+            required_control: recipe.required_control,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

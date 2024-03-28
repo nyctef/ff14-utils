@@ -38,7 +38,11 @@ macro_rules! id {
                 usize::try_from(self.0).expect("id into usize")
             }
         }
-
+        impl Into<u16> for $a {
+            fn into(self) -> u16 {
+                u16::try_from(self.0).expect("id into u16")
+            }
+        }
         impl Into<$a> for i32 {
             fn into(self) -> $a {
                 $a::new(self)

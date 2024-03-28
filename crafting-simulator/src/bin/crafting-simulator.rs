@@ -123,7 +123,8 @@ fn score_steps(
     Candidate::new(steps, score, report.step_log)
 }
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     color_eyre::install()?;
 
     let ctrlc_pressed = Arc::new(AtomicBool::new(false));
@@ -142,7 +143,7 @@ fn main() -> Result<()> {
 
     let food = food_from_arg_value(args.food.as_deref())?;
     let potion = potion_from_arg_value(args.potion.as_deref())?;
-    let recipe = recipe_from_arg_value(&args.recipe)?;
+    let recipe = recipe_from_arg_value(&args.recipe).await?;
 
     if let Some(food) = food {
         player = apply_buff_hq(&player, food);
