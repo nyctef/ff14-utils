@@ -37,7 +37,7 @@ pub fn process_recipe_item(
                 (0, vec![]),
                 |(prev_price, mut prev_lines), (sub_price, lines)| {
                     prev_lines.extend(lines);
-                    (prev_price + sub_price, prev_lines)
+                    ((prev_price as u32).saturating_add(sub_price), prev_lines)
                 },
             )
     });
@@ -61,6 +61,10 @@ pub fn process_recipe_item(
         market_price.unwrap_or(u32::MAX),
         crafting_price.unwrap_or(u32::MAX),
     );
+
+    if lower_price == u32::MAX {
+        eprintln!("WARN: No price found for {}", i.name_singular);
+    }
 
     (lower_price, crafting_lines)
 }
