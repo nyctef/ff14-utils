@@ -4,9 +4,9 @@
         "PageNext": null,
         "PagePrev": null,
         "PageTotal": 1,
-        "Results": 1687,
+        "Results": 1807,
         "ResultsPerPage": 2000,
-        "ResultsTotal": 1687
+        "ResultsTotal": 1807
     },
     "Results": [
         {
@@ -21939,6 +21939,1566 @@
             "GilReward": 2410,
             "ID": 1687,
             "Name": "What's in the Air"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44019,
+                    "Name": "Ginseng Lumber"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1688,
+            "Name": "Hull Lotta Damage"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43328,
+                    "Name": "Ginseng Earrings"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 2530,
+            "ID": 1689,
+            "Name": "Yimepi's Country Charms"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44020,
+                    "Name": "Ceiba Lumber"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2535,
+            "ID": 1690,
+            "Name": "Wood You Be Quiet"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42008,
+                    "Name": "Ceiba Wings"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1691,
+            "Name": "The Wing's Wings"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44021,
+                    "Name": "Dark Mahogany Lumber"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1692,
+            "Name": "Turali Quality"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43231,
+                    "Name": "Dark Mahogany Fishing Rod"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1693,
+            "Name": "Lament of the Lazylump"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42302,
+                    "Name": "Acacia Longbow"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1694,
+            "Name": "Bow Out"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43258,
+                    "Name": "Acacia Spinning Wheel"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1695,
+            "Name": "Weaving a Path"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42455,
+                    "Name": "Claro Walnut Spear"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1696,
+            "Name": "Spear Pressure"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43345,
+                    "Name": "Claro Walnut Necklace of Gathering"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1697,
+            "Name": "No Greater Treasure"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41855,
+                    "Name": "Mountain Chromite Twinfangs"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5060,
+            "ID": 1698,
+            "Name": "Always Be Prepaired"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43209,
+                    "Name": "Mountain Chromite Hatchet"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5060,
+            "ID": 1699,
+            "Name": "Paring Is Caring"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43998,
+                    "Name": "Ruthenium Ingot"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2535,
+            "ID": 1700,
+            "Name": "Ruthenium Supremium"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41992,
+                    "Name": "Ruthenium War Axe"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1701,
+            "Name": "Axes to the Maxes"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43233,
+                    "Name": "Cobalt Tungsten File"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1702,
+            "Name": "Maintaining the Maintainers"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42153,
+                    "Name": "Cobalt Tungsten Khukuri"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1703,
+            "Name": "Dagger Swagger"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42308,
+                    "Name": "Titanium Gold Greatsword"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1704,
+            "Name": "Bladewinner"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43261,
+                    "Name": "Titanium Gold Maul"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1705,
+            "Name": "Maul Me"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42471,
+                    "Name": "Ra'Kaznar Twinfangs"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1706,
+            "Name": "Ceremonial Teeth"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43278,
+                    "Name": "Ra'Kaznar Awl"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1707,
+            "Name": "Awl Dreams Come True"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43997,
+                    "Name": "Mountain Chromite Ingot"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1708,
+            "Name": "Don't Bore Me, Ore Me"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41857,
+                    "Name": "Mountain Chromite Tower Shield"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 2530,
+            "ID": 1709,
+            "Name": "Shielding My Students"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42019,
+                    "Name": "Ruthenium Vambraces of Maiming"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1710,
+            "Name": "Brace for More Vambraces"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42016,
+                    "Name": "Ruthenium Sabatons of Fending"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1711,
+            "Name": "Forgiveness for My Shins"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43999,
+                    "Name": "Cobalt Tungsten Ingot"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1712,
+            "Name": "Metal with Mettle"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43227,
+                    "Name": "Cobalt Tungsten Alembic"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1713,
+            "Name": "Odd Instruments"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42350,
+                    "Name": "Titanium Gold Helm of Casting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1714,
+            "Name": "Don't Ask about the Rivets"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42321,
+                    "Name": "Titanium Gold Thornplate of Fending"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1715,
+            "Name": "Backing up My Words"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42496,
+                    "Name": "Ra'Kaznar Gloves of Scouting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1716,
+            "Name": "A Hand for a Deckhand"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42483,
+                    "Name": "Ra'Kaznar Greaves of Maiming"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1717,
+            "Name": "Essays on Equipment"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44008,
+                    "Name": "Lar Ingot"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1718,
+            "Name": "On Board for Lar"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41854,
+                    "Name": "Lar Pendulums"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5060,
+            "ID": 1719,
+            "Name": "Pendulums of Our Own"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44009,
+                    "Name": "Ihuykanite"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2535,
+            "ID": 1720,
+            "Name": "Guaranteed Gem"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42006,
+                    "Name": "Ruthenium Folding Fans"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1721,
+            "Name": "Fan of the Foreign"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44010,
+                    "Name": "Pink Beryl"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1722,
+            "Name": "Shiny and Good"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43226,
+                    "Name": "Cobalt Tungsten Needle"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1723,
+            "Name": "Sew Excited"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42325,
+                    "Name": "White Gold Halfmask of Maiming"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1724,
+            "Name": "Orders Anonymous"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42373,
+                    "Name": "White Gold Ring of Healing"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1725,
+            "Name": "Ringing Gratitude"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42458,
+                    "Name": "Ra'Kaznar Rod"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1726,
+            "Name": "The Right Rod"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42504,
+                    "Name": "Black Star Mask of Casting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1727,
+            "Name": "Mask Maker"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44058,
+                    "Name": "Silver Lobo Leather"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1728,
+            "Name": "Tenets of Tanning"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41903,
+                    "Name": "Loboskin Amulet of Fending"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 2530,
+            "ID": 1729,
+            "Name": "The Perfect Accessory"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42024,
+                    "Name": "Crocodileskin Fingerless Gloves of Striking"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1730,
+            "Name": "Freezing Fingers"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42036,
+                    "Name": "Crocodileskin Leg Wraps of Scouting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1731,
+            "Name": "Dreams of Ja"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44060,
+                    "Name": "Br'aax Leather"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1732,
+            "Name": "Respect for Br'aax"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43296,
+                    "Name": "Br'aaxskin Halfgloves of Crafting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1733,
+            "Name": "Lending Artisans a Hand"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42334,
+                    "Name": "Gomphotherium Boots of Striking"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1734,
+            "Name": "Freezing Toes"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43310,
+                    "Name": "Gomphotherium Doublet of Gathering"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1735,
+            "Name": "Giving Gatherers Their Gear"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42503,
+                    "Name": "Gargantuaskin Shoes of Healing"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1736,
+            "Name": "Worqor Zormor or Bust"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42487,
+                    "Name": "Gargantuaskin Trousers of Striking"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1737,
+            "Name": "Just Generally Freezing"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44029,
+                    "Name": "Snow Cotton Cloth"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1738,
+            "Name": "Comfy Cabins"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43285,
+                    "Name": "Snow Cotton Jacket"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5060,
+            "ID": 1739,
+            "Name": "Begin with the Basics"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44030,
+                    "Name": "Mountain Linen"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2535,
+            "ID": 1740,
+            "Name": "Cloth for Canvas"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42043,
+                    "Name": "Mountain Linen Cloak of Casting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1741,
+            "Name": "In Line with Linen"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44031,
+                    "Name": "Sarcenet Cloth"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1742,
+            "Name": "Weaving the Envelope"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42184,
+                    "Name": "Sarcenet Slops of Aiming"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1743,
+            "Name": "Traditional Trousers"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42347,
+                    "Name": "Rroneek Serge Halfgloves of Healing"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1744,
+            "Name": "Halfgloves, Full Effort"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43312,
+                    "Name": "Rroneek Serge Trousers of Gathering"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1745,
+            "Name": "Cruel Climates"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42506,
+                    "Name": "Thunderyards Silk Gloves of Casting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1746,
+            "Name": "Glamorous Gloves"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42505,
+                    "Name": "Thunderyards Silk Coat of Casting"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1747,
+            "Name": "Silk for Sunperch"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44049,
+                    "Name": "Growth Formula Lambda"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2530,
+            "ID": 1748,
+            "Name": "Fast-forwarding Flora"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41856,
+                    "Name": "Ginseng Angle Brush"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5060,
+            "ID": 1749,
+            "Name": "Big Brush, Big Dreams"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 41997,
+                    "Name": "Crocodileskin Index"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5070,
+            "ID": 1750,
+            "Name": "Binding Spells"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44047,
+                    "Name": "Grade 1 Gemsap of Intelligence"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2535,
+            "ID": 1751,
+            "Name": "For Tired Minds"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42164,
+                    "Name": "Dark Mahogany Round Brush"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5100,
+            "ID": 1752,
+            "Name": "I Like Big Brush and I Cannot Lie"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44013,
+                    "Name": "Magnesia Whetstone"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2550,
+            "ID": 1753,
+            "Name": "Cutting Edge of Culinary Quality"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44169,
+                    "Name": "Cunning Craftsman's Tisane"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5140,
+            "ID": 1754,
+            "Name": "All-night Crafting"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42306,
+                    "Name": "Gomphotherium Codex"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5140,
+            "ID": 1755,
+            "Name": "Something Salty and Ceremonial"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 42459,
+                    "Name": "Book of Ra'Kaznar"
+                },
+                "ItemCount0": 1
+            },
+            "GilReward": 5180,
+            "ID": 1756,
+            "Name": "Tome for Tradition"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44161,
+                    "Name": "Grade 1 Gemdraught of Mind"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5180,
+            "ID": 1757,
+            "Name": "Remedy for Reason"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43972,
+                    "Name": "Cooking Mezcal"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2530,
+            "ID": 1758,
+            "Name": "More Mezcal"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44073,
+                    "Name": "Boiled Alpaca Steak"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5060,
+            "ID": 1759,
+            "Name": "Friends Are Food"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44074,
+                    "Name": "Mezcal-marinated Swampmonk"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5070,
+            "ID": 1760,
+            "Name": "Don't Knock It Till You've Tried It"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43974,
+                    "Name": "Royal Maple Syrup"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2535,
+            "ID": 1761,
+            "Name": "Not-so-secret Ingredient"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44093,
+                    "Name": "Spaghetti al Olio e Peperoncino"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5100,
+            "ID": 1762,
+            "Name": "Simple Is Hardest"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44088,
+                    "Name": "Gateau Au Chocolat"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5100,
+            "ID": 1763,
+            "Name": "Creative Chocolate"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44105,
+                    "Name": "Tacos Al Pastor"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5140,
+            "ID": 1764,
+            "Name": "Bring Me Your Tacos"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44102,
+                    "Name": "Wild Banana Blend"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5140,
+            "ID": 1765,
+            "Name": "Najoothie"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44097,
+                    "Name": "Mesquite Juice"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5180,
+            "ID": 1766,
+            "Name": "Sweet, Sweet Bean Juice"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 44076,
+                    "Name": "Acqua Pazza"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 5180,
+            "ID": 1767,
+            "Name": "Ocean Explosion"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2064,
+            "ID": 1768,
+            "Name": "Reading Reeds"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2264,
+            "ID": 1769,
+            "Name": "Brushing Up on Flowers"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1844,
+            "ID": 1770,
+            "Name": "All Stars"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2104,
+            "ID": 1771,
+            "Name": "Evaluating Energies"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2308,
+            "ID": 1772,
+            "Name": "Plants Aquatic"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2308,
+            "ID": 1773,
+            "Name": "First Beasts, Now Bugs"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2144,
+            "ID": 1774,
+            "Name": "Herbs for Hurts"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2352,
+            "ID": 1775,
+            "Name": "Good Ear for Corn"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1853,
+            "ID": 1776,
+            "Name": "Trusty Trees"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2396,
+            "ID": 1777,
+            "Name": "Sip of Scalebud"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2396,
+            "ID": 1778,
+            "Name": "Sacred Sap"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1867,
+            "ID": 1779,
+            "Name": "New Start for the Cinderfield"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2224,
+            "ID": 1780,
+            "Name": "Stopping Soapweed"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2440,
+            "ID": 1781,
+            "Name": "Need for Nopales"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1879,
+            "ID": 1782,
+            "Name": "Girth of the Earth"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2064,
+            "ID": 1783,
+            "Name": "Tough Tuff"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2264,
+            "ID": 1784,
+            "Name": "Strong Arm for Stone"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1844,
+            "ID": 1785,
+            "Name": "Old and Bubbly"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2104,
+            "ID": 1786,
+            "Name": "Abandoned Architecture"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2308,
+            "ID": 1787,
+            "Name": "Mountain Fish"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2308,
+            "ID": 1788,
+            "Name": "Gleamstone for Lazybones"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2144,
+            "ID": 1789,
+            "Name": "Fuelgiving Passionwork"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2352,
+            "ID": 1790,
+            "Name": "Building the Banks"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1853,
+            "ID": 1791,
+            "Name": "Pebbles for a Path"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2396,
+            "ID": 1792,
+            "Name": "Sampled Starfall"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2396,
+            "ID": 1793,
+            "Name": "Material for a Mindgenius"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1867,
+            "ID": 1794,
+            "Name": "Vestiges of War"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2224,
+            "ID": 1795,
+            "Name": "Plains, Stone, Fish"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 2440,
+            "ID": 1796,
+            "Name": "Burning Rival"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": null,
+                    "Name": null
+                },
+                "ItemCount0": null
+            },
+            "GilReward": 1879,
+            "ID": 1797,
+            "Name": "No Takebacks for Workshirk"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43676,
+                    "Name": "Marbled Hatchetfish"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2460,
+            "ID": 1798,
+            "Name": "Axing for Fish"
+        },
+        {
+            "ClassJobLevel": 90,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43804,
+                    "Name": "Yok Huy Toad"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2460,
+            "ID": 1799,
+            "Name": "Full Moon Frogs"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43692,
+                    "Name": "Pleated Matamata"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2510,
+            "ID": 1800,
+            "Name": "Travel by Turtle"
+        },
+        {
+            "ClassJobLevel": 92,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43811,
+                    "Name": "Potglaze Stingray"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2510,
+            "ID": 1801,
+            "Name": "Order for Odd Fish"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43702,
+                    "Name": "Pelubane"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2560,
+            "ID": 1802,
+            "Name": "Perilous Peaks Poga"
+        },
+        {
+            "ClassJobLevel": 94,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43808,
+                    "Name": "Karvarichthys"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2560,
+            "ID": 1803,
+            "Name": "Catch My Metaphor"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43739,
+                    "Name": "Welkin Catfish"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2610,
+            "ID": 1804,
+            "Name": "Starry-finned"
+        },
+        {
+            "ClassJobLevel": 96,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43837,
+                    "Name": "Lightning Eel"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2610,
+            "ID": 1805,
+            "Name": "Eeling Cleanse"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43769,
+                    "Name": "Moon Croppie"
+                },
+                "ItemCount0": 3
+            },
+            "GilReward": 2660,
+            "ID": 1806,
+            "Name": "Fish Tacos"
+        },
+        {
+            "ClassJobLevel": 98,
+            "CraftLeve": {
+                "Item0": {
+                    "ID": 43843,
+                    "Name": "Warmouth"
+                },
+                "ItemCount0": 9
+            },
+            "GilReward": 2660,
+            "ID": 1807,
+            "Name": "Hungry Hungry Whalaqee"
         }
     ]
 }

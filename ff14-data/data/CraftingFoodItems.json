@@ -4,9 +4,9 @@
         "PageNext": null,
         "PagePrev": null,
         "PageTotal": 1,
-        "Results": 27,
+        "Results": 30,
         "ResultsPerPage": 100,
-        "ResultsTotal": 27
+        "ResultsTotal": 30
     },
     "Results": [
         {
@@ -619,6 +619,73 @@
                 "Name": "Meal"
             },
             "Name": "Jhinga Biryani"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 30,
+                    "MaxHQ": 38,
+                    "Relative": true,
+                    "Value": 8,
+                    "ValueHQ": 10
+                },
+                "Craftsmanship": {
+                    "ID": 70,
+                    "Max": 192,
+                    "MaxHQ": 240,
+                    "Relative": true,
+                    "Value": 7,
+                    "ValueHQ": 9
+                }
+            },
+            "ID": 44088,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Gateau Au Chocolat"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 73,
+                    "MaxHQ": 92,
+                    "Relative": true,
+                    "Value": 21,
+                    "ValueHQ": 26
+                },
+                "Control": {
+                    "ID": 71,
+                    "Max": 77,
+                    "MaxHQ": 97,
+                    "Relative": true,
+                    "Value": 4,
+                    "ValueHQ": 5
+                }
+            },
+            "ID": 44091,
+            "ItemUICategory": {
+                "Name": "Meal"
+            },
+            "Name": "Rroneek Steak"
+        },
+        {
+            "Bonuses": {
+                "CP": {
+                    "ID": 11,
+                    "Max": 21,
+                    "MaxHQ": 27,
+                    "Relative": true,
+                    "Value": 5,
+                    "ValueHQ": 6
+                }
+            },
+            "ID": 44169,
+            "ItemUICategory": {
+                "Name": "Medicine"
+            },
+            "Name": "Cunning Craftsman's Tisane"
         }
     ],
     "SpeedMs": 2
