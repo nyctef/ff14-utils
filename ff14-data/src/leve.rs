@@ -13,7 +13,7 @@ pub struct Leve {
     pub leve_name: String,
 }
 
-pub fn get_endwalker_leves() -> Result<Vec<Leve>> {
+pub fn get_dawntrail_leves() -> Result<Vec<Leve>> {
     let leve_data: Value = serde_json::from_str(include_str!("../data/Leve.json"))?;
     let leve_data = leve_data.as_object().unwrap();
     let leves = leve_data.get("Results").unwrap().as_array().unwrap();
@@ -53,7 +53,7 @@ pub fn get_endwalker_leves() -> Result<Vec<Leve>> {
         })
         .filter(|l| {
             l.gil_reward > 0
-                && l.quest_level >= 80
+                && l.quest_level >= 90
                 && l.item_count > 0
                 && !l.item_name.is_empty()
                 && l.item_id != ItemId::ZERO

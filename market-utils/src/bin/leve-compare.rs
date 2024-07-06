@@ -1,5 +1,5 @@
 use color_eyre::eyre::{eyre, Result};
-use ff14_data::leve::{get_endwalker_leves, Leve};
+use ff14_data::leve::{get_dawntrail_leves, Leve};
 use ff14_utils::universalis::{get_market_data_lookup, price_up_to};
 use itertools::Itertools;
 
@@ -11,7 +11,7 @@ async fn main() -> Result<()> {
 }
 
 async fn run() -> Result<()> {
-    let leves = get_endwalker_leves()?;
+    let leves = get_dawntrail_leves()?;
 
     // dbg!(&leves);
     // dbg!(leves.len());
