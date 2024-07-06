@@ -24,7 +24,12 @@ async fn run() -> Result<()> {
         .iter()
         .map(|leve| -> Result<(u32, u32, &Leve)> {
             let hq_reward = leve.gil_reward * 2;
-            let md = market_data.get(&leve.item_id).unwrap();
+            let md = market_data.get(&leve.item_id);
+            if md.is_none() {
+                eprintln!("No market data for {}, skipping...", leve.item_name);
+                return Err(eyre!("No market data for {}", leve.item_name));
+            }
+            let md = md.unwrap();
             let market_price = price_up_to(&md.listings, leve.item_count.into(), true)
                 .map_err(|e| eyre!("{}", e))?;
             Ok((hq_reward, market_price, leve))
