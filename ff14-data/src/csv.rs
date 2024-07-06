@@ -180,7 +180,7 @@ pub async fn read_materia(csv_base_path: &Path) -> Result<Vec<Materia>> {
         .iter()
         .map(|record| {
             let item_id = record.get("#").unwrap();
-            let levels = (0..10)
+            let levels = (0..12)
                 .map(|i| {
                     let item_id =
                         ItemId::try_from(record.get(&format!("Item[{i}]")).unwrap()).unwrap();

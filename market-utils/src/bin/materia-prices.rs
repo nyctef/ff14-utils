@@ -13,7 +13,7 @@ async fn main() -> Result<()> {
     let all_materia = materia
         .iter()
         .flat_map(|m| m.materia_levels.iter())
-        .filter(|ml| ml.level >= 9)
+        .filter(|ml| ml.level >= 11)
         .map(|ml| (ml.item_id, &items.item_by_id(ml.item_id).name))
         .collect_vec();
 
