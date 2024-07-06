@@ -69,7 +69,7 @@ pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
             let result = RecipeItem::new(result_id, result_amount);
 
             let mut ingredients = vec![];
-            for i in 0..10 {
+            for i in 0..8 {
                 let ingredient_field_name = &format!("Item{{Ingredient}}[{i}]");
                 let ingredient_id = record.get(ingredient_field_name).unwrap();
                 let amount_field_name = &format!("Amount{{Ingredient}}[{i}]");
