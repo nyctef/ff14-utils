@@ -7,9 +7,6 @@ use tokio::fs::File;
 use tokio_stream::StreamExt;
 
 async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
-    // Function reads CSV file that has column named "region" at second position (index = 1).
-    // It writes to new file only rows with region equal to passed argument
-    // and removes region column.
     let mut reader = csv_async::AsyncReader::from_reader(
         File::open(csv_path)
             .await
