@@ -6,3 +6,6 @@ jobs.toml
 
 # temporary working files
 scratch/
+
+# ide-specific files
+/.idea/
