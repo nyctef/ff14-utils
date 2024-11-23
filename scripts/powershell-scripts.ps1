@@ -22,3 +22,4 @@ function recipe() {
 function mapcompare { ff14run map-compare }
 function levecompare { ff14run leve-compare }
 function recipecompare { ff14run recipe-compare @args}
+function bicolorcompare { ff14run bicolor-compare }
