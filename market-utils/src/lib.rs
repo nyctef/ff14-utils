@@ -8,3 +8,4 @@
 pub mod recipe_calculation;
 pub mod time_utils;
 pub mod universalis;
+pub mod scrip_compare;
