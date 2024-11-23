@@ -158,6 +158,12 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
             let name_plural = record.get("Plural").unwrap();
             let ilvl: u32 = record.get("Level{Item}").unwrap().parse().unwrap();
             let can_be_hq = record.get("CanBeHq").unwrap() == "True";
+            let equip_slot = record
+                .get("EquipSlotCategory")
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+            let equip_slot = EquipSlotCategory::from(equip_slot).unwrap();
 
             Ok(Item::new(
                 ItemId::try_from(item_id)?,
@@ -166,6 +172,7 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
                 name_plural.clone(),
                 ilvl.to_owned(),
                 can_be_hq,
+                equip_slot,
             ))
         })
         .collect()

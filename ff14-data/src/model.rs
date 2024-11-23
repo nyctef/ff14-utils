@@ -1,9 +1,9 @@
+use crate::lookup::RecipeLookup;
+use color_eyre::eyre::eyre;
 use color_eyre::{eyre::Context, Result};
 use derive_more::{Constructor, Display};
 use itertools::Itertools;
 use std::{iter, ops::Mul};
-
-use crate::lookup::RecipeLookup;
 
 macro_rules! id {
     ($a:ident) => {
@@ -51,6 +51,45 @@ macro_rules! id {
     };
 }
 
+#[derive(Debug, Display, PartialEq, Eq)]
+pub enum EquipSlotCategory {
+    MainHand = 1,
+    OffHand = 2,
+    Head = 3,
+    Body = 4,
+    Gloves = 5,
+    Legs = 7,
+    Feet = 8,
+    Ears = 9,
+    Neck = 10,
+    Wrists = 11,
+    Ring = 12,
+    SoulCrystal = 17,
+}
+
+impl EquipSlotCategory {
+    pub fn from(id: u32) -> Result<Option<EquipSlotCategory>> {
+        match id {
+            // TODO: some nicer way to do this?
+            // https://stackoverflow.com/questions/28028854/how-do-i-match-enum-values-with-an-integer
+            0 => Ok(None),
+            1 => Ok(Some(EquipSlotCategory::MainHand)),
+            2 => Ok(Some(EquipSlotCategory::OffHand)),
+            3 => Ok(Some(EquipSlotCategory::Head)),
+            4 => Ok(Some(EquipSlotCategory::Body)),
+            5 => Ok(Some(EquipSlotCategory::Gloves)),
+            7 => Ok(Some(EquipSlotCategory::Legs)),
+            8 => Ok(Some(EquipSlotCategory::Feet)),
+            9 => Ok(Some(EquipSlotCategory::Ears)),
+            10 => Ok(Some(EquipSlotCategory::Neck)),
+            11 => Ok(Some(EquipSlotCategory::Wrists)),
+            12 => Ok(Some(EquipSlotCategory::Ring)),
+            17 => Ok(Some(EquipSlotCategory::SoulCrystal)),
+            _ => Err(eyre!("unrecognised equip slot category {}", id)),
+        }
+    }
+}
+
 id!(ItemId);
 
 #[derive(Debug, PartialEq, Eq, Constructor)]
@@ -61,6 +100,7 @@ pub struct Item {
     pub name_plural: String,
     pub ilvl: u32,
     pub can_be_hq: bool,
+    pub equip_slot_category: Option<EquipSlotCategory>,
 }
 
 id!(RecipeId);
