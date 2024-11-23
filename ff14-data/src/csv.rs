@@ -163,7 +163,10 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
                 .unwrap()
                 .parse::<u32>()
                 .unwrap();
-            let equip_slot = EquipSlotCategory::from(equip_slot).unwrap();
+            let equip_slot = EquipSlotCategory::from(equip_slot)
+                // TODO: put this context around a wider block?
+                .with_context(|| format!("item {}", item_id))
+                .unwrap();
 
             Ok(Item::new(
                 ItemId::try_from(item_id)?,

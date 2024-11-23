@@ -64,7 +64,23 @@ pub enum EquipSlotCategory {
     Neck = 10,
     Wrists = 11,
     Ring = 12,
+    /// equipped in MH, prevents OH
+    TwoHandWeapon = 13,
+    /// equipped in body, prevents headgear
+    Cowl = 15,
+    /// equipped in body, prevents gloves/legs/feet
+    Suit = 16,
     SoulCrystal = 17,
+    /// equipped in legs, prevents feet
+    Flanchard = 18,
+    /// equipped in body, prevents head/hands/legs/feet
+    Suit2 = 19,
+    /// equipped in body, prevents gloves/legs
+    Suit3 = 20,
+    /// equipped in body, prevents legs/feet
+    Suit4 = 21,
+    /// equipped in body, prevents hands
+    Suit5 = 22,
 }
 
 impl EquipSlotCategory {
@@ -84,7 +100,15 @@ impl EquipSlotCategory {
             10 => Ok(Some(EquipSlotCategory::Neck)),
             11 => Ok(Some(EquipSlotCategory::Wrists)),
             12 => Ok(Some(EquipSlotCategory::Ring)),
+            13 => Ok(Some(EquipSlotCategory::TwoHandWeapon)),
+            15 => Ok(Some(EquipSlotCategory::Cowl)),
+            16 => Ok(Some(EquipSlotCategory::Suit)),
             17 => Ok(Some(EquipSlotCategory::SoulCrystal)),
+            18 => Ok(Some(EquipSlotCategory::Flanchard)),
+            19 => Ok(Some(EquipSlotCategory::Suit2)),
+            20 => Ok(Some(EquipSlotCategory::Suit3)),
+            21 => Ok(Some(EquipSlotCategory::Suit4)),
+            22 => Ok(Some(EquipSlotCategory::Suit5)),
             _ => Err(eyre!("unrecognised equip slot category {}", id)),
         }
     }
