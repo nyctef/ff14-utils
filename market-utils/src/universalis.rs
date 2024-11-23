@@ -69,7 +69,7 @@ pub async fn get_market_data(ids: &[ItemId]) -> Result<Vec<ItemMarketData>> {
         .query(&[("entries", 0)])
         .query(&[(
             "fields",
-            vec![
+            [
                 "items.lastUploadTime",
                 "items.listings.quantity",
                 "items.listings.pricePerUnit",
