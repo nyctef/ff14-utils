@@ -66,7 +66,7 @@ pub async fn get_market_data(ids: &[ItemId]) -> Result<Vec<ItemMarketData>> {
     let client = Client::new();
     let response = client
         .get(format!("{base}/{world}/{ids}"))
-        .query(&[("entries", 10)])
+        .query(&[("entries", 0)])
         .query(&[(
             "fields",
             vec![
