@@ -51,7 +51,7 @@ macro_rules! id {
     };
 }
 
-#[derive(Debug, Display, PartialEq, Eq)]
+#[derive(Debug, Display, PartialEq, Eq, Clone, Copy)]
 pub enum EquipSlotCategory {
     MainHand = 1,
     OffHand = 2,
