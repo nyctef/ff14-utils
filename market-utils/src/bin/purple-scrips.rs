@@ -21,9 +21,7 @@ async fn main() -> Result<()> {
         .map(|r| r * 10)
         .collect_vec();
 
-    // TODO: make scrip per item depend on the level of the item
-    // TODO: include l90 items as well?
-    print_scrip_compare(&items, &recipes_lookup, recipes, 108).await?;
+    print_scrip_compare(&items, &recipes_lookup, recipes).await?;
 
     Ok(())
 }

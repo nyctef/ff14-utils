@@ -16,6 +16,7 @@ pub struct LineItem {
     pub market_price_age: Option<DateTime<Utc>>,
     pub crafting_price: Option<u32>,
     pub crafting_profit: Option<i64>,
+    pub item_id: ItemId,
 }
 
 pub fn process_recipe_item(
@@ -55,6 +56,7 @@ pub fn process_recipe_item(
         market_price_age: md.map(|md| md.last_upload_time),
         crafting_price,
         crafting_profit,
+        item_id: ri.item_id,
     });
 
     let lower_price = min(

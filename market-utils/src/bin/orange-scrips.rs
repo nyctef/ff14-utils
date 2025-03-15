@@ -21,7 +21,7 @@ async fn main() -> Result<()> {
         .map(|r| r * 10)
         .collect_vec();
 
-    print_scrip_compare(&items, &recipes_lookup, recipes, 144).await?;
+    print_scrip_compare(&items, &recipes_lookup, recipes).await?;
 
     Ok(())
 }
