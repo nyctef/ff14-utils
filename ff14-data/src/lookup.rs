@@ -42,7 +42,7 @@ impl ItemLookup {
         self.items.iter().find(|i| i.name == name)
     }
 
-    pub fn name_containing<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &Item> + 'a {
+    pub fn name_containing<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &'a Item> + 'a {
         self.matching(move |i| i.name.contains(name))
     }
 }
