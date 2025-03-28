@@ -1,8 +1,23 @@
 $root = resolve-path "$PSScriptRoot/.."
 $manifest = resolve-path "$root/Cargo.toml"
 
+function infolder() {
+  param($folder, [scriptblock] $block)
+
+  try {
+    push-location $folder
+    invoke-command $block
+  }
+  finally {
+    pop-location
+  }
+}
+
 function ff14run() {
-  cargo run --manifest-path $manifest --release --bin @args
+  $bin = $args;
+  infolder $root {
+    cargo run --manifest-path $manifest --release --bin @bin
+  }
 }
 
 function recipe() {
