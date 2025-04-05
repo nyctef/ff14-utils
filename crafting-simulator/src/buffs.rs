@@ -11,11 +11,16 @@ pub fn apply_buff_hq(player: &PlayerStats, buff: &Food) -> PlayerStats {
             "CP" => cp += bonus.max_hq as u16,
             "Control" => control += bonus.max_hq as u16,
             "Craftsmanship" => craftsmanship += bonus.max_hq as u16,
-            _ => panic!("Unknown bonus type: {}", bonus.name)
+            _ => panic!("Unknown bonus type: {}", bonus.name),
         };
     }
 
-    PlayerStats { craftsmanship, control, cp, ..*player }
+    PlayerStats {
+        craftsmanship,
+        control,
+        cp,
+        ..*player
+    }
 }
 
 #[cfg(test)]

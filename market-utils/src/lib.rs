@@ -6,6 +6,6 @@
 #![allow(clippy::module_name_repetitions)]
 
 pub mod recipe_calculation;
+pub mod scrip_compare;
 pub mod time_utils;
 pub mod universalis;
-pub mod scrip_compare;

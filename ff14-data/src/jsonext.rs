@@ -1,4 +1,4 @@
-use serde_json::{Value, Map};
+use serde_json::{Map, Value};
 
 /// Helper methods for when we're parsing static data
 /// (so we know the structure of the data already follows our assumptions)

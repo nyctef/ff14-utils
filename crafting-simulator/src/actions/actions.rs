@@ -124,7 +124,10 @@ impl Actions {
         m.insert("Waste Not II", Box::new(Actions::waste_not_2()));
         m.insert("Master's Mend", Box::new(Actions::masters_mend()));
         m.insert("Final Appraisal", Box::new(Actions::final_appraisal()));
-        m.insert("Tricks of the Trade", Box::new(Actions::tricks_of_the_trade()));
+        m.insert(
+            "Tricks of the Trade",
+            Box::new(Actions::tricks_of_the_trade()),
+        );
         m
     }
 }
