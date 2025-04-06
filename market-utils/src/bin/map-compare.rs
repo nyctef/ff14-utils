@@ -37,8 +37,20 @@ async fn run() -> Result<()> {
     bottom_lines.sort_by_key(|l| l.0);
 
     for line in bottom_lines {
-        println!("{} - {}", line.0, line.1.name);
+        println!("{} - {}", line.0, get_link(&line.1.name));
     }
 
     Ok(())
+}
+
+fn get_link(name: &str) -> String {
+    let target = format!("https://ffxiv.consolegameswiki.com/wiki/{}", name);
+    // OSC 8 escape code
+    // https://github.com/Alhadis/OSC8-Adoption/
+    // https://iterm2.com/3.2/documentation-escape-codes.html
+    // format:
+    // OSC 8 ; <params> ; <url> ; ST
+    //    <text>
+    // OSC 8 ; <params> ; ST
+    return format!("\x1B]8;;{}\x07{}\x1B]8;;\x07", target, name);
 }
