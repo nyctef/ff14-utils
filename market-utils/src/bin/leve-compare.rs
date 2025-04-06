@@ -41,7 +41,7 @@ async fn run() -> Result<()> {
 
     for line in bottom_lines {
         println!(
-            "{} - {} - {} - {} ({} x{})",
+            "{} | {}-{} | {} ({} x{})",
             line.0 as i32 - line.1 as i32,
             line.0,
             line.1,
