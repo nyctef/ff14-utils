@@ -6,6 +6,9 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    crane = {
+      url = "github:ipetkov/crane";
+    };
     nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
@@ -14,6 +17,7 @@
       self,
       nixpkgs,
       fenix,
+      crane,
     }:
     let
       system = "x86_64-linux";
@@ -30,6 +34,24 @@
           openssl
         ];
       };
+
+      packages.${system}.default =
+
+        let
+          craneLib = crane.mkLib pkgs;
+          c = craneLib.overrideToolchain fenix.packages.${system}.minimal.toolchain;
+        in
+
+        c.buildPackage {
+          # cleanCargoSource: filter out any files not directly related to the build, so we rebuild less often
+          src = craneLib.cleanCargoSource ./.;
+          buildInputs = with pkgs; [
+            pkg-config
+            openssl
+
+          ];
+
+        };
 
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
     };
