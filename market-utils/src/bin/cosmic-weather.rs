@@ -1,4 +1,4 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::{Duration, Local, Utc};
 
 fn calculate_forecast_target(l_date: chrono::DateTime<Utc>) -> u32 {
     let unix_seconds = l_date.timestamp();
@@ -12,12 +12,11 @@ fn calculate_forecast_target(l_date: chrono::DateTime<Utc>) -> u32 {
 }
 
 fn main() {
-    let now = Utc::now();
-    println!("Current time: {}", now);
-
+    let now = Local::now(); // Use local time
+    println!("Current time: {}", now.format("%H:%M"));
     for i in 0..10 {
         let forecast_time = now + Duration::seconds(i * 8 * 175); // Increment by 8 Eorzean hours
-        let forecast_target = calculate_forecast_target(forecast_time);
+        let forecast_target = calculate_forecast_target(forecast_time.with_timezone(&Utc));
 
         let weather = match forecast_target {
             0..=14 => "Moon Dust",
@@ -26,6 +25,10 @@ fn main() {
             _ => unreachable!(),
         };
 
-        println!("Forecast for {}: {}", forecast_time, weather);
+        println!(
+            "Forecast for {}: {}",
+            forecast_time.format("%H:%M"),
+            weather
+        );
     }
 }
