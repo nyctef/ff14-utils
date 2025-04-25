@@ -13,10 +13,16 @@ fn calculate_forecast_target(l_date: chrono::DateTime<Utc>) -> u32 {
 
 fn main() {
     let now = Local::now(); // Use local time
-    println!("Current time: {}", now.format("%H:%M"));
-    for i in 0..10 {
-        let forecast_time = now + Duration::seconds(i * 8 * 175); // Increment by 8 Eorzean hours
-        let forecast_target = calculate_forecast_target(forecast_time.with_timezone(&Utc));
+    println!("Current time: {}", now.format("%H:%M")); // Print time in HH:MM format
+
+    let mut found_weathers = 0;
+    let mut forecast_time = now;
+
+    while found_weathers < 3 {
+        forecast_time = forecast_time + Duration::seconds(8 * 175); // Increment by 8 Eorzean hours
+        let interval_start =
+            forecast_time - Duration::seconds(forecast_time.timestamp() % (8 * 175)); // Align to the start of the interval
+        let forecast_target = calculate_forecast_target(interval_start.with_timezone(&Utc)); // Convert to UTC for calculation
 
         let weather = match forecast_target {
             0..=14 => "Moon Dust",
@@ -25,10 +31,18 @@ fn main() {
             _ => unreachable!(),
         };
 
-        println!(
-            "Forecast for {}: {}",
-            forecast_time.format("%H:%M"),
-            weather
-        );
+        if weather != "Fair Skies" {
+            let relative_duration = interval_start - now;
+            let hours = relative_duration.num_hours();
+            let minutes = relative_duration.num_minutes() % 60;
+            println!(
+                "Next weather: {} at {} (in {}h{}m)",
+                weather,
+                interval_start.format("%H:%M"),
+                hours,
+                minutes
+            );
+            found_weathers += 1;
+        }
     }
 }
