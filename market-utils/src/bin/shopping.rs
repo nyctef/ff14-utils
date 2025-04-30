@@ -67,47 +67,38 @@ async fn main() {
             * *quantity as i64;
 
         total_cost += cost;
+        let formatted_quantity = quantity.separate_with_commas();
         let formatted_cost = cost.separate_with_commas();
 
         max_name_width = max_name_width.max(name.len());
-        max_quantity_width = max_quantity_width.max(quantity.to_string().len());
+        max_quantity_width = max_quantity_width.max(formatted_quantity.len());
         max_cost_width = max_cost_width.max(formatted_cost.len());
 
-        table_rows.push((name, quantity, formatted_cost));
+        table_rows.push((name, formatted_quantity, formatted_cost));
     }
 
-    let total_width = max_name_width + max_quantity_width + max_cost_width + 4;
-    println!(
-        "{:<width_name$}  {:>width_quantity$}  {:>width_cost$}",
-        "Item Name",
-        "Quantity",
-        "Cost (gil)",
-        width_name = max_name_width,
-        width_quantity = max_quantity_width,
-        width_cost = max_cost_width
-    );
-    println!("{}", "-".repeat(total_width));
-
-    for (name, quantity, formatted_cost) in table_rows {
+    let print_row = |name: &str, quantity: &str, cost: &str| {
         println!(
             "{:<width_name$}  {:>width_quantity$}  {:>width_cost$}",
             name,
             quantity,
-            formatted_cost,
+            cost,
             width_name = max_name_width,
             width_quantity = max_quantity_width,
             width_cost = max_cost_width
         );
+    };
+
+    let total_width = max_name_width + max_quantity_width + max_cost_width + 4;
+    print_row("Item Name", "Quantity", "Cost (gil)");
+
+    println!("{}", "-".repeat(total_width));
+
+    for (name, quantity, cost) in table_rows {
+        print_row(name, &quantity, &cost);
     }
 
     println!("{}", "-".repeat(total_width));
-    println!(
-        "{:<width_name$}  {:>width_quantity$}  {:>width_cost$}",
-        "Total",
-        "",
-        total_cost.separate_with_commas(),
-        width_name = max_name_width,
-        width_quantity = max_quantity_width,
-        width_cost = max_cost_width
-    );
+
+    print_row("Total", "", &total_cost.separate_with_commas());
 }
