@@ -69,7 +69,10 @@ pub fn process_recipe_item(
     );
 
     if lower_price == u32::MAX {
-        eprintln!("WARN: No price found for {}", i.name_singular);
+        eprintln!(
+            "WARN: No price found for {} {}. There may not be enough on the marketboard",
+            ri.amount, i.name_plural
+        );
     }
 
     (lower_price, crafting_lines)
