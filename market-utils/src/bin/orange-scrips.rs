@@ -18,7 +18,7 @@ async fn main() -> Result<()> {
         .iter()
         // only include items that have a recipe (ie skip gathering collectables)
         .filter_map(|i| recipes_lookup.recipe_for_item(i.id))
-        .map(|r| r * 10)
+        .map(|r| r * 100)
         .collect_vec();
 
     print_scrip_compare(&items, &recipes_lookup, recipes).await?;
