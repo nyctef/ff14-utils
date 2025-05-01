@@ -43,6 +43,7 @@ async fn main() -> Result<()> {
                     &items_lookup,
                     &market_data,
                     &recipes_lookup,
+                    true,
                 )
                 .1,
             )

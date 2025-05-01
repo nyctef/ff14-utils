@@ -29,7 +29,7 @@ pub async fn print_scrip_compare(
 
     let result_lines = recipes
         .iter()
-        .map(|r| process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup).1)
+        .map(|r| process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup, false).1)
         .map(|r| r.into_iter().last().unwrap())
         .map(|l| {
             let ilvl = items.item_by_id(l.item_id).ilvl;

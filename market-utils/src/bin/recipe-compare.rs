@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
         .iter()
         .map(|r| {
             let (_, results) =
-                process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup);
+                process_recipe_item(0, &r.result, &items, &market_data, &recipes_lookup, true);
             results.into_iter().last().unwrap()
         })
         .collect_vec();

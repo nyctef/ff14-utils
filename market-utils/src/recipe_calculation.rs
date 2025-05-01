@@ -25,15 +25,19 @@ pub fn process_recipe_item(
     items: &ItemLookup,
     market_data: &HashMap<ItemId, ItemMarketData>,
     recipes: &RecipeLookup,
+    require_hq: bool,
 ) -> (u32, Vec<LineItem>) {
     let md = market_data.get(&ri.item_id);
     let i = items.item_by_id(ri.item_id);
-    let market_price = md.and_then(|md| price_up_to(&md.listings, ri.amount, i.can_be_hq).ok());
+    let market_price =
+        md.and_then(|md| price_up_to(&md.listings, ri.amount, require_hq && i.can_be_hq).ok());
     let crafting_results = recipes.recipe_for_item(ri.item_id).map(|sub_recipe| {
         (match_recipe_to_output_count(ri.amount, sub_recipe))
             .ingredients
             .iter()
-            .map(|sub_ri| process_recipe_item(indent + 2, sub_ri, items, market_data, recipes))
+            .map(|sub_ri| {
+                process_recipe_item(indent + 2, sub_ri, items, market_data, recipes, require_hq)
+            })
             .fold(
                 (0, vec![]),
                 |(prev_price, mut prev_lines), (sub_price, lines)| {
