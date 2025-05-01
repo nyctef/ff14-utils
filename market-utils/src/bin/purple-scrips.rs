@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
     let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
 
     let l89_99_collectables = items
-        .matching(|i| (i.ilvl == 548 || i.ilvl == 685) && i.name.starts_with("Rarefied"))
+        .matching(|i| (i.ilvl >= 548 && i.ilvl <= 685) && i.name.starts_with("Rarefied"))
         .collect_vec();
 
     let recipes = l89_99_collectables

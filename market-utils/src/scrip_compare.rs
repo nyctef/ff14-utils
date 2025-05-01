@@ -11,6 +11,11 @@ fn scrip_per_item(ilvl: u32) -> u32 {
         690 => 144,
         // purple
         685 => 198,
+        675 => 171,
+        665 => 157,
+        656 => 142,
+        650 => 128,
+        560 => 114,
         548 => 108,
         _ => todo!("scrip per item for ilvl {}", ilvl),
     }
