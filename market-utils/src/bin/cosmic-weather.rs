@@ -27,9 +27,32 @@ fn format_interval(d: Duration) -> String {
     }
 }
 
+fn predict_weather(interval_start: chrono::DateTime<Utc>) -> &'static str {
+    let forecast_target = calculate_forecast_target(interval_start);
+
+    // data from https://nekobot.io/ffxiv/time
+    let weather = match forecast_target {
+        0..=14 => "Moon Dust",
+        15..=84 => "Fair Skies",
+        85..=99 => "Umbral Wind",
+        _ => unreachable!(),
+    };
+    weather
+}
+
 fn main() {
     let now = Utc::now();
     println!("Current time: {}", format_time(now));
+    let current_weather = predict_weather(now);
+    let interval_end = now + Duration::seconds(8 * 175 - (now.timestamp() % (8 * 175)));
+    let time_until_end = interval_end - now;
+
+    println!(
+        "Current weather: {} (ends at {} in {})",
+        current_weather,
+        format_time(interval_end),
+        format_interval(time_until_end)
+    );
 
     let mut found = 0;
     let mut forecast_time = now;
@@ -40,20 +63,12 @@ fn main() {
         // Align to the start of the interval
         let interval_start =
             forecast_time - Duration::seconds(forecast_time.timestamp() % (8 * 175));
-        let forecast_target = calculate_forecast_target(interval_start);
-
-        // data from https://nekobot.io/ffxiv/time
-        let weather = match forecast_target {
-            0..=14 => "Moon Dust",
-            15..=84 => "Fair Skies",
-            85..=99 => "Umbral Wind",
-            _ => unreachable!(),
-        };
+        let weather = predict_weather(interval_start);
 
         if weather != "Fair Skies" {
             let time_until = interval_start - now;
             println!(
-                "Next weather: {} at {} (in {})",
+                "Next weather event: {} at {} (in {})",
                 weather,
                 format_time(interval_start),
                 format_interval(time_until)
