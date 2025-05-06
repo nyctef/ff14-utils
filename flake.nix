@@ -22,6 +22,7 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
+      lib = pkgs.lib;
       fenixPkgs = fenix.packages.${system}.default;
     in
     {
@@ -33,6 +34,12 @@
           pkg-config
           openssl
         ];
+        shellHook = ''
+          # https://discourse.nixos.org/t/27196
+          # (?) openssl will get dynamically linked, so we still need to point at it inside the shell
+          # TODO: this env var doesn't actually seem to get set?
+          export LD_LIBRARY_PATH="${lib.makeLibraryPath [ pkgs.openssl ]}"
+        '';
       };
 
       packages.${system}.default =
