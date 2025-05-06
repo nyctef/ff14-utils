@@ -73,6 +73,12 @@ fn main() {
                 format_time(interval_start),
                 format_interval(time_until)
             );
+            println!(
+                r#"/alarm "{} in 1m" st {} 1 se00"#,
+                weather,
+                interval_start.format("%H%M"),
+            );
+            println!();
             found += 1;
         }
     }
