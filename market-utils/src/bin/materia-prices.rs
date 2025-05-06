@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
         println!(
             "{:<40} cheapest {:>7}, last updated {}",
             format!("{name}:"),
-            market_data.listings.first().unwrap().price_per_item,
+            market_data.listings.first().expect(&format!("price for {name}")).price_per_item,
             hm_ago_from_now(market_data.last_upload_time)
         );
     }
