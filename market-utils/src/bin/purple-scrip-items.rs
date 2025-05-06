@@ -48,6 +48,7 @@ async fn main() -> Result<()> {
         (200, "Craftsman's Command Materia V"),
         (250, "Gripgel"),
         (125, "Immutable Solution"),
+        (15, "Crafter's Delineation"),
     ];
 
     let items = items
