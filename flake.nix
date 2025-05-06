@@ -38,13 +38,23 @@
       packages.${system}.default =
 
         let
+          lib = pkgs.lib;
           craneLib = crane.mkLib pkgs;
           c = craneLib.overrideToolchain fenix.packages.${system}.minimal.toolchain;
         in
 
         c.buildPackage {
-          # cleanCargoSource: filter out any files not directly related to the build, so we rebuild less often
-          src = craneLib.cleanCargoSource ./.;
+          src = lib.fileset.toSource {
+            root = ./.;
+            fileset = lib.fileset.unions [
+              # by default, only include .rs and .toml files to avoid unnecessary rebuilds
+              (craneLib.fileset.commonCargoSources ./.)
+              # also keep .json and .html files since we include_str! some of those
+              (lib.fileset.fileFilter (file: file.hasExt "json") ./.)
+              (lib.fileset.fileFilter (file: file.hasExt "html") ./.)
+            ];
+          };
+
           buildInputs = with pkgs; [
             pkg-config
             openssl
