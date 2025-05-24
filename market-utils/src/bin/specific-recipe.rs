@@ -19,18 +19,25 @@ async fn main() -> Result<()> {
     let items = ItemLookup::from_datamining_csv().await?;
     let recipes = RecipeLookup::from_datamining_csv().await?;
 
-    let recipe = choose_recipe_from_args(&items, &recipes)?;
+    let (recipe, require_hq) = choose_recipe_from_args(&items, &recipes)?;
 
     let all_ids = recipe.relevant_item_ids(&recipes).collect_vec();
     let market_data = get_market_data_lookup(&all_ids).await?;
 
-    let (_, results) = process_recipe_item(0, &recipe.result, &items, &market_data, &recipes, true);
+    let (_, results) = process_recipe_item(
+        0,
+        &recipe.result,
+        &items,
+        &market_data,
+        &recipes,
+        require_hq,
+    );
     print_recipe_calculation(results);
 
     Ok(())
 }
 
-fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result<Recipe> {
+fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result<(Recipe, bool)> {
     let args = env::args().collect_vec();
     let result_recipe;
     let result_count;
@@ -42,6 +49,8 @@ fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result
             .ok_or_else(|| eyre!("Could not find recipe matching item '{}'", name))
     };
 
+    let mut require_hq = true;
+
     match &args[1..] {
         [name] => {
             result_recipe = look_up_recipe(name)?;
@@ -51,9 +60,20 @@ fn choose_recipe_from_args(items: &ItemLookup, recipes: &RecipeLookup) -> Result
             result_recipe = look_up_recipe(name)?;
             result_count = count.parse::<u32>().wrap_err("Failed to parse count")?;
         }
-        _ => return Err(eyre!("Usage: specific-recipe [name] [amount]")),
+        [name, count, ..] => {
+            result_recipe = look_up_recipe(name)?;
+            result_count = count.parse::<u32>().wrap_err("Failed to parse count")?;
+            if args.iter().any(|arg| arg == "--no-require-hq") {
+                require_hq = false;
+            }
+        }
+        _ => {
+            return Err(eyre!(
+                "Usage: specific-recipe <name> [amount] [--no-require-hq]"
+            ))
+        }
     }
 
     let recipe = match_recipe_to_output_count(result_count, result_recipe);
-    Ok(recipe)
+    Ok((recipe, require_hq))
 }
