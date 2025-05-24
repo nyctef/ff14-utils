@@ -55,7 +55,7 @@ pub fn process_recipe_item(
     crafting_lines.push(LineItem {
         indent,
         amount: ri.amount,
-        name_and_amount: format_recipe_item(ri, i),
+        name_and_amount: format_recipe_item(ri, i, require_hq),
         market_price,
         market_price_age: md.map(|md| md.last_upload_time),
         crafting_price,
@@ -142,7 +142,7 @@ fn format_num_diff(value: i64) -> impl Display {
     }
 }
 
-fn format_recipe_item(ri: &RecipeItem, i: &Item) -> String {
+fn format_recipe_item(ri: &RecipeItem, i: &Item, require_hq: bool) -> String {
     format!(
         "{} {}{}",
         ri.amount,
@@ -151,6 +151,10 @@ fn format_recipe_item(ri: &RecipeItem, i: &Item) -> String {
         } else {
             &i.name_singular
         },
-        if i.can_be_hq { " (HQ)" } else { "" }
+        if i.can_be_hq && require_hq {
+            " (HQ)"
+        } else {
+            ""
+        }
     )
 }
