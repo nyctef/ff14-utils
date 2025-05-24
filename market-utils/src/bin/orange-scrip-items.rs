@@ -21,34 +21,24 @@ async fn main() -> Result<()> {
         [count] => {
             target_scrip_count = count.parse::<u32>().wrap_err("Failed to parse count")?;
         }
-        _ => return Err(eyre!("Usage: purple-scrip-items [script amount]")),
+        _ => return Err(eyre!("Usage: orange-scrip-items [script amount]")),
     }
 
     let items = [
-        (250, "Craftsman's Competence Materia XI"),
-        (250, "Craftsman's Cunning Materia XI"),
-        (250, "Craftsman's Command Materia XI"),
-        (200, "Craftsman's Competence Materia X"),
-        (200, "Craftsman's Cunning Materia X"),
-        (200, "Craftsman's Command Materia X"),
-        (200, "Craftsman's Competence Materia IX"),
-        (200, "Craftsman's Cunning Materia IX"),
-        (200, "Craftsman's Command Materia IX"),
-        (200, "Craftsman's Competence Materia VIII"),
-        (200, "Craftsman's Cunning Materia VIII"),
-        (200, "Craftsman's Command Materia VIII"),
-        (200, "Craftsman's Competence Materia VII"),
-        (200, "Craftsman's Cunning Materia VII"),
-        (200, "Craftsman's Command Materia VII"),
-        (200, "Craftsman's Competence Materia VI"),
-        (200, "Craftsman's Cunning Materia VI"),
-        (200, "Craftsman's Command Materia VI"),
-        (200, "Craftsman's Competence Materia V"),
-        (200, "Craftsman's Cunning Materia V"),
-        (200, "Craftsman's Command Materia V"),
-        (250, "Gripgel"),
-        (125, "Immutable Solution"),
-        (15, "Crafter's Delineation"),
+        (15, "Queso Fresco"),
+        (15, "Woolback Loin"),
+        (15, "Cassava"),
+        (15, "Splendid Mate Leaves"),
+        (15, "Aji Amarillo"),
+        (125, "Condensed Solution"),
+        (10, "Rumpless Chicken"),
+        (10, "Navel Orange"),
+        (10, "Wild Coffee Beans"),
+        (10, "Brown Cardamom"),
+        (10, "Royal Lobster"),
+        (500, "Craftsman's Command Materia XII"),
+        (500, "Craftsman's Competence Materia XII"),
+        (500, "Craftsman's Cunning Materia XII"),
     ];
 
     let items = items
