@@ -1,6 +1,6 @@
 use color_eyre::eyre::{eyre, Context, Result};
 use ff14_data::lookup::{ItemLookup, RecipeLookup};
-use ff14_utils::scrip_compare::print_scrip_compare;
+use ff14_utils::scrip_compare::print_scrip_source_compare;
 use itertools::Itertools;
 use std::env;
 
@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
         .filter_map(|i| recipes_lookup.recipe_for_item(i.id))
         .collect_vec();
 
-    print_scrip_compare(&items, &recipes_lookup, recipes, target_scrip_count).await?;
+    print_scrip_source_compare(&items, &recipes_lookup, recipes, target_scrip_count).await?;
 
     Ok(())
 }

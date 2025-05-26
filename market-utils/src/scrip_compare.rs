@@ -21,7 +21,7 @@ fn scrip_per_item(ilvl: u32) -> u32 {
     }
 }
 
-pub async fn print_scrip_compare(
+pub async fn print_scrip_source_compare(
     items: &ItemLookup,
     recipes_lookup: &RecipeLookup,
     recipes: Vec<&Recipe>,
