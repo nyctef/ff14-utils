@@ -1,5 +1,5 @@
 ﻿use crate::recipe_calculation::process_recipe_item;
-use crate::universalis::{get_market_data, get_market_data_lookup};
+use crate::universalis::get_market_data_lookup;
 use ff14_data::lookup::{ItemLookup, RecipeLookup};
 use ff14_data::model::Recipe;
 use itertools::Itertools;
@@ -77,7 +77,7 @@ pub async fn print_script_sink_compare(items: &[(u32, &'static str)], target_scr
         .collect_vec();
     let item_ids = items.iter().map(|(_, item)| item.id).collect_vec();
 
-    let market_data = get_market_data(&item_ids)
+    let market_data = get_market_data_lookup(&item_ids)
         .await
         .expect("Failed to fetch market data");
 
@@ -85,7 +85,7 @@ pub async fn print_script_sink_compare(items: &[(u32, &'static str)], target_scr
         .into_iter()
         .map(|(scrip_cost, item)| {
             let item_count = target_scrip_count / scrip_cost;
-            let prices = market_data.iter().find(|data| data.item_id == item.id);
+            let prices = market_data.get(&item.id);
             // let buy_price = prices.and_then(|data| price_up_to(&data.listings, item_count, false).ok());
             // for the purposes of selling, though, we're going to undercut
             // whatever the cheapest price currently is
