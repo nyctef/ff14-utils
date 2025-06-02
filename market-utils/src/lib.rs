@@ -5,6 +5,7 @@
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::module_name_repetitions)]
 
+pub mod format_table;
 pub mod recipe_calculation;
 pub mod scrip_compare;
 pub mod time_utils;

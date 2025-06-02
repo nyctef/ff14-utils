@@ -1,4 +1,5 @@
 use ff14_data::lookup::ItemLookup;
+use ff14_utils::format_table::Table;
 use ff14_utils::universalis::get_market_data_lookup;
 use itertools::Itertools;
 use std::io::{self, BufRead};
@@ -52,11 +53,14 @@ async fn main() {
     let market_data = get_market_data_lookup(&item_ids).await.unwrap();
 
     let mut total_cost = 0;
-    let mut max_name_width = "Item Name".len();
-    let mut max_quantity_width = "Quantity".len();
-    let mut max_cost_width = "Cost (gil)".len();
-
-    let mut table_rows = Vec::new();
+    let mut table = Table::<String, 3>::new();
+    table.add_row([
+        // TODO: can we make this more ergonomic?
+        "Item Name".to_string(),
+        "Quantity".to_string(),
+        "Cost (gil)".to_string(),
+    ]);
+    table.add_separator();
 
     for (item_id, quantity) in &resolved_items {
         let name = &item_lookup.item_by_id(*item_id).name;
@@ -70,35 +74,16 @@ async fn main() {
         let formatted_quantity = quantity.separate_with_commas();
         let formatted_cost = cost.separate_with_commas();
 
-        max_name_width = max_name_width.max(name.len());
-        max_quantity_width = max_quantity_width.max(formatted_quantity.len());
-        max_cost_width = max_cost_width.max(formatted_cost.len());
-
-        table_rows.push((name, formatted_quantity, formatted_cost));
+        table.add_row([name.to_owned(), formatted_quantity, formatted_cost]);
     }
 
-    let print_row = |name: &str, quantity: &str, cost: &str| {
-        println!(
-            "{:<width_name$}  {:>width_quantity$}  {:>width_cost$}",
-            name,
-            quantity,
-            cost,
-            width_name = max_name_width,
-            width_quantity = max_quantity_width,
-            width_cost = max_cost_width
-        );
-    };
+    table.add_separator();
 
-    let total_width = max_name_width + max_quantity_width + max_cost_width + 4;
-    print_row("Item Name", "Quantity", "Cost (gil)");
+    table.add_row([
+        "Total".to_string(),
+        "".to_string(),
+        total_cost.separate_with_commas(),
+    ]);
 
-    println!("{}", "-".repeat(total_width));
-
-    for (name, quantity, cost) in table_rows {
-        print_row(name, &quantity, &cost);
-    }
-
-    println!("{}", "-".repeat(total_width));
-
-    print_row("Total", "", &total_cost.separate_with_commas());
+    table.print();
 }
