@@ -5,6 +5,7 @@ use ff14_utils::{
     universalis::{get_market_data_lookup, price_up_to},
 };
 use itertools::Itertools;
+use thousands::Separable;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -51,12 +52,17 @@ async fn run() -> Result<()> {
     table.add_separator();
 
     for line in bottom_lines {
-        if (line.0 as i32 - line.1 as i32) < 0 {
+        let profit = line.0 as i32 - line.1 as i32;
+        if profit < 0 {
             continue; // Skip negative profit lines
         }
         table.add_row([
-            format!("{}", line.0 as i32 - line.1 as i32,),
-            format!("{}-{}", line.0, line.1,),
+            format!("{}", profit.separate_with_commas()),
+            format!(
+                "{}-{}",
+                line.0.separate_with_commas(),
+                line.1.separate_with_commas()
+            ),
             format!(
                 "{} ({} x{})",
                 line.2.leve_name, line.2.item_name, line.2.item_count
