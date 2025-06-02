@@ -9,6 +9,8 @@ use std::fmt::Display;
 //
 // https://doc.rust-lang.org/std/any/index.html maybe solves right-aligning numbers
 // without any additional type wrapping, but probably doesn't solve the other problems
+//
+// maybe a row!(...) macro would be useful?
 #[derive(Debug, Clone)]
 pub struct Table<T: Sized + Display, const COUNT: usize> {
     rows: Vec<TableRow<T, COUNT>>,
