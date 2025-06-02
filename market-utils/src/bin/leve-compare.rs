@@ -1,6 +1,9 @@
 use color_eyre::eyre::{eyre, Result};
 use ff14_data::leve::{get_relevant_leves, Leve};
-use ff14_utils::universalis::{get_market_data_lookup, price_up_to};
+use ff14_utils::{
+    format_table::Table,
+    universalis::{get_market_data_lookup, price_up_to},
+};
 use itertools::Itertools;
 
 #[tokio::main]
@@ -39,17 +42,29 @@ async fn run() -> Result<()> {
 
     bottom_lines.sort_by_key(|l| l.0 as i32 - l.1 as i32);
 
+    let mut table = Table::<String, 3>::new();
+    table.add_row([
+        "Profit (gil)".to_string(),
+        "".to_string(),
+        "Leve".to_string(),
+    ]);
+    table.add_separator();
+
     for line in bottom_lines {
-        println!(
-            "{} | {}-{} | {} ({} x{})",
-            line.0 as i32 - line.1 as i32,
-            line.0,
-            line.1,
-            line.2.leve_name,
-            line.2.item_name,
-            line.2.item_count
-        );
+        if (line.0 as i32 - line.1 as i32) < 0 {
+            continue; // Skip negative profit lines
+        }
+        table.add_row([
+            format!("{}", line.0 as i32 - line.1 as i32,),
+            format!("{}-{}", line.0, line.1,),
+            format!(
+                "{} ({} x{})",
+                line.2.leve_name, line.2.item_name, line.2.item_count
+            ),
+        ]);
     }
+
+    table.print();
 
     Ok(())
 }
