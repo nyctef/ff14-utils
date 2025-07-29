@@ -15,7 +15,7 @@ async fn main() -> Result<()> {
     let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
 
     let items = items_lookup
-        .matching(|i| i.name.starts_with("Archeo Kingdom"))
+        .matching(|i| i.ilvl == 740 && i.name.starts_with("Ceremonial"))
         .map(|i| {
             (
                 &i.name,
@@ -49,18 +49,17 @@ async fn main() -> Result<()> {
             )
         })
         .map(|(certs, lines)| (certs, lines.into_iter().last().unwrap()))
-        .sorted_by_key(|(_, line)| line.crafting_price);
+        .sorted_by_key(|(_, line)| line.market_price);
 
     for (certs, line) in result_lines {
-        println!(
-            "{:<50}: {} or ~{} per cert",
-            line.name_and_amount,
-            line.crafting_price
-                .expect("crafting price")
-                .separate_with_commas(),
-            (line.crafting_price.expect("crafting price") / line.amount / certs)
-                .separate_with_commas()
-        );
+        if let Some(price) = line.market_price {
+            println!(
+                "{:<50}: {} or ~{} per cert",
+                line.name_and_amount,
+                price.separate_with_commas(),
+                (price / line.amount / certs).separate_with_commas()
+            );
+        }
     }
 
     Ok(())
