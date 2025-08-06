@@ -40,8 +40,7 @@ async fn main() -> Result<()> {
         (200, "Craftsman's Competence Materia V"),
         (200, "Craftsman's Cunning Materia V"),
         (200, "Craftsman's Command Materia V"),
-        (250, "Gripgel"),
-        (125, "Immutable Solution"),
+        (500, "Mason's Abrasive"),
         (15, "Crafter's Delineation"),
     ];
 

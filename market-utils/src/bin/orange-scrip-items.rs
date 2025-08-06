@@ -19,6 +19,7 @@ async fn main() -> Result<()> {
     }
 
     let items = [
+        // crafter
         (15, "Queso Fresco"),
         (15, "Woolback Loin"),
         (15, "Cassava"),
@@ -33,6 +34,16 @@ async fn main() -> Result<()> {
         (500, "Craftsman's Command Materia XII"),
         (500, "Craftsman's Competence Materia XII"),
         (500, "Craftsman's Cunning Materia XII"),
+        // gatherer
+        (5, "Ghost Nipper"),
+        (5, "Red Maggots"),
+        (300, "Levinchrome Aethersand"),
+        (100, "Sungilt Aethersand"),
+        (200, "Mythloam Aethersand"),
+        (200, "Mythroot Aethersand"),
+        (200, "Mythbrine Aethersand"),
+        (1000, "Mount Token"),
+        (500, "Ghost Botanist's Wall Frames"),
     ];
 
     print_script_sink_compare(&items, target_scrip_count).await;
