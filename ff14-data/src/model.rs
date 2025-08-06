@@ -81,6 +81,8 @@ pub enum EquipSlotCategory {
     Suit4 = 21,
     /// equipped in body, prevents hands
     Suit5 = 22,
+    /// equipped in body, prevents legs
+    Suit6 = 23,
 }
 
 impl EquipSlotCategory {
@@ -109,6 +111,7 @@ impl EquipSlotCategory {
             20 => Ok(Some(EquipSlotCategory::Suit3)),
             21 => Ok(Some(EquipSlotCategory::Suit4)),
             22 => Ok(Some(EquipSlotCategory::Suit5)),
+            23 => Ok(Some(EquipSlotCategory::Suit6)),
             _ => Err(eyre!("unrecognised equip slot category {}", id)),
         }
     }
