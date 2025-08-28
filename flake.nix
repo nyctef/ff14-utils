@@ -82,8 +82,8 @@
             done
           '';
 
-          pname = "ff14-utils";
-          version = "0.1";
+          # grab package name and version from Cargo.toml in market-utils since the root Cargo.toml doesn't specify them
+          inherit (c.crateNameFromCargoToml { cargoToml = ./market-utils/Cargo.toml; }) pname version;
         };
 
       # we have a single package with bin/ folder containing all the binaries
