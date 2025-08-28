@@ -105,12 +105,7 @@
               program = "${pkg}/bin/${n}";
             };
           }) binNames
-        )); # // {
-      #default = {
-      #type = "app";
-      #program = "${pkg}/bin/${lib.head binNames}";
-      #};
-      #};
+        ));
 
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
     };
