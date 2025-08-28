@@ -73,11 +73,27 @@
 
         };
 
+      # we have a single package with bin/ folder containing all the binaries
+      # so we create an app for each binary telling nix which one to run
       apps.${system} =
         let
           binNames = [
             "bicolor-gem-items"
+            "cosmic-weather"
+            "cosmocredit-items"
+            "everkeep-certs"
+            "heliometry-items"
+            "leve-compare"
+            "list-recipes"
+            "map-compare"
             "materia-prices"
+            "orange-scrip-items"
+            "orange-scrips"
+            "purple-scrip-items"
+            "purple-scrips"
+            "recipe-compare"
+            "shopping"
+            "specific-recipe"
           ];
           pkg = self.packages.${system}.default;
         in
