@@ -37,7 +37,6 @@
         shellHook = ''
           # https://discourse.nixos.org/t/27196
           # (?) openssl will get dynamically linked, so we still need to point at it inside the shell
-          # TODO: this env var doesn't actually seem to get set?
           export LD_LIBRARY_PATH="${lib.makeLibraryPath [ pkgs.openssl ]}"
         '';
       };
@@ -62,15 +61,29 @@
             ];
           };
 
-          buildInputs = with pkgs; [
+          # nativeBuildInputs: tools needed at build time
+          nativeBuildInputs = with pkgs; [
             pkg-config
-            openssl
-
+            makeWrapper
           ];
+          # buildInputs: libraries that the program links to
+          buildInputs = with pkgs; [
+            openssl
+          ];
+
+          # fix `error while loading shared libraries: libssl.so.3:
+          # cannot open shared object file: No such file or directory`
+          OPENSSL_NO_VENDOR = 1;
+          postFixup = ''
+            for f in "$out/bin/"*; do
+              if [ -x "$f" ] && file -b "$f" | grep -q ELF; then
+                wrapProgram "$f" --set LD_LIBRARY_PATH ${lib.makeLibraryPath [ pkgs.openssl ]};
+              fi
+            done
+          '';
 
           pname = "ff14-utils";
           version = "0.1";
-
         };
 
       # we have a single package with bin/ folder containing all the binaries
