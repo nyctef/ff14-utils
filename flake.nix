@@ -68,7 +68,33 @@
 
           ];
 
+          pname = "ff14-utils";
+          version = "0.1";
+
         };
+
+      apps.${system} =
+        let
+          binNames = [
+            "bicolor-gem-items"
+            "materia-prices"
+          ];
+          pkg = self.packages.${system}.default;
+        in
+        (lib.listToAttrs (
+          map (n: {
+            name = n;
+            value = {
+              type = "app";
+              program = "${pkg}/bin/${n}";
+            };
+          }) binNames
+        )); # // {
+      #default = {
+      #type = "app";
+      #program = "${pkg}/bin/${lib.head binNames}";
+      #};
+      #};
 
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
     };
