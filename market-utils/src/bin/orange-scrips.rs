@@ -19,8 +19,8 @@ async fn main() -> Result<()> {
         _ => return Err(eyre!("Usage: orange-scrips [script amount]")),
     }
 
-    let items = ItemLookup::from_datamining_csv().await?;
-    let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
+    let items = ItemLookup::from_embedded().await?;
+    let recipes_lookup = RecipeLookup::from_embedded().await?;
 
     let l100_collectables = items
         .matching(|i| i.ilvl == 690 && i.name.starts_with("Rarefied"))

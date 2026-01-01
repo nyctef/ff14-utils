@@ -1,7 +1,6 @@
-use crate::{csv, model::*};
+use crate::{embedded_csv, model::*};
 use color_eyre::Result;
 use derive_more::Constructor;
-use std::path::PathBuf;
 
 #[derive(Debug, Constructor)]
 pub struct ItemLookup {
@@ -16,10 +15,9 @@ pub struct ItemLookup {
 //   - https://crates.io/crates/lazy_static
 
 impl ItemLookup {
-    // TODO: consider making a from_xivapi_json version of these methods
-    pub async fn from_datamining_csv() -> Result<ItemLookup> {
-        let csv_base = PathBuf::from("../ffxiv-datamining/csv");
-        Ok(ItemLookup::new(csv::read_items(&csv_base).await?))
+    /// Load item data from embedded CSV files
+    pub async fn from_embedded() -> Result<ItemLookup> {
+        Ok(ItemLookup::new(embedded_csv::read_items().await?))
     }
 
     pub fn all(&self) -> impl Iterator<Item = &Item> {
@@ -53,9 +51,9 @@ pub struct RecipeLookup {
 }
 
 impl RecipeLookup {
-    pub async fn from_datamining_csv() -> Result<RecipeLookup> {
-        let csv_base = PathBuf::from("../ffxiv-datamining/csv");
-        Ok(RecipeLookup::new(csv::read_recipes(&csv_base).await?))
+    /// Load recipe data from embedded CSV files
+    pub async fn from_embedded() -> Result<RecipeLookup> {
+        Ok(RecipeLookup::new(embedded_csv::read_recipes().await?))
     }
 
     pub fn recipe_for_item(&self, id: ItemId) -> Option<&Recipe> {
@@ -69,9 +67,9 @@ pub struct MateriaLookup {
 }
 
 impl MateriaLookup {
-    pub async fn from_datamining_csv() -> Result<MateriaLookup> {
-        let csv_base = PathBuf::from("../ffxiv-datamining/csv");
-        let materia = csv::read_materia(&csv_base).await?;
+    /// Load materia data from embedded CSV files
+    pub async fn from_embedded() -> Result<MateriaLookup> {
+        let materia = embedded_csv::read_materia().await?;
         Ok(MateriaLookup::new(materia))
     }
 

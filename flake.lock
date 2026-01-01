@@ -36,6 +36,22 @@
         "type": "github"
       }
     },
+    "ffxiv-datamining": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1766660549,
+        "narHash": "sha256-icM10U/PXM3MIc5Koav3NxLRNJrsdy8d8SJxWEkyZ8A=",
+        "owner": "xivapi",
+        "repo": "ffxiv-datamining",
+        "rev": "97ca35576cbb9d75ccdde5a0ab8fb299c7f52c51",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xivapi",
+        "repo": "ffxiv-datamining",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1744232761,
@@ -55,6 +71,7 @@
       "inputs": {
         "crane": "crane",
         "fenix": "fenix",
+        "ffxiv-datamining": "ffxiv-datamining",
         "nixpkgs": "nixpkgs"
       }
     },

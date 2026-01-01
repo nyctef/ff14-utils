@@ -10,12 +10,12 @@ use ff14_data::{
 // but it's not super necessary.
 
 pub async fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
-    let item_lookup = &ItemLookup::from_datamining_csv().await?;
+    let item_lookup = &ItemLookup::from_embedded().await?;
     let item = item_lookup
         .item_by_name_opt(value)
         .ok_or_else(|| eyre!("No item found with name {}", value))?;
 
-    let recipe_lookup = &RecipeLookup::from_datamining_csv().await?;
+    let recipe_lookup = &RecipeLookup::from_embedded().await?;
     let recipe = recipe_lookup
         .recipe_for_item(item.id)
         .ok_or_else(|| eyre!("No recipe found for item {}", item.name))?;

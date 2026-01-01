@@ -10,6 +10,11 @@
       url = "github:ipetkov/crane";
     };
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    
+    ffxiv-datamining = {
+      url = "github:xivapi/ffxiv-datamining";
+      flake = false;
+    };
   };
 
   outputs =
@@ -18,6 +23,7 @@
       nixpkgs,
       fenix,
       crane,
+      ffxiv-datamining,
     }:
     let
       system = "x86_64-linux";
@@ -74,6 +80,10 @@
           # fix `error while loading shared libraries: libssl.so.3:
           # cannot open shared object file: No such file or directory`
           OPENSSL_NO_VENDOR = 1;
+          
+          # Make ffxiv-datamining available to the build script
+          FFXIV_DATAMINING_PATH = ffxiv-datamining;
+          
           postFixup = ''
             for f in "$out/bin/"*; do
               if [ -x "$f" ] && file -b "$f" | grep -q ELF; then

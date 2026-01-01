@@ -37,7 +37,7 @@ async fn main() {
     }
 
     // Resolve item names to ItemId
-    let item_lookup = ItemLookup::from_datamining_csv().await.unwrap();
+    let item_lookup = ItemLookup::from_embedded().await.unwrap();
     let mut resolved_items = Vec::new();
     for (name, quantity) in &shopping_list {
         if let Some(item) = item_lookup.item_by_name_opt(name) {

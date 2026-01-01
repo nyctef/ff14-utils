@@ -67,7 +67,7 @@ pub async fn print_scrip_source_compare(
 }
 
 pub async fn print_script_sink_compare(items: &[(u32, &'static str)], target_scrip_count: u32) {
-    let items_lookup = ItemLookup::from_datamining_csv()
+    let items_lookup = ItemLookup::from_embedded()
         .await
         .expect("Failed to load item data");
 

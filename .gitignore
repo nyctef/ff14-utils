@@ -9,3 +9,6 @@ scratch/
 
 # ide-specific files
 /.idea/
+
+# nix-generated symlink
+/result

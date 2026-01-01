@@ -1,4 +1,4 @@
-mod csv;
+pub mod embedded_csv;
 pub mod food;
 mod jsonext;
 pub mod leve;

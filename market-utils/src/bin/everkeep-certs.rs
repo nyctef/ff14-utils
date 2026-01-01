@@ -11,8 +11,8 @@ use thousands::Separable;
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let items_lookup = ItemLookup::from_datamining_csv().await?;
-    let recipes_lookup = RecipeLookup::from_datamining_csv().await?;
+    let items_lookup = ItemLookup::from_embedded().await?;
+    let recipes_lookup = RecipeLookup::from_embedded().await?;
 
     let items = items_lookup
         .matching(|i| i.ilvl == 740 && i.name.starts_with("Ceremonial"))

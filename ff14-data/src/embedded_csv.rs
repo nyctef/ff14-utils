@@ -2,17 +2,21 @@ use crate::model::*;
 use color_eyre::eyre::{eyre, Context, Result};
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
-use std::path::Path;
-use tokio::fs::File;
+use std::io::Cursor;
 use tokio_stream::StreamExt;
 
-async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
-    let mut reader = csv_async::AsyncReader::from_reader(
-        File::open(csv_path)
-            .await
-            .wrap_err_with(|| eyre!("Couldn't open file {csv_path:?}"))?,
-    );
+// Embed CSV data at compile time
+// Note: These files are populated by build.rs during compilation from OUT_DIR
+const RECIPE_CSV: &str = include_str!(concat!(env!("OUT_DIR"), "/Recipe.csv"));
+const RECIPE_LEVEL_TABLE_CSV: &str = include_str!(concat!(env!("OUT_DIR"), "/RecipeLevelTable.csv"));
+const ITEM_CSV: &str = include_str!(concat!(env!("OUT_DIR"), "/Item.csv"));
+const MATERIA_CSV: &str = include_str!(concat!(env!("OUT_DIR"), "/Materia.csv"));
+
+async fn read_csv_from_string(csv_content: &str) -> Result<Vec<FxHashMap<String, String>>> {
+    let cursor = Cursor::new(csv_content);
+    let mut reader = csv_async::AsyncReader::from_reader(cursor);
     let mut records = reader.records();
+    
     // the first row is always of the form key,0,1,2,...
     // The csv parser assumes that row is a header row and discards it.
 
@@ -52,10 +56,10 @@ async fn read_csv(csv_path: &Path) -> Result<Vec<FxHashMap<String, String>>> {
     result
 }
 
-pub async fn read_recipes(csv_base_path: &Path) -> Result<Vec<Recipe>> {
-    let rlvls = read_rlvls(csv_base_path).await?;
+pub async fn read_recipes() -> Result<Vec<Recipe>> {
+    let rlvls = read_rlvls().await?;
 
-    read_csv(&csv_base_path.join("Recipe.csv"))
+    read_csv_from_string(RECIPE_CSV)
         .await?
         .iter()
         .map(|record| {
@@ -113,8 +117,8 @@ fn modify_by_factor(base: u16, factor: u16) -> u16 {
     ((base as u32 * factor as u32) / 100) as u16
 }
 
-pub async fn read_rlvls(csv_base_path: &Path) -> Result<Vec<RecipeLevel>, color_eyre::eyre::Error> {
-    let rlvls: Vec<RecipeLevel> = read_csv(&csv_base_path.join("RecipeLevelTable.csv"))
+pub async fn read_rlvls() -> Result<Vec<RecipeLevel>, color_eyre::eyre::Error> {
+    let rlvls: Vec<RecipeLevel> = read_csv_from_string(RECIPE_LEVEL_TABLE_CSV)
         .await?
         .iter()
         .map(|record| {
@@ -147,8 +151,8 @@ pub async fn read_rlvls(csv_base_path: &Path) -> Result<Vec<RecipeLevel>, color_
     Ok(rlvls)
 }
 
-pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
-    read_csv(&csv_base_path.join("Item.csv"))
+pub async fn read_items() -> Result<Vec<Item>> {
+    read_csv_from_string(ITEM_CSV)
         .await?
         .iter()
         .map(|record| {
@@ -181,8 +185,8 @@ pub async fn read_items(csv_base_path: &Path) -> Result<Vec<Item>> {
         .collect()
 }
 
-pub async fn read_materia(csv_base_path: &Path) -> Result<Vec<Materia>> {
-    read_csv(&csv_base_path.join("Materia.csv"))
+pub async fn read_materia() -> Result<Vec<Materia>> {
+    read_csv_from_string(MATERIA_CSV)
         .await?
         .iter()
         .map(|record| {
