@@ -7,8 +7,8 @@ use itertools::Itertools;
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let items = ItemLookup::from_embedded().await?;
-    let materia = MateriaLookup::from_embedded().await?;
+    let items = ItemLookup::from_embedded()?;
+    let materia = MateriaLookup::from_embedded()?;
 
     let all_materia = materia
         .iter()

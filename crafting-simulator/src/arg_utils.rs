@@ -9,13 +9,13 @@ use ff14_data::{
 // (eg help text with list of values, name of arg, etc)
 // but it's not super necessary.
 
-pub async fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
-    let item_lookup = &ItemLookup::from_embedded().await?;
+pub fn recipe_from_arg_value(value: &str) -> Result<SimulatorRecipe> {
+    let item_lookup = &ItemLookup::from_embedded()?;
     let item = item_lookup
         .item_by_name_opt(value)
         .ok_or_else(|| eyre!("No item found with name {}", value))?;
 
-    let recipe_lookup = &RecipeLookup::from_embedded().await?;
+    let recipe_lookup = &RecipeLookup::from_embedded()?;
     let recipe = recipe_lookup
         .recipe_for_item(item.id)
         .ok_or_else(|| eyre!("No recipe found for item {}", item.name))?;

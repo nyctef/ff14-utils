@@ -68,14 +68,13 @@ pub async fn print_scrip_source_compare(
 
 pub async fn print_script_sink_compare(items: &[(u32, &'static str)], target_scrip_count: u32) {
     let items_lookup = ItemLookup::from_embedded()
-        .await
         .expect("Failed to load item data");
 
     let items = items
         .iter()
         .filter_map(|(scrip, name)| Some(*scrip).zip(items_lookup.item_by_name_opt(name)))
         .collect_vec();
-    let item_ids = items.iter().map(|(_, item)| item.id).collect_vec();
+    let item_ids = items.iter().map(|(_, item)| (*item).id).collect_vec();
 
     let market_data = get_market_data_lookup(&item_ids)
         .await

@@ -1,4 +1,4 @@
-use crate::{embedded_csv, model::*};
+use crate::{embedded_data, model::*};
 use color_eyre::Result;
 use derive_more::Constructor;
 
@@ -7,17 +7,9 @@ pub struct ItemLookup {
     items: Vec<Item>,
 }
 
-// TODO: this is pretty inefficient (especially since we're reading static csv files +
-// potentially building large hash tables on every run)
-//   - investigate something like https://github.com/rust-phf/rust-phf
-//   - https://doc.rust-lang.org/cargo/reference/build-scripts.html
-//   - https://doc.rust-lang.org/cargo/reference/build-scripts.html#change-detection
-//   - https://crates.io/crates/lazy_static
-
 impl ItemLookup {
-    /// Load item data from embedded CSV files
-    pub async fn from_embedded() -> Result<ItemLookup> {
-        Ok(ItemLookup::new(embedded_csv::read_items().await?))
+    pub fn from_embedded() -> Result<ItemLookup> {
+        Ok(ItemLookup::new(embedded_data::read_items()?))
     }
 
     pub fn all(&self) -> impl Iterator<Item = &Item> {
@@ -29,7 +21,9 @@ impl ItemLookup {
     }
 
     pub fn item_by_id(&self, id: ItemId) -> &Item {
-        self.items.iter().find(|i| i.id == id).unwrap()
+        let index = embedded_data::get_item_index_by_id(id)
+            .expect("Item not found");
+        &self.items[index]
     }
 
     pub fn item_by_name(&self, name: &str) -> &Item {
@@ -37,7 +31,8 @@ impl ItemLookup {
     }
 
     pub fn item_by_name_opt(&self, name: &str) -> Option<&Item> {
-        self.items.iter().find(|i| i.name == name)
+        let index = embedded_data::get_item_index_by_name(name)?;
+        self.items.get(index)
     }
 
     pub fn name_containing<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &'a Item> + 'a {
@@ -51,13 +46,13 @@ pub struct RecipeLookup {
 }
 
 impl RecipeLookup {
-    /// Load recipe data from embedded CSV files
-    pub async fn from_embedded() -> Result<RecipeLookup> {
-        Ok(RecipeLookup::new(embedded_csv::read_recipes().await?))
+    pub fn from_embedded() -> Result<RecipeLookup> {
+        Ok(RecipeLookup::new(embedded_data::read_recipes()?))
     }
 
     pub fn recipe_for_item(&self, id: ItemId) -> Option<&Recipe> {
-        self.recipes.iter().find(|r| r.result.item_id == id)
+        let index = embedded_data::get_recipe_index_by_result_item(id)?;
+        self.recipes.get(index)
     }
 }
 
@@ -67,9 +62,8 @@ pub struct MateriaLookup {
 }
 
 impl MateriaLookup {
-    /// Load materia data from embedded CSV files
-    pub async fn from_embedded() -> Result<MateriaLookup> {
-        let materia = embedded_csv::read_materia().await?;
+    pub fn from_embedded() -> Result<MateriaLookup> {
+        let materia = embedded_data::read_materia()?;
         Ok(MateriaLookup::new(materia))
     }
 

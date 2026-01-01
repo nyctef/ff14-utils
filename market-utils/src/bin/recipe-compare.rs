@@ -14,8 +14,8 @@ use std::env;
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let items = ItemLookup::from_embedded().await?;
-    let recipes_lookup = RecipeLookup::from_embedded().await?;
+    let items = ItemLookup::from_embedded()?;
+    let recipes_lookup = RecipeLookup::from_embedded()?;
 
     let recipes = choose_recipes_from_args(&items, &recipes_lookup)?;
 

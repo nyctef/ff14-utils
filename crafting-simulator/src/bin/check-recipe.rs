@@ -18,7 +18,7 @@ async fn main() -> Result<()> {
 
     let food = food_from_arg_value(args.food.as_deref())?;
     let potion = potion_from_arg_value(args.potion.as_deref())?;
-    let recipe = recipe_from_arg_value(&args.recipe).await?;
+    let recipe = recipe_from_arg_value(&args.recipe)?;
 
     // read list of crafting steps from stdin
     let mut steps = String::new();

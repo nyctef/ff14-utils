@@ -11,7 +11,7 @@ async fn main() -> Result<()> {
 }
 
 async fn run() -> Result<()> {
-    let lookup = ItemLookup::from_embedded().await?;
+    let lookup = ItemLookup::from_embedded()?;
     let maps = lookup
         .matching(|i| i.name.starts_with("Timeworn") && i.name.ends_with("Map"))
         .collect_vec();

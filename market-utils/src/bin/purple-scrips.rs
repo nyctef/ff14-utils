@@ -19,8 +19,8 @@ async fn main() -> Result<()> {
         _ => return Err(eyre!("Usage: purple-scrips [script amount]")),
     }
 
-    let items = ItemLookup::from_embedded().await?;
-    let recipes_lookup = RecipeLookup::from_embedded().await?;
+    let items = ItemLookup::from_embedded()?;
+    let recipes_lookup = RecipeLookup::from_embedded()?;
 
     let l89_99_collectables = items
         .matching(|i| (i.ilvl >= 548 && i.ilvl <= 685) && i.name.starts_with("Rarefied"))
